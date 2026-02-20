@@ -11,10 +11,15 @@ interface LoginResponse {
   refresh_token?: string;
 }
 
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
 interface UserData {
-  username: string;
-  roles: string[];
+  username?: string;
   email?: string;
+  roles: string[];
 }
 
 @Injectable({
@@ -37,8 +42,8 @@ export class AuthService {
   /**
    * Realiza el login del usuario con Symfony/Lexik JWT
    */
-  login(credentials: { username: string; password: string }): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login_check`, credentials).pipe(
+  login(credentials: LoginCredentials): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/api/login`, credentials).pipe(
       tap(response => {
         if (response.token) {
           this.setToken(response.token);

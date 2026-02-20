@@ -11,8 +11,11 @@ export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
   // Obtener el token del servicio de autenticación
   const token = authService.getToken();
 
-  // Si existe el token, clonar la petición y agregar el header de autorización
-  if (token) {
+  // No agregar el token a las peticiones de login
+  const isLoginRequest = req.url.includes('/api/login');
+
+  // Si existe el token y no es una petición de login, clonar la petición y agregar el header de autorización
+  if (token && !isLoginRequest) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
@@ -23,7 +26,7 @@ export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
   // Continuar con la petición y manejar errores
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
+      if (error.status === 401 && !isLoginRequest) {
         // Token inválido o expirado
         authService.logout();
         router.navigate(['/login']);

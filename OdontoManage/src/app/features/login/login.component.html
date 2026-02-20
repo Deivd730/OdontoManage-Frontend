@@ -16,17 +16,20 @@
       }
 
       <div class="form-group">
-        <label for="username">Usuario</label>
+        <label for="email">Email</label>
         <input
-          type="text"
-          id="username"
-          formControlName="username"
-          [class.input-error]="isFieldInvalid('username')"
-          placeholder="Ingresa tu usuario"
-          autocomplete="username"
+          type="email"
+          id="email"
+          formControlName="email"
+          [class.input-error]="isFieldInvalid('email')"
+          placeholder="Ingresa tu email"
+          autocomplete="email"
         />
-        @if (hasError('username', 'required')) {
-          <span class="error-message">El usuario es requerido</span>
+        @if (hasError('email', 'required')) {
+          <span class="error-message">El email es requerido</span>
+        }
+        @if (hasError('email', 'email')) {
+          <span class="error-message">El email no es válido</span>
         }
       </div>
 
