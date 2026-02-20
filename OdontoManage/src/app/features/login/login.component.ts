@@ -33,7 +33,7 @@ export class LoginComponent {
 
     // Crear el formulario de login
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -48,13 +48,12 @@ export class LoginComponent {
     this.errorMessage.set(null);
 
     const credentials = {
-      username: this.loginForm.value.username,
+      email: this.loginForm.value.email,
       password: this.loginForm.value.password
     };
 
     this.authService.login(credentials).subscribe({
       next: () => {
-        // Login exitoso, redirigir a la URL de retorno
         this.router.navigate([this.returnUrl]);
       },
       error: (error) => {
