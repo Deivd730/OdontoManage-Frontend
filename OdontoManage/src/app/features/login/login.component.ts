@@ -1,16 +1,37 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/core/services/auth.service';
+import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   loginForm: FormGroup;
+  errorMessage = signal<string | null>(null);
+  isLoading = signal<boolean>(false);
+  returnUrl: string = '/';
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    // Si ya está autenticado, redirigir al dashboard
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/']);
+    }
+
+    // Obtener la URL de retorno de los query params
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+    // Crear el formulario de login
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -33,6 +54,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(credentials).subscribe({
       next: () => {
+        // Login exitoso, redirigir a la URL de retorno
         this.router.navigate([this.returnUrl]);
       },
       error: (error) => {
@@ -40,7 +62,7 @@ export class LoginComponent implements OnInit {
         
         // Manejar diferentes tipos de errores
         if (error.status === 401) {
-          this.errorMessage.set('Usuario o contraseña incorrectos');
+          this.errorMessage.set('Email o contraseña incorrectos');
         } else if (error.status === 0) {
           this.errorMessage.set('No se puede conectar al servidor');
         } else {
