@@ -1,0 +1,69 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>OdontoManage</h1>
+      <p>Inicia sesión en tu cuenta</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      @if (errorMessage()) {
+        <div class="alert alert-error">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <div class="form-group">
+        <label for="username">Usuario</label>
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          [class.input-error]="isFieldInvalid('username')"
+          placeholder="Ingresa tu usuario"
+          autocomplete="username"
+        />
+        @if (hasError('username', 'required')) {
+          <span class="error-message">El usuario es requerido</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          [class.input-error]="isFieldInvalid('password')"
+          placeholder="Ingresa tu contraseña"
+          autocomplete="current-password"
+        />
+        @if (hasError('password', 'required')) {
+          <span class="error-message">La contraseña es requerida</span>
+        }
+        @if (hasError('password', 'minlength')) {
+          <span class="error-message">La contraseña debe tener al menos 6 caracteres</span>
+        }
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-login"
+        [disabled]="isLoading()"
+      >
+        @if (isLoading()) {
+          <span class="spinner"></span>
+          <span>Iniciando sesión...</span>
+        } @else {
+          <span>Iniciar Sesión</span>
+        }
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>¿Olvidaste tu contraseña? <a href="/forgot-password">Recuperar</a></p>
+    </div>
+  </div>
+</div>
