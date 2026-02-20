@@ -1,37 +1,16 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  errorMessage = signal<string | null>(null);
-  isLoading = signal<boolean>(false);
-  returnUrl: string = '/';
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {
-    // Si ya está autenticado, redirigir al dashboard
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/']);
-    }
-
-    // Obtener la URL de retorno de los query params
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-
-    // Crear el formulario de login
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
