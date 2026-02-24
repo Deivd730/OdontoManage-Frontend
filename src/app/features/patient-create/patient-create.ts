@@ -24,18 +24,18 @@ export class PatientCreate {
   ) {
     // Crear el formulario de crear paciente
     this.patientForm = this.fb.group({
-      first_name: ['', [Validators.required, Validators.minLength(2)]],
-      last_name: ['', [Validators.required, Validators.minLength(2)]],
-      national_id: ['', [Validators.required]],
-      social_security_number: ['', [Validators.required]],
-      phone: ['', [Validators.required, Validators.pattern(/^\d{9,}$/)]],
-      email: ['', [Validators.required, Validators.email]],
-      address: ['', [Validators.required, Validators.minLength(5)]],
-      billing_data: ['', [Validators.required]],
-      health_status: ['', [Validators.required]],
-      family_history: [''],
-      lifestyle_habits: [''],
-      medication_allergies: ['']
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      nationalId: ['', [Validators.required, Validators.minLength(5)]],
+      socialSecurityNumber: [''],
+      phone: ['', [Validators.pattern(/^\d{9,}$/)]],
+      email: ['', [Validators.email]],
+      address: [''],
+      billingData: [''],
+      healthStatus: [''],
+      familyHistory: [''],
+      lifestyleHabits: [''],
+      medicationAllergies: ['']
     });
   }
 
@@ -51,7 +51,7 @@ export class PatientCreate {
 
     const patientData = {
       ...this.patientForm.value,
-      registration_date: new Date().toISOString().split('T')[0]
+      registrationDate: new Date().toISOString()
     };
 
     this.patientService.createPatient(patientData).subscribe({

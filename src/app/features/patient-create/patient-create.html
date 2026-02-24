@@ -30,35 +30,35 @@
         
         <div class="form-row">
           <div class="form-group">
-            <label for="first_name">Nombre</label>
+            <label for="firstName">Nombre</label>
             <input
               type="text"
-              id="first_name"
-              formControlName="first_name"
-              [class.input-error]="isFieldInvalid('first_name')"
+              id="firstName"
+              formControlName="firstName"
+              [class.input-error]="isFieldInvalid('firstName')"
               placeholder="Ingresa el nombre"
             />
-            @if (hasError('first_name', 'required')) {
+            @if (hasError('firstName', 'required')) {
               <span class="error-message">El nombre es requerido</span>
             }
-            @if (hasError('first_name', 'minlength')) {
+            @if (hasError('firstName', 'minlength')) {
               <span class="error-message">El nombre debe tener al menos 2 caracteres</span>
             }
           </div>
 
           <div class="form-group">
-            <label for="last_name">Apellido</label>
+            <label for="lastName">Apellido</label>
             <input
               type="text"
-              id="last_name"
-              formControlName="last_name"
-              [class.input-error]="isFieldInvalid('last_name')"
+              id="lastName"
+              formControlName="lastName"
+              [class.input-error]="isFieldInvalid('lastName')"
               placeholder="Ingresa el apellido"
             />
-            @if (hasError('last_name', 'required')) {
+            @if (hasError('lastName', 'required')) {
               <span class="error-message">El apellido es requerido</span>
             }
-            @if (hasError('last_name', 'minlength')) {
+            @if (hasError('lastName', 'minlength')) {
               <span class="error-message">El apellido debe tener al menos 2 caracteres</span>
             }
           </div>
@@ -66,31 +66,31 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="national_id">Cédula/DNI</label>
+            <label for="nationalId">Cédula/DNI</label>
             <input
               type="text"
-              id="national_id"
-              formControlName="national_id"
-              [class.input-error]="isFieldInvalid('national_id')"
+              id="nationalId"
+              formControlName="nationalId"
+              [class.input-error]="isFieldInvalid('nationalId')"
               placeholder="Ingresa la cédula/DNI"
             />
-            @if (hasError('national_id', 'required')) {
+            @if (hasError('nationalId', 'required')) {
               <span class="error-message">La cédula/DNI es requerida</span>
+            }
+            @if (hasError('nationalId', 'minlength')) {
+              <span class="error-message">La cédula/DNI debe tener al menos 5 caracteres</span>
             }
           </div>
 
           <div class="form-group">
-            <label for="social_security_number">Número de Seguro Social</label>
+            <label for="socialSecurityNumber">Número de Seguro Social</label>
             <input
               type="text"
-              id="social_security_number"
-              formControlName="social_security_number"
-              [class.input-error]="isFieldInvalid('social_security_number')"
-              placeholder="Ingresa el número de seguro social"
+              id="socialSecurityNumber"
+              formControlName="socialSecurityNumber"
+              [class.input-error]="isFieldInvalid('socialSecurityNumber')"
+              placeholder="Ingresa el número de seguro social (opcional)"
             />
-            @if (hasError('social_security_number', 'required')) {
-              <span class="error-message">El número de seguro social es requerido</span>
-            }
           </div>
         </div>
       </div>
@@ -107,11 +107,8 @@
               id="phone"
               formControlName="phone"
               [class.input-error]="isFieldInvalid('phone')"
-              placeholder="Ingresa el teléfono"
+              placeholder="Ingresa el teléfono (opcional)"
             />
-            @if (hasError('phone', 'required')) {
-              <span class="error-message">El teléfono es requerido</span>
-            }
             @if (hasError('phone', 'pattern')) {
               <span class="error-message">El teléfono debe contener al menos 9 dígitos</span>
             }
@@ -124,11 +121,8 @@
               id="email"
               formControlName="email"
               [class.input-error]="isFieldInvalid('email')"
-              placeholder="Ingresa el email"
+              placeholder="Ingresa el email (opcional)"
             />
-            @if (hasError('email', 'required')) {
-              <span class="error-message">El email es requerido</span>
-            }
             @if (hasError('email', 'email')) {
               <span class="error-message">El email no es válido</span>
             }
@@ -142,28 +136,19 @@
             id="address"
             formControlName="address"
             [class.input-error]="isFieldInvalid('address')"
-            placeholder="Ingresa la dirección completa"
+            placeholder="Ingresa la dirección completa (opcional)"
           />
-          @if (hasError('address', 'required')) {
-            <span class="error-message">La dirección es requerida</span>
-          }
-          @if (hasError('address', 'minlength')) {
-            <span class="error-message">La dirección debe tener al menos 5 caracteres</span>
-          }
         </div>
 
         <div class="form-group full-width">
-          <label for="billing_data">Información de Facturación</label>
+          <label for="billingData">Información de Facturación</label>
           <input
             type="text"
-            id="billing_data"
-            formControlName="billing_data"
-            [class.input-error]="isFieldInvalid('billing_data')"
-            placeholder="Ingresa la información de facturación"
+            id="billingData"
+            formControlName="billingData"
+            [class.input-error]="isFieldInvalid('billingData')"
+            placeholder="Ingresa la información de facturación (opcional)"
           />
-          @if (hasError('billing_data', 'required')) {
-            <span class="error-message">La información de facturación es requerida</span>
-          }
         </div>
       </div>
 
@@ -172,48 +157,45 @@
         <h2 class="section-title">Información de Salud</h2>
         
         <div class="form-group full-width">
-          <label for="health_status">Estado de Salud</label>
+          <label for="healthStatus">Estado de Salud</label>
           <input
             type="text"
-            id="health_status"
-            formControlName="health_status"
-            [class.input-error]="isFieldInvalid('health_status')"
-            placeholder="Ingresa el estado de salud actual del paciente"
+            id="healthStatus"
+            formControlName="healthStatus"
+            [class.input-error]="isFieldInvalid('healthStatus')"
+            placeholder="Ingresa el estado de salud actual del paciente (opcional)"
           />
-          @if (hasError('health_status', 'required')) {
-            <span class="error-message">El estado de salud es requerido</span>
-          }
         </div>
 
         <div class="form-group full-width">
-          <label for="family_history">Antecedentes Familiares</label>
+          <label for="familyHistory">Antecedentes Familiares</label>
           <input
             type="text"
-            id="family_history"
-            formControlName="family_history"
-            [class.input-error]="isFieldInvalid('family_history')"
+            id="familyHistory"
+            formControlName="familyHistory"
+            [class.input-error]="isFieldInvalid('familyHistory')"
             placeholder="Ingresa los antecedentes familiares relevantes (opcional)"
           />
         </div>
 
         <div class="form-group full-width">
-          <label for="lifestyle_habits">Hábitos de Vida</label>
+          <label for="lifestyleHabits">Hábitos de Vida</label>
           <input
             type="text"
-            id="lifestyle_habits"
-            formControlName="lifestyle_habits"
-            [class.input-error]="isFieldInvalid('lifestyle_habits')"
+            id="lifestyleHabits"
+            formControlName="lifestyleHabits"
+            [class.input-error]="isFieldInvalid('lifestyleHabits')"
             placeholder="Ingresa los hábitos de vida (opcional)"
           />
         </div>
 
         <div class="form-group full-width">
-          <label for="medication_allergies">Alergias a Medicamentos</label>
+          <label for="medicationAllergies">Alergias a Medicamentos</label>
           <input
             type="text"
-            id="medication_allergies"
-            formControlName="medication_allergies"
-            [class.input-error]="isFieldInvalid('medication_allergies')"
+            id="medicationAllergies"
+            formControlName="medicationAllergies"
+            [class.input-error]="isFieldInvalid('medicationAllergies')"
             placeholder="Ingresa las alergias a medicamentos (opcional)"
           />
         </div>
