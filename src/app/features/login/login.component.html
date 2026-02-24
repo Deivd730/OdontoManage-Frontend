@@ -1,17 +1,14 @@
 <div class="login-container">
   <div class="login-card">
-    <div class="login-header">
-      <h1>OdontoManage</h1>
-      <p>Inicia sesión en tu cuenta</p>
-    </div>
+    <header class="login-header">
+      <h1 class="brand-name">OdontoManage</h1>
+      <p class="subtitle">Bienvenido de nuevo</p>
+    </header>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       @if (errorMessage()) {
-        <div class="alert alert-error">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{{ errorMessage() }}</span>
+        <div class="minimal-alert">
+          {{ errorMessage() }}
         </div>
       }
 
@@ -22,15 +19,8 @@
           id="email"
           formControlName="email"
           [class.input-error]="isFieldInvalid('email')"
-          placeholder="Ingresa tu email"
-          autocomplete="email"
+          placeholder="tu@email.com"
         />
-        @if (hasError('email', 'required')) {
-          <span class="error-message">El email es requerido</span>
-        }
-        @if (hasError('email', 'email')) {
-          <span class="error-message">El email no es válido</span>
-        }
       </div>
 
       <div class="form-group">
@@ -40,33 +30,25 @@
           id="password"
           formControlName="password"
           [class.input-error]="isFieldInvalid('password')"
-          placeholder="Ingresa tu contraseña"
-          autocomplete="current-password"
+          placeholder="••••••••"
         />
-        @if (hasError('password', 'required')) {
-          <span class="error-message">La contraseña es requerida</span>
-        }
-        @if (hasError('password', 'minlength')) {
-          <span class="error-message">La contraseña debe tener al menos 6 caracteres</span>
-        }
       </div>
 
-      <button 
-        type="submit" 
-        class="btn-login"
-        [disabled]="isLoading()"
-      >
+      <button type="submit" class="btn-minimal" [disabled]="isLoading()">
         @if (isLoading()) {
-          <span class="spinner"></span>
-          <span>Iniciando sesión...</span>
+          <span class="dot-loader"></span>
         } @else {
-          <span>Iniciar Sesión</span>
+          Iniciar Sesión
         }
       </button>
     </form>
 
-    <div class="login-footer">
-      <p>¿Olvidaste tu contraseña? <a href="/forgot-password">Recuperar</a></p>
-    </div>
+    <footer class="login-footer">
+      <a href="/forgot-password" class="secondary-link">¿Olvidaste tu contraseña?</a>
+      <div class="register-section">
+        <span>¿No tienes cuenta?</span>
+        <a href="/register" class="main-link">Regístrate</a>
+      </div>
+    </footer>
   </div>
 </div>
