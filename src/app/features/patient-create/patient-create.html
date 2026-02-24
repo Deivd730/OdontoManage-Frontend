@@ -1,0 +1,218 @@
+<div class="patient-container">
+  <div class="patient-card">
+    <div class="patient-header">
+      <h1>Crear Nuevo Paciente</h1>
+      <p>Completa los datos del paciente para registrarlo en el sistema</p>
+    </div>
+
+    @if (successMessage()) {
+      <div class="alert alert-success">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" class="patient-form">
+      <!-- Sección: Información Personal -->
+      <div class="form-section">
+        <h2 class="section-title">Información Personal</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">Nombre</label>
+            <input
+              type="text"
+              id="firstName"
+              formControlName="firstName"
+              [class.input-error]="isFieldInvalid('firstName')"
+              placeholder="Ingresa el nombre"
+            />
+            @if (hasError('firstName', 'required')) {
+              <span class="error-message">El nombre es requerido</span>
+            }
+            @if (hasError('firstName', 'minlength')) {
+              <span class="error-message">El nombre debe tener al menos 2 caracteres</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Apellido</label>
+            <input
+              type="text"
+              id="lastName"
+              formControlName="lastName"
+              [class.input-error]="isFieldInvalid('lastName')"
+              placeholder="Ingresa el apellido"
+            />
+            @if (hasError('lastName', 'required')) {
+              <span class="error-message">El apellido es requerido</span>
+            }
+            @if (hasError('lastName', 'minlength')) {
+              <span class="error-message">El apellido debe tener al menos 2 caracteres</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nationalId">Cédula/DNI</label>
+            <input
+              type="text"
+              id="nationalId"
+              formControlName="nationalId"
+              [class.input-error]="isFieldInvalid('nationalId')"
+              placeholder="Ingresa la cédula/DNI"
+            />
+            @if (hasError('nationalId', 'required')) {
+              <span class="error-message">La cédula/DNI es requerida</span>
+            }
+            @if (hasError('nationalId', 'minlength')) {
+              <span class="error-message">La cédula/DNI debe tener al menos 5 caracteres</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="socialSecurityNumber">Número de Seguro Social</label>
+            <input
+              type="text"
+              id="socialSecurityNumber"
+              formControlName="socialSecurityNumber"
+              [class.input-error]="isFieldInvalid('socialSecurityNumber')"
+              placeholder="Ingresa el número de seguro social (opcional)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Contacto -->
+      <div class="form-section">
+        <h2 class="section-title">Información de Contacto</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Teléfono</label>
+            <input
+              type="tel"
+              id="phone"
+              formControlName="phone"
+              [class.input-error]="isFieldInvalid('phone')"
+              placeholder="Ingresa el teléfono (opcional)"
+            />
+            @if (hasError('phone', 'pattern')) {
+              <span class="error-message">El teléfono debe contener al menos 9 dígitos</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              [class.input-error]="isFieldInvalid('email')"
+              placeholder="Ingresa el email (opcional)"
+            />
+            @if (hasError('email', 'email')) {
+              <span class="error-message">El email no es válido</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="address">Dirección</label>
+          <input
+            type="text"
+            id="address"
+            formControlName="address"
+            [class.input-error]="isFieldInvalid('address')"
+            placeholder="Ingresa la dirección completa (opcional)"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label for="billingData">Información de Facturación</label>
+          <input
+            type="text"
+            id="billingData"
+            formControlName="billingData"
+            [class.input-error]="isFieldInvalid('billingData')"
+            placeholder="Ingresa la información de facturación (opcional)"
+          />
+        </div>
+      </div>
+
+      <!-- Sección: Información de Salud -->
+      <div class="form-section">
+        <h2 class="section-title">Información de Salud</h2>
+        
+        <div class="form-group full-width">
+          <label for="healthStatus">Estado de Salud</label>
+          <input
+            type="text"
+            id="healthStatus"
+            formControlName="healthStatus"
+            [class.input-error]="isFieldInvalid('healthStatus')"
+            placeholder="Ingresa el estado de salud actual del paciente (opcional)"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label for="familyHistory">Antecedentes Familiares</label>
+          <input
+            type="text"
+            id="familyHistory"
+            formControlName="familyHistory"
+            [class.input-error]="isFieldInvalid('familyHistory')"
+            placeholder="Ingresa los antecedentes familiares relevantes (opcional)"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label for="lifestyleHabits">Hábitos de Vida</label>
+          <input
+            type="text"
+            id="lifestyleHabits"
+            formControlName="lifestyleHabits"
+            [class.input-error]="isFieldInvalid('lifestyleHabits')"
+            placeholder="Ingresa los hábitos de vida (opcional)"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label for="medicationAllergies">Alergias a Medicamentos</label>
+          <input
+            type="text"
+            id="medicationAllergies"
+            formControlName="medicationAllergies"
+            [class.input-error]="isFieldInvalid('medicationAllergies')"
+            placeholder="Ingresa las alergias a medicamentos (opcional)"
+          />
+        </div>
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-create"
+        [disabled]="isLoading()"
+      >
+        @if (isLoading()) {
+          <span class="spinner"></span>
+          <span>Creando paciente...</span>
+        } @else {
+          <span>Crear Paciente</span>
+        }
+      </button>
+    </form>
+  </div>
+</div>
