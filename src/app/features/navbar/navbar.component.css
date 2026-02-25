@@ -1,0 +1,89 @@
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #eef2f0;
+  padding: 0 2rem;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  font-family: var(--font-title);
+  color: var(--primary-dark);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: var(--primary-dark);
+}
+
+/* Estilo para el enlace activo */
+.nav-links a.active {
+  color: var(--primary-dark);
+  font-weight: 700;
+  border-bottom: 2px solid var(--primary-dark);
+  padding-bottom: 4px;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.btn-logout-nav {
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout-nav:hover {
+  background-color: #fff5f5;
+  border-color: #ffcccc;
+  color: #d32f2f;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none; /* Aquí podrías implementar un menú hamburguesa luego */
+  }
+}

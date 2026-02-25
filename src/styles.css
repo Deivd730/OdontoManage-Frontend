@@ -73,18 +73,19 @@
   --font-body: 'Lato', sans-serif;
 }
 
-/* 3. ESTILOS GLOBALES */
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-minimal); /* Aplicamos el fondo minimalista */
+  background-color: var(--bg-minimal);
   font-family: var(--font-body);
   color: var(--text-main);
+  /* ELIMINA ESTAS LÍNEAS:
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* Cambiado de height a min-height para mejor soporte */
-  -webkit-font-smoothing: antialiased; /* Suavizado de fuente para diseño limpio */
+  */
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Reset opcional para inputs y botones para que hereden la fuente Lato */
