@@ -31,13 +31,13 @@ export class AuthService {
   private refreshTokenKey = environment.refreshTokenKey;
   private jwtHelper = new JwtHelperService();
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
-  
+
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(
     private http: HttpClient,
     private router: Router
-  ) {}
+  ) { }
 
   /**
    * Realiza el login del usuario con Symfony/Lexik JWT
@@ -54,6 +54,10 @@ export class AuthService {
         }
       })
     );
+  }
+
+  register(userData: any): Observable<any> {    
+    return this.http.post('http://localhost:8000/api/users/register', userData);
   }
 
   /**

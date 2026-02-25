@@ -3,9 +3,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f7f9f8; /* Fondo casi blanco con un toque de verde */
-  font-family: 'Lato', sans-serif;
+  min-height: 100vh; /* Esto hará que el login se centre solito */
+  width: 100%;
+  background-color: var(--bg-minimal);
 }
 
 /* Tarjeta Minimalista */
@@ -14,16 +14,20 @@
   padding: 50px 40px;
   border-radius: 12px;
   width: 100%;
-  max-width: 360px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); /* Sombra casi invisible */
+  /* El max-width asegura que en escritorio no sea gigante */
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   border: 1px solid #eef2f0;
+  box-sizing: border-box;
+  /* Crucial para el responsive */
 }
 
 /* Tipografía */
 .brand-name {
   font-family: 'Italiana', serif;
   font-size: 36px;
-  color: #1b7339; /* Tu verde oscuro */
+  color: #1b7339;
+  /* Tu verde oscuro */
   margin: 0;
   letter-spacing: -1px;
 }
@@ -55,7 +59,8 @@ input {
   width: 100%;
   padding: 12px 0;
   border: none;
-  border-bottom: 1px solid #e0e0e0; /* Solo línea inferior para look minimal */
+  border-bottom: 1px solid #e0e0e0;
+  /* Solo línea inferior para look minimal */
   background-color: transparent;
   font-family: 'Lato', sans-serif;
   font-size: 15px;
@@ -65,7 +70,8 @@ input {
 
 input:focus {
   outline: none;
-  border-bottom: 1px solid #1b7339; /* Acento verde al escribir */
+  border-bottom: 1px solid #1b7339;
+  /* Acento verde al escribir */
 }
 
 input.input-error {
@@ -152,5 +158,50 @@ input.input-error {
 }
 
 @keyframes dot-pulse {
-  50% { opacity: 0.3; }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* --- MEDIA QUERIES PARA MÓVILES (Pantallas menores a 480px) --- */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 30px 20px;
+    /* Reducimos padding interno en celulares */
+    border-radius: 8px;
+    /* Bordes un poco menos pronunciados */
+  }
+
+  .brand-name {
+    font-size: 28px;
+    /* Título un poco más pequeño en móvil */
+  }
+
+  .subtitle {
+    font-size: 13px;
+    margin-bottom: 25px;
+  }
+
+  .btn-minimal {
+    padding: 12px;
+    /* Botón más cómodo para dedos en móvil */
+  }
+}
+
+/* --- PARA MÓVILES MUY PEQUEÑOS (iPhone SE o similares) --- */
+@media (max-width: 320px) {
+  .login-card {
+    padding: 20px 15px;
+  }
+}
+
+.btn-minimal:focus {
+  outline: 2px solid var(--primary-dark);
+  outline-offset: 2px;
+}
+
+.secondary-link:focus,
+.main-link:focus {
+  outline: 1px dashed var(--primary-dark);
+  outline-offset: 4px;
 }

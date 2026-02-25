@@ -1,0 +1,61 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1 class="brand-name">OdontoManage</h1>
+    <p class="subtitle">Crea tu cuenta profesional</p>
+
+    @if (errorMessage) {
+      <div class="minimal-alert">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      
+      <!-- NOMBRE COMPLETO (Nuevo) -->
+      <div class="form-group">
+        <label>Nombre Completo</label>
+        <input type="text" formControlName="name" placeholder="Ej: Juan Perez"
+               [class.input-error]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+      </div>
+
+      <!-- EMAIL -->
+      <div class="form-group">
+        <label>Correo Electrónico</label>
+        <input type="email" formControlName="email" placeholder="juan@test.com"
+               [class.input-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres"
+               [class.input-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+      </div>
+
+      <!-- CONFIRMAR PASSWORD -->
+      <div class="form-group">
+        <label>Confirmar Contraseña</label>
+        <input type="password" formControlName="confirmPassword" placeholder="Repite tu contraseña"
+               [class.input-error]="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
+        @if (registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched) {
+          <small class="error-text">Las contraseñas no coinciden</small>
+        }
+      </div>
+
+      <button type="submit" class="btn-minimal" [disabled]="registerForm.invalid || loading">
+        @if (loading) {
+          <span class="dot-loader"></span>
+        } @else {
+          Crear Cuenta
+        }
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <div class="register-section">
+        ¿Ya eres parte? 
+        <a routerLink="/login" class="main-link">Inicia sesión aquí</a>
+      </div>
+    </div>
+  </div>
+</div>
