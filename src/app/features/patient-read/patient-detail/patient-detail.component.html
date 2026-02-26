@@ -1,0 +1,50 @@
+<section class="patient-detail">
+  @if (!selectedPatient) {
+    <div class="detail-empty">
+      <h2>Selecciona un paciente</h2>
+      <p>Elige un paciente en la lista para ver su informacion completa.</p>
+    </div>
+  } @else {
+    <div class="detail-header">
+      <div>
+        <h2>{{ selectedPatient?.firstName }} {{ selectedPatient?.lastName }}</h2>
+        <p>DNI {{ selectedPatient?.nationalId }}</p>
+      </div>
+      <div class="detail-actions">
+        @if (!isEditing) {
+          <button class="btn ghost" (click)="startEdit.emit()">Editar</button>
+          <button class="btn danger" (click)="deletePatient.emit()" [disabled]="isLoading">Eliminar</button>
+        } @else {
+          <button class="btn ghost" (click)="cancelEdit.emit()">Cancelar</button>
+          <button class="btn primary" (click)="saveEdit.emit()" [disabled]="isLoading">Guardar</button>
+        }
+      </div>
+    </div>
+
+    @if (!isEditing) {
+      <div class="detail-grid">
+        <div class="detail-card">
+          <h3>Contacto</h3>
+          <p><strong>Telefono:</strong> {{ selectedPatient?.phone || 'No registrado' }}</p>
+          <p><strong>Email:</strong> {{ selectedPatient?.email || 'No registrado' }}</p>
+          <p><strong>Direccion:</strong> {{ selectedPatient?.address || 'No registrada' }}</p>
+        </div>
+        <div class="detail-card">
+          <h3>Salud</h3>
+          <p><strong>Estado:</strong> {{ selectedPatient?.healthStatus || 'No registrado' }}</p>
+          <p><strong>Antecedentes:</strong> {{ selectedPatient?.familyHistory || 'No registrado' }}</p>
+          <p><strong>Habitos:</strong> {{ selectedPatient?.lifestyleHabits || 'No registrado' }}</p>
+          <p><strong>Alergias:</strong> {{ selectedPatient?.medicationAllergies || 'No registrado' }}</p>
+        </div>
+        <div class="detail-card">
+          <h3>Facturacion</h3>
+          <p><strong>Seguro Social:</strong> {{ selectedPatient?.socialSecurityNumber || 'No registrado' }}</p>
+          <p><strong>Datos:</strong> {{ selectedPatient?.billingData || 'No registrado' }}</p>
+          <p><strong>Registro:</strong> {{ selectedPatient?.registrationDate | date: 'mediumDate' }}</p>
+        </div>
+      </div>
+    } @else {
+      <app-patient-edit-form [formGroup]="editForm"></app-patient-edit-form>
+    }
+  }
+</section>
