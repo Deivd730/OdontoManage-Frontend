@@ -18,12 +18,23 @@
       </li>
     </ul>
 
-    <!-- Sección Usuario -->
-    <div class="nav-user">
-      <span class="user-name">Hola, <strong>{{ username }}</strong></span>
-      <button (click)="logout()" class="btn-logout-nav">
-        Cerrar Sesión
-      </button>
+     <div class="nav-user">      
+      
+      @if (authService.currentUser(); as user) {
+        <!-- Esto se muestra INSTANTÁNEAMENTE al recargar porque viene del token -->
+        <div class="user-info">
+          <span class="user-name">Hola, {{ user.name }} </span> 
+          <span class="user-email">{{ user.email }}</span>
+        </div>
+
+        <button (click)="logout()" class="btn-logout-nav">
+          Cerrar Sesión
+        </button>
+      } @else {
+        <!-- Esto se muestra si no hay token o expiró -->
+        <a routerLink="/login" class="btn-login-nav">Iniciar Sesión</a>
+      }
+
     </div>
   </div>
 </nav>

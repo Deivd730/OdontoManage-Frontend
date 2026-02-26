@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core'; // Añadido signal
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -16,9 +16,11 @@ interface LoginCredentials {
   password: string;
 }
 
+// Interfaz actualizada con los nuevos campos de Symfony
 interface UserData {
   username?: string;
-  email?: string;
+  email?: string; // Añadido
+  name?: string;  // Añadido
   roles: string[];
 }
 
@@ -30,9 +32,14 @@ export class AuthService {
   private tokenKey = environment.tokenKey;
   private refreshTokenKey = environment.refreshTokenKey;
   private jwtHelper = new JwtHelperService();
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
 
+  // Mantenemos tu Subject original para no romper nada
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+
+  // NUEVO: Signal para el usuario actual. 
+  // Se inicializa automáticamente al cargar la app/página extrayendo los datos del token
+  public currentUser = signal<UserData | null>(this.getDecodedToken());
 
   constructor(
     private http: HttpClient,
@@ -50,14 +57,17 @@ export class AuthService {
           if (response.refresh_token) {
             this.setRefreshToken(response.refresh_token);
           }
+
+          // ACTUALIZACIÓN DE ESTADOS
           this.isAuthenticatedSubject.next(true);
+          this.currentUser.set(this.getDecodedToken()); // Actualizamos el signal al loguear
         }
       })
     );
   }
 
-  register(userData: any): Observable<any> {    
-    return this.http.post('http://localhost:8000/api/users/register', userData);
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/users/register`, userData);
   }
 
   /**
@@ -66,7 +76,11 @@ export class AuthService {
   logout(): void {
     this.removeToken();
     this.removeRefreshToken();
+
+    // ACTUALIZACIÓN DE ESTADOS
     this.isAuthenticatedSubject.next(false);
+    this.currentUser.set(null); // Limpiamos el signal al cerrar sesión
+
     this.router.navigate(['/login']);
   }
 
@@ -77,51 +91,30 @@ export class AuthService {
     return localStorage.getItem(this.tokenKey);
   }
 
-  /**
-   * Almacena el token en localStorage
-   */
   private setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
   }
 
-  /**
-   * Elimina el token del localStorage
-   */
   private removeToken(): void {
     localStorage.removeItem(this.tokenKey);
   }
 
-  /**
-   * Obtiene el refresh token
-   */
   getRefreshToken(): string | null {
     return localStorage.getItem(this.refreshTokenKey);
   }
 
-  /**
-   * Almacena el refresh token
-   */
   private setRefreshToken(token: string): void {
     localStorage.setItem(this.refreshTokenKey, token);
   }
 
-  /**
-   * Elimina el refresh token
-   */
   private removeRefreshToken(): void {
     localStorage.removeItem(this.refreshTokenKey);
   }
 
-  /**
-   * Verifica si el usuario está autenticado
-   */
   isAuthenticated(): boolean {
     return this.hasValidToken();
   }
 
-  /**
-   * Verifica si el token existe y es válido
-   */
   private hasValidToken(): boolean {
     const token = this.getToken();
     return token != null && !this.jwtHelper.isTokenExpired(token);
@@ -132,53 +125,44 @@ export class AuthService {
    */
   getDecodedToken(): UserData | null {
     const token = this.getToken();
-    return token ? this.jwtHelper.decodeToken(token) : null;
+    try {
+      if (token && !this.jwtHelper.isTokenExpired(token)) {
+        return this.jwtHelper.decodeToken(token) as UserData;
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
   }
 
   /**
-   * Obtiene el usuario actual desde el token
+   * Obtiene el usuario actual desde el token (Mantenido por compatibilidad)
    */
   getCurrentUser(): UserData | null {
     return this.getDecodedToken();
   }
 
-  /**
-   * Obtiene los roles del usuario actual
-   */
   getUserRoles(): string[] {
     const user = this.getCurrentUser();
     return user?.roles || [];
   }
 
-  /**
-   * Verifica si el usuario tiene un rol específico
-   */
   hasRole(role: string): boolean {
-    const roles = this.getUserRoles();
-    return roles.includes(role);
+    return this.getUserRoles().includes(role);
   }
 
-  /**
-   * Verifica si el usuario tiene alguno de los roles especificados
-   */
   hasAnyRole(roles: string[]): boolean {
     const userRoles = this.getUserRoles();
     return roles.some(role => userRoles.includes(role));
   }
 
-  /**
-   * Verifica si el usuario tiene todos los roles especificados
-   */
   hasAllRoles(roles: string[]): boolean {
     const userRoles = this.getUserRoles();
     return roles.every(role => userRoles.includes(role));
   }
 
-  /**
-   * Obtiene el username del usuario actual
-   */
   getUsername(): string | null {
     const user = this.getCurrentUser();
-    return user?.username || null;
+    return user?.username || user?.email || null;
   }
 }
