@@ -16,12 +16,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/patient-create/patient-create').then(m => m.PatientCreate),
     canActivate: [AuthGuard]
   },
-  // Agrega aquí tus rutas protegidas
-  // {
-  //   path: 'patients',
-  //   loadComponent: () => import('./features/patients/patients.component').then(m => m.PatientsComponent),
-  //   canActivate: [AuthGuard]
-  // },
+  {
+    path: 'patients',
+    loadComponent: () => import('./features/patient-read/patient-read').then(m => m.PatientRead),
+    canActivate: [AuthGuard]
+  },
   {
     path: '',
     redirectTo: '/dashboard',

@@ -1,0 +1,91 @@
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-patient-edit-form',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  template: `
+    <form [formGroup]="formGroup" class="edit-form">
+      <div class="form-grid">
+        <label>
+          Nombre
+          <input type="text" formControlName="firstName" [class.input-error]="isFieldInvalid('firstName')" />
+          @if (hasError('firstName', 'required')) {
+            <span class="error">El nombre es requerido</span>
+          }
+        </label>
+        <label>
+          Apellido
+          <input type="text" formControlName="lastName" [class.input-error]="isFieldInvalid('lastName')" />
+          @if (hasError('lastName', 'required')) {
+            <span class="error">El apellido es requerido</span>
+          }
+        </label>
+        <label>
+          DNI
+          <input type="text" formControlName="nationalId" [class.input-error]="isFieldInvalid('nationalId')" />
+          @if (hasError('nationalId', 'required')) {
+            <span class="error">El DNI es requerido</span>
+          }
+        </label>
+        <label>
+          Seguro Social
+          <input type="text" formControlName="socialSecurityNumber" />
+        </label>
+        <label>
+          Telefono
+          <input type="text" formControlName="phone" />
+          @if (hasError('phone', 'pattern')) {
+            <span class="error">Minimo 9 digitos</span>
+          }
+        </label>
+        <label>
+          Email
+          <input type="email" formControlName="email" />
+          @if (hasError('email', 'email')) {
+            <span class="error">Email invalido</span>
+          }
+        </label>
+        <label class="full">
+          Direccion
+          <input type="text" formControlName="address" />
+        </label>
+        <label class="full">
+          Facturacion
+          <input type="text" formControlName="billingData" />
+        </label>
+        <label class="full">
+          Estado de salud
+          <input type="text" formControlName="healthStatus" />
+        </label>
+        <label class="full">
+          Antecedentes familiares
+          <input type="text" formControlName="familyHistory" />
+        </label>
+        <label class="full">
+          Habitos de vida
+          <input type="text" formControlName="lifestyleHabits" />
+        </label>
+        <label class="full">
+          Alergias a medicamentos
+          <input type="text" formControlName="medicationAllergies" />
+        </label>
+      </div>
+    </form>
+  `
+})
+export class PatientEditFormComponent {
+  @Input() formGroup!: FormGroup;
+
+  isFieldInvalid(field: string): boolean {
+    const control = this.formGroup.get(field);
+    return !!(control && control.invalid && control.touched);
+  }
+
+  hasError(field: string, error: string): boolean {
+    const control = this.formGroup.get(field);
+    return !!(control && control.hasError(error) && control.touched);
+  }
+}
