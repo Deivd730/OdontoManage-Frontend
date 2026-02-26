@@ -1,0 +1,216 @@
+/* Contenedor Zen */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Esto hará que el login se centre solito */
+    width: 100%;
+    background-color: var(--bg-minimal);
+}
+
+/* Tarjeta Minimalista */
+.login-card {
+    background-color: #ffffff;
+    padding: 50px 40px;
+    border-radius: 12px;
+    width: 100%;
+    /* El max-width asegura que en escritorio no sea gigante */
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid #eef2f0;
+    box-sizing: border-box;
+    /* Crucial para el responsive */
+}
+
+/* Tipografía */
+.brand-name {
+    font-family: 'Italiana', serif;
+    font-size: 36px;
+    color: #1b7339;
+    /* Tu verde oscuro */
+    margin: 0;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #888;
+    margin: 5px 0 35px 0;
+    font-weight: 300;
+}
+
+/* Formulario */
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #555;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+input {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    /* Solo línea inferior para look minimal */
+    background-color: transparent;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+input:focus {
+    outline: none;
+    border-bottom: 1px solid #1b7339;
+    /* Acento verde al escribir */
+}
+
+input.input-error {
+    border-bottom: 1px solid #ff4d4d;
+}
+
+/* Botón Minimalista */
+.btn-minimal {
+    width: 100%;
+    background-color: #1b7339;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-minimal:hover:not(:disabled) {
+    background-color: #145a2d;
+    box-shadow: 0 5px 15px rgba(27, 115, 57, 0.2);
+}
+
+.btn-minimal:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Alertas */
+.minimal-alert {
+    font-size: 13px;
+    color: #d32f2f;
+    background-color: #fff5f5;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border-left: 3px solid #d32f2f;
+}
+
+/* Footer */
+.login-footer {
+    margin-top: 35px;
+    font-size: 13px;
+    color: #777;
+}
+
+.secondary-link {
+    display: block;
+    text-decoration: none;
+    color: #999;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+}
+
+.secondary-link:hover {
+    color: #1b7339;
+}
+
+.register-section {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 20px;
+}
+
+.main-link {
+    color: #1b7339;
+    text-decoration: none;
+    font-weight: 700;
+    margin-left: 5px;
+}
+
+/* Cargador de puntos */
+.dot-loader {
+    height: 4px;
+    width: 4px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 10px 0 white, -10px 0 white;
+    animation: dot-pulse 1.5s infinite linear;
+    display: inline-block;
+}
+
+@keyframes dot-pulse {
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* --- MEDIA QUERIES PARA MÓVILES (Pantallas menores a 480px) --- */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 30px 20px;
+        /* Reducimos padding interno en celulares */
+        border-radius: 8px;
+        /* Bordes un poco menos pronunciados */
+    }
+
+    .brand-name {
+        font-size: 28px;
+        /* Título un poco más pequeño en móvil */
+    }
+
+    .subtitle {
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .btn-minimal {
+        padding: 12px;
+        /* Botón más cómodo para dedos en móvil */
+    }
+}
+
+/* --- PARA MÓVILES MUY PEQUEÑOS (iPhone SE o similares) --- */
+@media (max-width: 320px) {
+    .login-card {
+        padding: 20px 15px;
+    }
+}
+
+.btn-minimal:focus {
+    outline: 2px solid var(--primary-dark);
+    outline-offset: 2px;
+}
+
+.secondary-link:focus,
+.main-link:focus {
+    outline: 1px dashed var(--primary-dark);
+    outline-offset: 4px;
+}
+
+.error-text {
+    color: #ff4d4d;
+    font-size: 11px;
+    margin-top: 5px;
+    display: block;
+    text-transform: none;
+}

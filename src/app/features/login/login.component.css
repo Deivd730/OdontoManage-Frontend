@@ -1,186 +1,207 @@
+/* Contenedor Zen */
 .login-container {
-  min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-}
-
-.login-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  width: 100%;
-  max-width: 420px;
-  padding: 40px;
-  animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.login-header h1 {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1a202c;
-  margin-bottom: 8px;
-}
-
-.login-header p {
-  font-size: 16px;
-  color: #718096;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-group label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #2d3748;
-}
-
-.form-group input {
-  padding: 12px 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-.form-group input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.form-group input.input-error {
-  border-color: #f56565;
-}
-
-.error-message {
-  font-size: 14px;
-  color: #f56565;
-  margin-top: 4px;
-}
-
-.alert {
-  padding: 12px 16px;
-  border-radius: 8px;
-  display: flex;
   align-items: center;
-  gap: 12px;
+  min-height: 100vh; /* Esto hará que el login se centre solito */
+  width: 100%;
+  background-color: var(--bg-minimal);
+}
+
+/* Tarjeta Minimalista */
+.login-card {
+  background-color: #ffffff;
+  padding: 50px 40px;
+  border-radius: 12px;
+  width: 100%;
+  /* El max-width asegura que en escritorio no sea gigante */
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border: 1px solid #eef2f0;
+  box-sizing: border-box;
+  /* Crucial para el responsive */
+}
+
+/* Tipografía */
+.brand-name {
+  font-family: 'Italiana', serif;
+  font-size: 36px;
+  color: #1b7339;
+  /* Tu verde oscuro */
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.subtitle {
   font-size: 14px;
+  color: #888;
+  margin: 5px 0 35px 0;
+  font-weight: 300;
 }
 
-.alert svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
+/* Formulario */
+.form-group {
+  margin-bottom: 25px;
+  text-align: left;
 }
 
-.alert-error {
-  background-color: #fff5f5;
-  color: #c53030;
-  border: 1px solid #feb2b2;
+label {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #555;
+  margin-bottom: 8px;
+  font-weight: 700;
 }
 
-.btn-login {
-  padding: 14px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+input {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  /* Solo línea inferior para look minimal */
+  background-color: transparent;
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: none;
+  border-bottom: 1px solid #1b7339;
+  /* Acento verde al escribir */
+}
+
+input.input-error {
+  border-bottom: 1px solid #ff4d4d;
+}
+
+/* Botón Minimalista */
+.btn-minimal {
+  width: 100%;
+  background-color: #1b7339;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  padding: 14px;
+  border-radius: 4px;
+  font-size: 14px;
   font-weight: 600;
+  letter-spacing: 0.5px;
   cursor: pointer;
+  margin-top: 20px;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 8px;
 }
 
-.btn-login:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+.btn-minimal:hover:not(:disabled) {
+  background-color: #145a2d;
+  box-shadow: 0 5px 15px rgba(27, 115, 57, 0.2);
 }
 
-.btn-login:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn-login:disabled {
-  opacity: 0.7;
+.btn-minimal:disabled {
+  background-color: #ccc;
   cursor: not-allowed;
 }
 
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+/* Alertas */
+.minimal-alert {
+  font-size: 13px;
+  color: #d32f2f;
+  background-color: #fff5f5;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border-left: 3px solid #d32f2f;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+/* Footer */
+.login-footer {
+  margin-top: 35px;
+  font-size: 13px;
+  color: #777;
+}
+
+.secondary-link {
+  display: block;
+  text-decoration: none;
+  color: #999;
+  margin-bottom: 20px;
+  transition: color 0.2s;
+}
+
+.secondary-link:hover {
+  color: #1b7339;
+}
+
+.register-section {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 20px;
+}
+
+.main-link {
+  color: #1b7339;
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 5px;
+}
+
+/* Cargador de puntos */
+.dot-loader {
+  height: 4px;
+  width: 4px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 10px 0 white, -10px 0 white;
+  animation: dot-pulse 1.5s infinite linear;
+  display: inline-block;
+}
+
+@keyframes dot-pulse {
+  50% {
+    opacity: 0.3;
   }
 }
 
-.login-footer {
-  margin-top: 24px;
-  text-align: center;
-}
-
-.login-footer p {
-  font-size: 14px;
-  color: #718096;
-}
-
-.login-footer a {
-  color: #667eea;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.login-footer a:hover {
-  text-decoration: underline;
-}
-
-/* Responsive */
+/* --- MEDIA QUERIES PARA MÓVILES (Pantallas menores a 480px) --- */
 @media (max-width: 480px) {
   .login-card {
-    padding: 30px 24px;
+    padding: 30px 20px;
+    /* Reducimos padding interno en celulares */
+    border-radius: 8px;
+    /* Bordes un poco menos pronunciados */
   }
 
-  .login-header h1 {
+  .brand-name {
     font-size: 28px;
+    /* Título un poco más pequeño en móvil */
   }
+
+  .subtitle {
+    font-size: 13px;
+    margin-bottom: 25px;
+  }
+
+  .btn-minimal {
+    padding: 12px;
+    /* Botón más cómodo para dedos en móvil */
+  }
+}
+
+/* --- PARA MÓVILES MUY PEQUEÑOS (iPhone SE o similares) --- */
+@media (max-width: 320px) {
+  .login-card {
+    padding: 20px 15px;
+  }
+}
+
+.btn-minimal:focus {
+  outline: 2px solid var(--primary-dark);
+  outline-offset: 2px;
+}
+
+.secondary-link:focus,
+.main-link:focus {
+  outline: 1px dashed var(--primary-dark);
+  outline-offset: 4px;
 }

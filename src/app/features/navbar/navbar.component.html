@@ -1,0 +1,29 @@
+<nav class="navbar">
+  <div class="nav-container">
+    <!-- Logo -->
+    <div class="nav-brand" routerLink="/home">
+      OdontoManage
+    </div>
+
+    <!-- Enlaces de Navegación -->
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/home" routerLinkActive="active">Inicio</a>
+      </li>
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      </li>
+      <li>
+        <a routerLink="/patients/create" routerLinkActive="active">Nuevo Paciente</a>
+      </li>
+    </ul>
+
+    <!-- Sección Usuario -->
+    <div class="nav-user">
+      <span class="user-name">Hola, <strong>{{ username }}</strong></span>
+      <button (click)="logout()" class="btn-logout-nav">
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+</nav>

@@ -1,1 +1,99 @@
-/* You can add global styles to this file, and also import other style files */
+/* ITALIANA */
+@font-face {
+  font-family: 'Italiana';
+  src: url('./assets/fonts/Italiana/Italiana-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* LATO */
+@font-face {
+  font-family: 'Lato';
+  src: url('./assets/fonts/Lato/Lato-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('./assets/fonts/Lato/Lato-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('./assets/fonts/Lato/Lato-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('./assets/fonts/Lato/Lato-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('./assets/fonts/Lato/Lato-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('./assets/fonts/Lato/Lato-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* 2. VARIABLES DE DISEÑO (Personalizables) */
+:root {
+  /* Colores de tu paleta */
+  --primary-dark: #1b7339;
+  --primary-medium: #a8e063;
+  --primary-light: #c5e88f;
+  
+  /* Colores Minimalistas */
+  --bg-minimal: #f7f9f8;        /* Gris verdoso muy claro y limpio */
+  --text-main: #2d2d2d;
+  --text-muted: #888888;
+  
+  /* Fuentes */
+  --font-title: 'Italiana', serif;
+  --font-body: 'Lato', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-minimal);
+  font-family: var(--font-body);
+  color: var(--text-main);
+  /* ELIMINA ESTAS LÍNEAS:
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  */
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Reset opcional para inputs y botones para que hereden la fuente Lato */
+input, button, textarea, select {
+  font-family: var(--font-body);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-title);
+  margin: 0;
+}
