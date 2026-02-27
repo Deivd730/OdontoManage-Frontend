@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -11,5 +11,12 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  constructor(public authService: AuthService) { }
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) { }
+
+  navigateTo(route: string): void {
+    this.router.navigate([route]);
+  }
 }

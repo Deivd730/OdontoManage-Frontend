@@ -17,8 +17,8 @@ import { PatientResponse } from '../../../core/services/patient.service';
       } @else {
         <div class="detail-header">
           <div>
-            <h2>{{ selectedPatient?.firstName }} {{ selectedPatient?.lastName }}</h2>
-            <p>DNI {{ selectedPatient?.nationalId }}</p>
+            <h2>{{ selectedPatient.firstName }} {{ selectedPatient.lastName }}</h2>
+            <p>DNI {{ selectedPatient.nationalId }}</p>
           </div>
           <div class="detail-actions">
             @if (!isEditing) {
@@ -35,22 +35,22 @@ import { PatientResponse } from '../../../core/services/patient.service';
           <div class="detail-grid">
             <div class="detail-card">
               <h3>Contacto</h3>
-              <p><strong>Telefono:</strong> {{ selectedPatient?.phone || 'No registrado' }}</p>
-              <p><strong>Email:</strong> {{ selectedPatient?.email || 'No registrado' }}</p>
-              <p><strong>Direccion:</strong> {{ selectedPatient?.address || 'No registrada' }}</p>
+              <p><strong>Telefono:</strong> {{ selectedPatient.phone || 'No registrado' }}</p>
+              <p><strong>Email:</strong> {{ selectedPatient.email || 'No registrado' }}</p>
+              <p><strong>Direccion:</strong> {{ selectedPatient.address || 'No registrada' }}</p>
             </div>
             <div class="detail-card">
               <h3>Salud</h3>
-              <p><strong>Estado:</strong> {{ selectedPatient?.healthStatus || 'No registrado' }}</p>
-              <p><strong>Antecedentes:</strong> {{ selectedPatient?.familyHistory || 'No registrado' }}</p>
-              <p><strong>Habitos:</strong> {{ selectedPatient?.lifestyleHabits || 'No registrado' }}</p>
-              <p><strong>Alergias:</strong> {{ selectedPatient?.medicationAllergies || 'No registrado' }}</p>
+              <p><strong>Estado:</strong> {{ selectedPatient.healthStatus || 'No registrado' }}</p>
+              <p><strong>Antecedentes:</strong> {{ selectedPatient.familyHistory || 'No registrado' }}</p>
+              <p><strong>Habitos:</strong> {{ selectedPatient.lifestyleHabits || 'No registrado' }}</p>
+              <p><strong>Alergias:</strong> {{ selectedPatient.medicationAllergies || 'No registrado' }}</p>
             </div>
             <div class="detail-card">
               <h3>Facturacion</h3>
-              <p><strong>Seguro Social:</strong> {{ selectedPatient?.socialSecurityNumber || 'No registrado' }}</p>
-              <p><strong>Datos:</strong> {{ selectedPatient?.billingData || 'No registrado' }}</p>
-              <p><strong>Registro:</strong> {{ selectedPatient?.registrationDate | date: 'mediumDate' }}</p>
+              <p><strong>Seguro Social:</strong> {{ selectedPatient.socialSecurityNumber || 'No registrado' }}</p>
+              <p><strong>Datos:</strong> {{ selectedPatient.billingData || 'No registrado' }}</p>
+              <p><strong>Registro:</strong> {{ selectedPatient.registrationDate | date: 'mediumDate' }}</p>
             </div>
           </div>
         } @else {
