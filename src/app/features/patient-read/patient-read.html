@@ -72,7 +72,7 @@
 					<div class="detail-actions">
 						@if (!isEditing()) {
 							<button class="btn ghost" (click)="startEdit()">Editar</button>
-							<button class="btn danger" (click)="deletePatient()" [disabled]="isLoading()">Eliminar</button>
+							<button class="btn danger" (click)="requestDelete()" [disabled]="isLoading()">Eliminar</button>
 						} @else {
 							<button class="btn ghost" (click)="cancelEdit()">Cancelar</button>
 							<button class="btn primary" (click)="saveEdit()" [disabled]="isLoading()">Guardar</button>
@@ -174,4 +174,23 @@
 			}
 		</section>
 	</section>
+
+	@if (deleteConfirm()) {
+		<div class="modal-backdrop" (click)="cancelDelete()">
+			<div class="modal-card" (click)="$event.stopPropagation()">
+				<h3 class="modal-title">Confirmar eliminacion</h3>
+				<p class="modal-text">
+					Estas a punto de eliminar a
+					<strong>{{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}</strong>.
+					Esta accion no se puede deshacer.
+				</p>
+				<div class="modal-actions">
+					<button class="btn ghost" (click)="cancelDelete()">Cancelar</button>
+					<button class="btn danger" (click)="confirmDelete()" [disabled]="isLoading()">
+						Eliminar definitivamente
+					</button>
+				</div>
+			</div>
+		</div>
+	}
 </div>

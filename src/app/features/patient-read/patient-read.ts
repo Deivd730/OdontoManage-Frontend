@@ -18,6 +18,7 @@ export class PatientRead implements OnInit {
   isLoading = signal(false);
   isEditing = signal(false);
   errorMessage = signal<string | null>(null);
+  deleteConfirm = signal(false);
 
   editForm: FormGroup;
 
@@ -81,6 +82,7 @@ export class PatientRead implements OnInit {
   selectPatient(patient: PatientResponse): void {
     this.selectedPatient.set(patient);
     this.isEditing.set(false);
+    this.deleteConfirm.set(false);
     this.editForm.reset();
     this.editForm.patchValue({
       firstName: patient.firstName,
@@ -111,6 +113,22 @@ export class PatientRead implements OnInit {
       this.selectPatient(selected);
     }
     this.isEditing.set(false);
+  }
+
+  requestDelete(): void {
+    if (!this.selectedPatient()) {
+      return;
+    }
+    this.deleteConfirm.set(true);
+  }
+
+  cancelDelete(): void {
+    this.deleteConfirm.set(false);
+  }
+
+  confirmDelete(): void {
+    this.deleteConfirm.set(false);
+    this.deletePatient();
   }
 
   saveEdit(): void {
@@ -162,11 +180,6 @@ export class PatientRead implements OnInit {
       return;
     }
 
-    const confirmed = window.confirm(`Eliminar al paciente ${selected.firstName} ${selected.lastName}?`);
-    if (!confirmed) {
-      return;
-    }
-
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
@@ -175,6 +188,7 @@ export class PatientRead implements OnInit {
         this.patients.set(this.patients().filter(patient => patient.id !== selected.id));
         this.selectedPatient.set(null);
         this.isEditing.set(false);
+        this.deleteConfirm.set(false);
         this.isLoading.set(false);
       },
       error: (error) => {

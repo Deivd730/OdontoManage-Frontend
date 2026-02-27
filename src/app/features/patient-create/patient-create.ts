@@ -64,8 +64,8 @@ export class PatientCreate {
         
         // Redirigir al dashboard después de 2 segundos
         setTimeout(() => {
-          this.router.navigate(['/dashboard']);
-        }, 2000);
+          this.router.navigate(['/patients']);
+        }, 1500);
       },
       error: (error) => {
         this.isLoading.set(false);
