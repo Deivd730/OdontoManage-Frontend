@@ -2,6 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
+import { MockInterceptor } from './core/interceptors/mock.interceptor';
 
 import { routes } from './app.routes';
 
@@ -10,7 +11,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([JwtInterceptor])
+      // El MockInterceptor debe ir PRIMERO para interceptar antes que el JWT
+      withInterceptors([MockInterceptor, JwtInterceptor])
     )
   ]
 };

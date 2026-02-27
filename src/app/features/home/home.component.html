@@ -22,7 +22,7 @@
             <section class="card-minimal actions-section">
                 <h2 class="card-title">Gestión</h2>
                 <div class="actions-grid">
-                    <button class="action-card">
+                    <button class="action-card" (click)="navigateTo('/patients')">
                         <div class="icon-wrapper">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -33,8 +33,7 @@
                         <span>Pacientes</span>
                     </button>
 
-                    <button class="action-card">
-                        <!-- <button class="action-card" (click)="navigateTo('/appointments')"> -->
+                    <button class="action-card" (click)="navigateTo('/appointments')">
                         <div class="icon-wrapper">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
