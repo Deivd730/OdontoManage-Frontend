@@ -1,54 +1,136 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserService, UserProfile } from '../../core/services/user.service';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], // Importante para formularios
+  imports: [CommonModule, FormsModule],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrl: './profile.component.css',
 })
-export class ProfileComponent implements OnInit {
-  profileForm: FormGroup;
-  loading = true;
+export class ProfileComponent {
+  public authService = inject(AuthService);
+  public userService = inject(UserService);
+  public notificationService = inject(NotificationService);
+  private router = inject(Router);
+  public currentUser = this.authService.currentUser;
 
-  constructor(
-    private fb: FormBuilder,
-    private userService: UserService,
-    public authService: AuthService // Lo hacemos público para usarlo en el HTML
-  ) {
-    this.profileForm = this.fb.group({
-      username: [{ value: '', disabled: true }], // No se suele dejar cambiar el username
-      email: ['', [Validators.required, Validators.email]],
-      nombre: [''],
-      apellidos: [''],
-      bio: ['']
-    });
+  showUpdateModal = signal(false);
+  showPasswordModal = signal(false);
+  showModal = signal(false);
+  confirmStep = signal(1);
+
+  editData = { name: '', email: '' };
+  passwordData = { current: '', new: '', confirm: '' };
+
+  // --- LÓGICA: ACTUALIZAR DATOS BÁSICOS ---
+  onUpdate() {
+    const user = this.authService.currentUser();
+    if (user) {
+      this.editData = { name: user.name ?? '', email: user.email ?? '' };
+      this.showUpdateModal.set(true);
+    }
   }
 
-  ngOnInit(): void {
-    this.userService.getProfile().subscribe({
-      next: (data) => {
-        this.profileForm.patchValue(data);
-        this.loading = false;
+  confirmUpdate() {
+    const user = this.authService.currentUser();
+    if (!user?.id) return;
+
+    this.userService.updateUser(user.id, this.editData)
+      .subscribe({
+        next: (updatedUser) => {
+          this.authService.updateCurrentUser(updatedUser);
+          this.showUpdateModal.set(false);
+          this.notificationService.success('Datos actualizados correctamente');
+        },
+        error: () => {
+          this.notificationService.error('Error al actualizar');
+        }
+      });
+  }
+
+  closeUpdateModal() {
+    this.showUpdateModal.set(false);
+  }
+
+  // --- LÓGICA: CAMBIAR CONTRASEÑA ---
+  openPasswordModal() {
+    this.passwordData = { current: '', new: '', confirm: '' };
+    this.showPasswordModal.set(true);
+  }
+
+  confirmPasswordChange() {
+    const user = this.authService.currentUser();
+
+    if (!user || !user.id) {
+      alert('No se pudo encontrar la información del usuario.');
+      return;
+    }
+
+    if (this.passwordData.new !== this.passwordData.confirm) {
+      alert('Las contraseñas nuevas no coinciden');
+      return;
+    }
+
+    if (!this.passwordData.current || !this.passwordData.new) {
+      alert('Por favor, rellena todos los campos');
+      return;
+    }
+
+    this.userService.changePassword(user.id, {
+      currentPassword: this.passwordData.current,
+      newPassword: this.passwordData.new
+    }).subscribe({
+      next: (res) => {
+        alert(res.message || 'Contraseña cambiada con éxito');
+        this.showPasswordModal.set(false);
+        this.passwordData = { current: '', new: '', confirm: '' };
       },
       error: (err) => {
-        console.error('Error al cargar perfil', err);
-        this.loading = false;
+        alert(err.error?.error || 'La contraseña actual es incorrecta');
       }
     });
   }
 
-  saveProfile(): void {
-    if (this.profileForm.valid) {
-      // getRawValue() incluye el campo 'username' aunque esté disabled
-      this.userService.updateProfile(this.profileForm.getRawValue()).subscribe({
-        next: (res) => alert('¡Perfil actualizado!'),
-        error: (err) => alert('Error al guardar cambios')
+  closePasswordModal() {
+    this.showPasswordModal.set(false);
+  }
+
+  // --- LÓGICA: ELIMINAR CUENTA (DOBLE CONFIRMACIÓN) ---
+  openDeleteModal() {
+    this.confirmStep.set(1);
+    this.showModal.set(true);
+  }
+
+  goToStepTwo() {
+    this.confirmStep.set(2);
+  }
+
+  confirmDeletion() {
+    const user = this.authService.currentUser();
+    if (user && user.id) {
+      this.userService.deleteUser(user.id).subscribe({
+        next: () => {
+          this.showModal.set(false);
+          this.authService.logout();
+          this.router.navigate(['/register']);
+        },
+        error: (err) => {
+          console.error('Error al borrar cuenta:', err);
+          alert('Error al intentar eliminar la cuenta.');
+          this.showModal.set(false);
+        }
       });
     }
+  }
+
+  closeModal() {
+    this.showModal.set(false);
+    this.confirmStep.set(1);
   }
 }

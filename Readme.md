@@ -1,86 +1,86 @@
-# 🚀 Guía de Inicio Rápido - OdontoManage Frontend
+# Quick Start Guide - OdontoManage Frontend
 
-## Instalación en 3 pasos
+## Installation in 3 steps
 
-### 1️⃣ Clonar e instalar
+### 1) Clone and install
 ```bash
 git clone https://github.com/Deivd730/OdontoManage-Frontend.git
 cd OdontoManage-Frontend
 npm install --legacy-peer-deps
 ```
 
-### 2️⃣ Configurar
-Edita `src/app/core/services/auth.service.ts` y cambia la URL del backend:
+### 2) Configure
+Edit `src/app/core/services/auth.service.ts` and change the backend URL:
 ```typescript
-private apiUrl = 'http://localhost:3000/api'; // Tu URL aquí
+private apiUrl = 'http://localhost:3000/api'; // Your URL here
 ```
 
-### 3️⃣ Ejecutar
+### 3) Run
 ```bash
 npm start
 ```
 
-Abre tu navegador en: **http://localhost:4200** 🎉
+Open your browser at: **http://localhost:4200**
 
 ---
 
-## 📦 Dependencias instaladas
+## Installed dependencies
 
-✅ Angular 19.2.18  
-✅ Angular Router  
-✅ Angular Forms  
-✅ @auth0/angular-jwt (Autenticación JWT)  
-✅ RxJS 7.8.2  
-
----
-
-## 🔐 Sistema de Autenticación
-
-Este proyecto incluye:
-- ✅ `AuthService` - Manejo de login/logout
-- ✅ `AuthGuard` - Protección de rutas
-- ✅ `JwtInterceptor` - Inyección automática de tokens
-
-Ver [AUTH_SETUP.md](./AUTH_SETUP.md) para más detalles.
+- Angular 19.2.18
+- Angular Router
+- Angular Forms
+- @auth0/angular-jwt (JWT Authentication)
+- RxJS 7.8.2
 
 ---
 
-## 📜 Comandos útiles
+## Authentication system
+
+This project includes:
+- `AuthService` - Handles login/logout
+- `AuthGuard` - Route protection
+- `JwtInterceptor` - Automatic token injection
+
+See [AUTH_SETUP.md](./AUTH_SETUP.md) for more details.
+
+---
+
+## Useful commands
 
 ```bash
-# Desarrollo
-npm start                    # Inicia servidor de desarrollo
+# Development
+npm start                    # Starts development server
 
-# Construcción
-npm run build               # Build de desarrollo
-npm run build:prod          # Build de producción
+# Build
+npm run build               # Development build
+npm run build:prod          # Production build
 
 # Testing
-npm test                    # Ejecuta tests
-npm run lint                # Ejecuta linter
+npm test                    # Runs tests
+npm run lint                # Runs linter
 
 # Angular CLI
-ng generate component nombre    # Nuevo componente
-ng generate service nombre      # Nuevo servicio
-ng generate guard nombre        # Nuevo guard
+ng generate component name    # New component
+ng generate service name      # New service
+ng generate guard name        # New guard
 ```
 
 ---
 
-## 🔧 Solución rápida de problemas
+## Quick troubleshooting
 
-### Error de módulos
+### Module error
 ```bash
 rm -rf node_modules package-lock.json
 npm install --legacy-peer-deps
 ```
 
-### Puerto ocupado
+### Port already in use
 ```bash
 npm start -- --port 4201
 ```
 
-### Cache corrupto
+### Corrupted cache
 ```bash
 npm cache clean --force
 npm install --legacy-peer-deps
@@ -88,4 +88,6 @@ npm install --legacy-peer-deps
 
 ---
 
+## Documentation
 
+For full technical documentation, see [DOCUMENTATION.md](./DOCUMENTATION.md).

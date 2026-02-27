@@ -3,11 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 
-
-export interface UserProfile {
-  id?: number;
-  name: string;   
-  email: string;  
+export interface User {
+  id: number;
+  name: string;
+  email: string;
   roles: string[];
 }
 
@@ -15,17 +14,24 @@ export interface UserProfile {
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/api/user`; // Ajusta la ruta de tu API
+
+  private apiUrl = `${environment.apiUrl}/api/users`;
 
   constructor(private http: HttpClient) { }
 
-  // Obtiene el perfil completo del usuario actual
-  getProfile(): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${this.apiUrl}/profile`);
+  getMe(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/me`);
   }
 
-  // Actualiza los datos del perfil
-  updateProfile(profile: UserProfile): Observable<UserProfile> {
-    return this.http.put<UserProfile>(`${this.apiUrl}/profile/update`, profile);
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  updateUser(id: number, data: { name: string; email: string }): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/${id}`, data);
+  }
+
+  changePassword(id: number, data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/password`, data);
   }
 }
