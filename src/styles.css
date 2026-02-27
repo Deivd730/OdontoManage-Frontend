@@ -97,3 +97,6 @@ h1, h2, h3 {
   font-family: var(--font-title);
   margin: 0;
 }
+a{
+  text-decoration: none;
+}

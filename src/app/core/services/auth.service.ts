@@ -16,11 +16,11 @@ interface LoginCredentials {
   password: string;
 }
 
-// Interfaz actualizada con los nuevos campos de Symfony
 interface UserData {
+  id?: number;
   username?: string;
-  email?: string; // Añadido
-  name?: string;  // Añadido
+  email?: string;
+  name?: string;
   roles: string[];
 }
 
@@ -33,12 +33,9 @@ export class AuthService {
   private refreshTokenKey = environment.refreshTokenKey;
   private jwtHelper = new JwtHelperService();
 
-  // Mantenemos tu Subject original para no romper nada
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  // NUEVO: Signal para el usuario actual. 
-  // Se inicializa automáticamente al cargar la app/página extrayendo los datos del token
   public currentUser = signal<UserData | null>(this.getDecodedToken());
 
   constructor(
@@ -138,8 +135,15 @@ export class AuthService {
   /**
    * Obtiene el usuario actual desde el token (Mantenido por compatibilidad)
    */
+
+
   getCurrentUser(): UserData | null {
     return this.getDecodedToken();
+  }
+
+  getUserId(): number | null {
+    const user = this.getDecodedToken();
+    return user?.id || null;
   }
 
   getUserRoles(): string[] {
@@ -165,4 +169,12 @@ export class AuthService {
     const user = this.getCurrentUser();
     return user?.username || user?.email || null;
   }
+
+  updateCurrentUser(data: Partial<UserData>): void {
+    const current = this.currentUser();
+    if (current) {
+      this.currentUser.set({ ...current, ...data });
+    }
+  }
+
 }

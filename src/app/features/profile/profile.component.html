@@ -1,0 +1,122 @@
+@if (authService.currentUser(); as user) {
+<div class="profile-container">
+    <div class="profile-card">
+        <!-- Información del Usuario -->
+        <div class="profile-header">
+            <h1 class="user-name">{{ currentUser()?.name }}</h1>
+            <p class="user-email">{{ currentUser()?.email }}</p>
+        </div>
+
+        <!-- Acciones Principales -->
+        <div class="profile-body">
+            <button class="btn-actualizar" (click)="onUpdate()">
+                Actualizar Datos
+            </button>
+
+            <button class="btn-security" (click)="openPasswordModal()">
+                Seguridad y Contraseña
+            </button>
+
+            <button class="btn-eliminar-outline" (click)="openDeleteModal()">
+                Eliminar Cuenta
+            </button>
+        </div>
+
+        <!-- Acción Secundaria (Separada por espacio) -->
+        <div class="profile-footer">
+            <button class="btn-logout-soft" (click)="authService.logout()">
+                Cerrar Sesión
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- VENTANA MODAL DE DOBLE CONFIRMACIÓN -->
+@if (showModal()) {
+<div class="modal-overlay">
+    <div class="modal-content">
+        @if (confirmStep() === 1) {
+        <div class="modal-icon warning">
+            <i class="bi bi-exclamation-circle"></i>
+        </div>
+        <h3>¿Estás seguro?</h3>
+        <p>Estás a punto de iniciar el proceso de eliminación de tu cuenta.</p>
+        <div class="modal-actions">
+            <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
+            <button class="btn-next" (click)="goToStepTwo()">Continuar</button>
+        </div>
+        } @else {
+        <div class="modal-icon danger">
+            <i class="bi bi-trash3-fill"></i>
+        </div>
+        <h3 class="text-danger">¡Confirmación Final!</h3>
+        <p>Esta acción es irreversible. Se borrarán todos los datos asociados a <b>{{ user.email }}</b>.</p>
+        <div class="modal-actions">
+            <button class="btn-secondary" (click)="closeModal()">Mejor no</button>
+            <button class="btn-danger-final" (click)="confirmDeletion()">SÍ, ELIMINAR CUENTA</button>
+        </div>
+        }
+    </div>
+</div>
+}
+
+<!-- MODAL DE ACTUALIZAR DATOS -->
+@if (showUpdateModal()) {
+<div class="modal-overlay">
+    <div class="modal-content update-modal">
+        <h3>Actualizar Perfil</h3>
+        <p>Modifica la información de tu cuenta</p>
+
+        <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" [(ngModel)]="editData.name" class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" [(ngModel)]="editData.email" class="form-input">
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-secondary" (click)="closeUpdateModal()">Cancelar</button>
+            <button class="btn-actualizar-confirm" (click)="confirmUpdate()">Guardar Cambios</button>
+        </div>
+    </div>
+</div>
+}
+
+@if (showPasswordModal()) {
+<div class="modal-overlay">
+    <div class="modal-content">
+        <h3>Cambiar Contraseña</h3>
+        <p>Introduce tu contraseña actual para continuar.</p>
+
+        <div class="form-group">
+            <label>Contraseña Actual</label>
+            <input type="password" [(ngModel)]="passwordData.current" class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label>Nueva Contraseña</label>
+            <input type="password" [(ngModel)]="passwordData.new" class="form-input">
+        </div>
+
+        <div class="form-group">
+            <label>Confirmar Nueva Contraseña</label>
+            <input type="password" [(ngModel)]="passwordData.confirm" class="form-input">
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-secondary" (click)="showPasswordModal.set(false)">Cancelar</button>
+            <button class="btn-security-confirm" (click)="confirmPasswordChange()">Actualizar Contraseña</button>
+        </div>
+    </div>
+</div>
+}
+
+} @else {
+<div class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando información...</p>
+</div>
+}

@@ -1,31 +1,28 @@
 <div class="dashboard-wrapper">
     <main class="dashboard-main">
         <div class="grid-container">
-
             <!-- Tarjeta de Perfil -->
             <section class="card-minimal info-section">
                 <h2 class="card-title">Tu Perfil</h2>
                 <div class="user-profile-brief">
-                    <div class="avatar-placeholder">Username</div>
-                    <!-- <div class="avatar-placeholder">{{ username?.charAt(0) }}</div> -->
                     <div class="profile-details">
-                        <!-- <p class="user-name">{{ username }}</p> -->
-                        <p class="user-name">Username</p>
-                        <!-- <div class="roles-container">
-                            @for (role of roles; track role) {
-                            <span class="role-tag">{{ role }}</span>
-                            }
-                        </div> -->
+                        @if (authService.currentUser(); as user) {
+                        <p class="avatar-placeholder">{{ user.name }}</p>
+                        <p>{{ user.email }}</p>
+                        } @else {
+                        <p>NoName</p>
+                        }
+                        <div class="roles-container">
+
+                        </div>
                     </div>
                 </div>
             </section>
-
             <!-- Panel de Acciones -->
             <section class="card-minimal actions-section">
                 <h2 class="card-title">Gestión</h2>
                 <div class="actions-grid">
                     <button class="action-card">
-                        <!-- <button class="action-card" (click)="navigateTo('/patients')"> -->
                         <div class="icon-wrapper">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -46,17 +43,6 @@
                             </svg>
                         </div>
                         <span>Citas</span>
-                    </button>
-                    <button class="action-card">
-                        <!-- <button class="action-card" (click)="navigateTo('/profile')"> -->
-                        <div class="icon-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </div>
-                        <span>Mi Perfil</span>
                     </button>
                 </div>
             </section>

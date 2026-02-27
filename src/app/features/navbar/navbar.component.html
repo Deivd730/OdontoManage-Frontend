@@ -1,40 +1,18 @@
 <nav class="navbar">
   <div class="nav-container">
-    <!-- Logo -->
-    <div class="nav-brand" routerLink="/home">
-      OdontoManage
-    </div>
+    <a routerLink="/home" class="nav-brand">OdontoManage</a>
 
-    <!-- Enlaces de Navegación -->
     <ul class="nav-links">
-      <li>
-        <a routerLink="/home" routerLinkActive="active">Inicio</a>
-      </li>
-      <li>
-        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-      </li>
-      <li>
-        <a routerLink="/patients/create" routerLinkActive="active">Nuevo Paciente</a>
-      </li>
+      <li><a routerLink="/home" routerLinkActive="active">Inicio</a></li>
+      <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+      <li><a routerLink="/patients/create" routerLinkActive="active">Nuevo Paciente</a></li>
     </ul>
-
-     <div class="nav-user">      
-      
-      @if (authService.currentUser(); as user) {
-        <!-- Esto se muestra INSTANTÁNEAMENTE al recargar porque viene del token -->
-        <div class="user-info">
-          <span class="user-name">Hola, {{ user.name }} </span> 
-          <span class="user-email">{{ user.email }}</span>
-        </div>
-
-        <button (click)="logout()" class="btn-logout-nav">
-          Cerrar Sesión
-        </button>
-      } @else {
-        <!-- Esto se muestra si no hay token o expiró -->
-        <a routerLink="/login" class="btn-login-nav">Iniciar Sesión</a>
-      }
-
-    </div>
+    <a class="avatar-circle" routerLink="/profile" routerLinkActive="active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon-user">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" />
+        <path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" />
+      </svg>
+    </a>
   </div>
 </nav>

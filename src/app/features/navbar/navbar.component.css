@@ -20,9 +20,9 @@
 }
 
 .nav-brand {
-  font-family: var(--font-title);
+  font-family: var(--font-title); /* Italiana */
   color: var(--primary-dark);
-  font-size: 1.6rem;
+  font-size: 1.8rem; /* Un poco más grande para resaltar la Italiana */
   cursor: pointer;
 }
 
@@ -35,55 +35,70 @@
 }
 
 .nav-links a {
+  font-family: var(--font-body); /* Lato */
   text-decoration: none;
   color: var(--text-muted);
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: color 0.3s;
+  font-size: 0.95rem;
+  font-weight: 400;
+  transition: all 0.3s ease;
 }
 
 .nav-links a:hover {
   color: var(--primary-dark);
 }
 
-/* Estilo para el enlace activo */
 .nav-links a.active {
   color: var(--primary-dark);
   font-weight: 700;
-  border-bottom: 2px solid var(--primary-dark);
-  padding-bottom: 4px;
+  position: relative;
 }
 
-.nav-user {
+/* Línea estética debajo del activo usando tu verde */
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-dark);
+}
+
+/* --- MEJORA DEL AVATAR --- */
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--bg-minimal); /* Tu gris verdoso claro */
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-}
-
-.user-name {
-  font-size: 0.85rem;
-  color: var(--text-main);
-}
-
-.btn-logout-nav {
-  background: transparent;
-  border: 1px solid #e0e0e0;
-  padding: 6px 14px;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  justify-content: center;
+  border: 1.5px solid var(--primary-light); /* Verde suave */
+  color: var(--primary-dark); /* Color del icono */
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 
-.btn-logout-nav:hover {
-  background-color: #fff5f5;
-  border-color: #ffcccc;
-  color: #d32f2f;
+.icon-user {
+  width: 22px;
+  height: 22px;
 }
 
-/* Responsive */
+.avatar-circle:hover {
+  background-color: var(--primary-dark);
+  color: #ffffff; /* El icono pasa a blanco */
+  border-color: var(--primary-dark);
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(27, 115, 57, 0.2); /* Sombra con el verde oscuro */
+}
+
+.avatar-circle:active {
+  transform: scale(0.95);
+}
+
 @media (max-width: 768px) {
   .nav-links {
-    display: none; /* Aquí podrías implementar un menú hamburguesa luego */
+    display: none;
   }
 }

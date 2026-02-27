@@ -1,0 +1,208 @@
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.profile-card {
+    background: white;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 30px;
+    /* Bordes muy redondeados como la imagen */
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.user-name {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.user-email {
+    color: #888;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+}
+
+/* Botones */
+.profile-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn-actualizar {
+    background-color: #1b6d3a;
+    /* Verde oscuro de la imagen */
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-eliminar-outline {
+    background-color: white;
+    color: #e53935;
+    /* Rojo de la imagen */
+    border: 1px solid #ffcdd2;
+    /* Borde suave rosado */
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.profile-footer {
+    margin-top: 50px;
+}
+
+.btn-logout-soft {
+    background-color: #f1f3f5;
+    /* Gris claro de la imagen */
+    color: #495057;
+    border: none;
+    width: 100%;
+    padding: 16px;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Estilos de la Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-secondary {
+    background: #eee;
+}
+
+.btn-next {
+    background: #1b6d3a;
+    color: white;
+}
+
+.btn-danger-final {
+    background: #dc3545;
+    color: white;
+}
+
+.update-modal {
+    text-align: left;
+    /* Alinear etiquetas a la izquierda */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    /* Importante para que no se salga del contenedor */
+}
+
+.form-input:focus {
+    border-color: #1b6d3a;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(27, 109, 58, 0.1);
+}
+
+.btn-actualizar-confirm {
+    background-color: #1b6d3a;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-actualizar-confirm:hover {
+    background-color: #14522c;
+}
+
+.btn-security {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-security:hover {
+    background-color: #e9ecef;
+}
+
+.btn-security-confirm {
+    background-color: #333;
+    /* Color oscuro para seguridad */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
