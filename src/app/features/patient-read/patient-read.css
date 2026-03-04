@@ -141,6 +141,9 @@
   font-size: 0.9rem;
   font-family: var(--font-body);
   transition: all 0.3s ease;
+  box-sizing: border-box;
+  max-width: 100%;
+  display: block;
 }
 
 .search-box input:focus {
