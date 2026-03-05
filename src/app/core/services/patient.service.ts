@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
-
+import { environment } from '@env/environment.development';
 export interface Patient {
   firstName: string;
   lastName: string;
@@ -19,48 +18,35 @@ export interface Patient {
   registrationDate: string;
 }
 
-export interface PatientResponse {
+export interface PatientResponse extends Patient {
   id: number;
-  firstName: string;
-  lastName: string;
-  nationalId: string;
-  socialSecurityNumber?: string;
-  phone?: string;
-  email?: string;
-  address?: string;
-  billingData?: string;
-  healthStatus?: string;
-  familyHistory?: string;
-  lifestyleHabits?: string;
-  medicationAllergies?: string;
-  registrationDate: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class PatientService {
-  private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiUrl}/api/patients`;
 
-  createPatient(patient: Patient): Observable<PatientResponse> {
-    return this.http.post<PatientResponse>(`${this.apiUrl}/api/patients`, patient);
+  getPatients(): Observable<PatientResponse[]> {
+    return this.http.get<PatientResponse[]>(this.apiUrl);
   }
 
   getPatient(id: number): Observable<PatientResponse> {
-    return this.http.get<PatientResponse>(`${this.apiUrl}/api/patients/${id}`);
+    return this.http.get<PatientResponse>(`${this.apiUrl}/${id}`);
   }
 
-  getPatients(): Observable<PatientResponse[]> {
-    return this.http.get<PatientResponse[]>(`${this.apiUrl}/api/patients`);
+  createPatient(patient: Patient): Observable<PatientResponse> {
+    return this.http.post<PatientResponse>(this.apiUrl, patient);
   }
 
   updatePatient(id: number, patient: Patient): Observable<PatientResponse> {
-    return this.http.put<PatientResponse>(`${this.apiUrl}/api/patients/${id}`, patient);
+    return this.http.put<PatientResponse>(`${this.apiUrl}/${id}`, patient);
   }
 
   deletePatient(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/api/patients/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

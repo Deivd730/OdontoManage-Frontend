@@ -1,0 +1,36 @@
+<!-- tooth.component.html -->
+<div class="tooth-container">
+  <span class="tooth-label">{{ toothNumber() }}</span>
+  
+  <svg width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+    <!-- Cara 1: Arriba -->
+    <polygon points="0,0 45,0 35,10 10,10" 
+             [attr.fill]="getFaceColor(1)" 
+             stroke="#333" stroke-width="1"
+             (click)="onFaceClick.emit(1)" />
+             
+    <!-- Cara 4: Derecha -->
+    <polygon points="45,0 45,45 35,35 35,10" 
+             [attr.fill]="getFaceColor(4)" 
+             stroke="#333" stroke-width="1"
+             (click)="onFaceClick.emit(4)" />
+             
+    <!-- Cara 2: Abajo -->
+    <polygon points="0,45 45,45 35,35 10,35" 
+             [attr.fill]="getFaceColor(2)" 
+             stroke="#333" stroke-width="1"
+             (click)="onFaceClick.emit(2)" />
+             
+    <!-- Cara 3: Izquierda -->
+    <polygon points="0,0 0,45 10,35 10,10" 
+             [attr.fill]="getFaceColor(3)" 
+             stroke="#333" stroke-width="1"
+             (click)="onFaceClick.emit(3)" />
+             
+    <!-- Cara 5: Centro -->
+    <rect x="10" y="10" width="25" height="25" 
+          [attr.fill]="getFaceColor(5)" 
+          stroke="#333" stroke-width="1"
+          (click)="onFaceClick.emit(5)" />
+  </svg>
+</div>

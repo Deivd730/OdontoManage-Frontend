@@ -1,0 +1,44 @@
+.editor-page { padding: 30px; }
+.editor-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+
+.editor-toolbar {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  margin-bottom: 40px;
+}
+
+.tools { display: flex; gap: 15px; margin-top: 10px; }
+.tools button {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  background: white;
+  border-left: 6px solid;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.tools button.active { background: #f4f4f4; border-color: #333; }
+
+.odontogram-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  align-items: center;
+  background: white;
+  padding: 50px;
+  border-radius: 12px;
+}
+
+.arch { display: flex; gap: 4px; }
+
+.save-button {
+  background: #277339;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}

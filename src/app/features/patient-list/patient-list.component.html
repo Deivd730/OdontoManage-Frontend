@@ -1,0 +1,29 @@
+<aside class="sidebar-container">
+    <div class="search-header">
+        <label>Buscar Paciente</label>
+        <input type="text" placeholder="Nombre o DNI..." (input)="updateSearch($event)" [value]="searchTerm()" />
+    </div>
+
+    <div class="list-body">
+        @if (isLoading()) {
+        <div class="status-msg">Cargando pacientes...</div>
+        } @else {
+        <div class="patients-stack">
+            @for (patient of filteredPatients(); track patient.id) {
+            <button class="patient-card" [class.active]="selectedPatientId() === patient.id"
+                (click)="selectPatient.emit(patient)">
+                <div class="avatar">
+                    {{ patient.firstName[0] }}{{ patient.lastName[0] }}
+                </div>
+                <div class="info">
+                    <span class="name">{{ patient.firstName }} {{ patient.lastName }}</span>
+                    <span class="meta">DNI {{ patient.nationalId }}</span>
+                </div>
+            </button>
+            } @empty {
+            <div class="status-msg">No se encontraron pacientes.</div>
+            }
+        </div>
+        }
+    </div>
+</aside>
