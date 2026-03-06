@@ -1,7 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '@env/environment.development';
+import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment.development';
+
 export interface Patient {
   firstName: string;
   lastName: string;
@@ -16,10 +18,25 @@ export interface Patient {
   lifestyleHabits?: string;
   medicationAllergies?: string;
   registrationDate: string;
+  profile_image_name?: string;
 }
 
 export interface PatientResponse extends Patient {
   id: number;
+  firstName: string;
+  lastName: string;
+  nationalId: string;
+  socialSecurityNumber?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  billingData?: string;
+  healthStatus?: string;
+  familyHistory?: string;
+  lifestyleHabits?: string;
+  medicationAllergies?: string;
+  registrationDate: string;
+  profile_image_name?: string;
 }
 
 @Injectable({

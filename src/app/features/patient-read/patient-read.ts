@@ -50,7 +50,8 @@ export class PatientRead implements OnInit {
       healthStatus: [''],
       familyHistory: [''],
       lifestyleHabits: [''],
-      medicationAllergies: ['']
+      medicationAllergies: [''],
+      profile_image_name: ['']
     });
   }
 
@@ -96,7 +97,8 @@ export class PatientRead implements OnInit {
       healthStatus: patient.healthStatus ?? '',
       familyHistory: patient.familyHistory ?? '',
       lifestyleHabits: patient.lifestyleHabits ?? '',
-      medicationAllergies: patient.medicationAllergies ?? ''
+      medicationAllergies: patient.medicationAllergies ?? '',
+      profile_image_name: patient.profile_image_name ?? ''
     });
   }
 
@@ -212,6 +214,10 @@ export class PatientRead implements OnInit {
     this.searchTerm.set(target.value);
   }
 
+  getPatientImageSrc(patient: PatientResponse): string | null {
+    return this.normalizeBase64Image(patient.profile_image_name);
+  }
+
   isFieldInvalid(field: string): boolean {
     const control = this.editForm.get(field);
     return !!(control && control.invalid && control.touched);
@@ -226,5 +232,31 @@ export class PatientRead implements OnInit {
     Object.keys(formGroup.controls).forEach(key => {
       formGroup.get(key)?.markAsTouched();
     });
+  }
+
+  private normalizeBase64Image(imageData?: string): string | null {
+    if (!imageData) {
+      return null;
+    }
+
+    const normalized = imageData
+      .trim()
+      .replace(/^['"]|['"]$/g, '')
+      .replace(/\s+/g, '');
+
+    if (!normalized) {
+      return null;
+    }
+
+    if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
+      return normalized;
+    }
+
+    if (normalized.startsWith('data:')) {
+      return normalized;
+    }
+
+    const mimeType = normalized.startsWith('/9j/') ? 'image/jpeg' : 'image/png';
+    return `data:${mimeType};base64,${normalized}`;
   }
 }
