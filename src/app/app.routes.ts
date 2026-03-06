@@ -13,10 +13,23 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent) },
-      { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent) },
       { path: 'patients', loadComponent: () => import('./features/patient-read/patient-read').then(m => m.PatientRead) },
       { path: 'patients/create', loadComponent: () => import('./features/patient-create/patient-create').then(m => m.PatientCreate) },
+      {
+        path: 'odontogram',
+        loadComponent: () => import('@features/odontogram/odontogram-layout/odontogram-layout.component').then(m => m.OdontogramLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('@features/patient-read/patient-list/patient-list.component').then(m => m.PatientListComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('@features/odontogram/odontogram-editor/odontogram-editor.component').then(m => m.OdontogramEditorComponent)
+          }
+        ]
+      },
     ]
   },
   { path: '**', redirectTo: 'login' }

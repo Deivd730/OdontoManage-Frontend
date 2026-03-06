@@ -6,32 +6,21 @@ import { Router } from '@angular/router';
 
 export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const router = inject(Router);
-
-  // Obtener el token del servicio de autenticación
   const token = authService.getToken();
 
-  // No agregar el token a las peticiones de login
+  console.log('--- Interceptando Petición ---');
+  console.log('URL:', req.url);
+  console.log('Token encontrado:', !!token); // Debería salir 'true'
+
   const isLoginRequest = req.url.includes('/api/login');
 
-  // Si existe el token y no es una petición de login, clonar la petición y agregar el header de autorización
   if (token && !isLoginRequest) {
+    console.log('Añadiendo cabecera Authorization...');
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
       }
     });
   }
-
-  // Continuar con la petición y manejar errores
-  return next(req).pipe(
-    catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !isLoginRequest) {
-        // Token inválido o expirado
-        authService.logout();
-        router.navigate(['/login']);
-      }
-      return throwError(() => error);
-    })
-  );
-};
+  return next(req).pipe( /* ... resto del código ... */);
+}

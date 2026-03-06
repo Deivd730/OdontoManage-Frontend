@@ -1,0 +1,29 @@
+:host {
+  display: inline-block;
+  margin: 5px;
+}
+
+.tooth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tooth-label {
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+svg {
+  display: block;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+/* Efecto hover para saber que es interactivo */
+svg polygon:hover, svg rect:hover {
+  fill: #e0e0e0;
+  fill-opacity: 0.5;
+}

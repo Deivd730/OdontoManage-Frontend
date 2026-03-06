@@ -1,33 +1,31 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PatientResponse } from '../../../core/services/patient.service';
+import { Component, input, output } from '@angular/core';
+import { PatientResponse } from '@services/patient.service';
 
 @Component({
   selector: 'app-patient-list',
   standalone: true,
-  imports: [CommonModule],
   template: `
     <aside class="patients-list">
       <div class="search-box">
         <input
           type="text"
           placeholder="Buscar por nombre o DNI"
-          [value]="searchTerm"
+          [value]="searchTerm()"
           (input)="onSearchInput($event)"
         />
       </div>
 
       <div class="list-body">
-        @if (isLoading) {
+        @if (isLoading()) {
           <div class="empty-state">Cargando pacientes...</div>
-        } @else if (patients.length === 0) {
+        } @else if (patients().length === 0) {
           <div class="empty-state">No hay pacientes para mostrar.</div>
         } @else {
           <div class="patients-items">
-            @for (patient of patients; track patient.id) {
+            @for (patient of patients(); track patient.id) {
               <button
                 class="patient-item"
-                [class.active]="selectedPatientId === patient.id"
+                [class.active]="selectedPatientId() === patient.id"
                 (click)="selectPatient.emit(patient)"
               >
                 <div class="patient-avatar">
@@ -46,13 +44,14 @@ import { PatientResponse } from '../../../core/services/patient.service';
   `
 })
 export class PatientListComponent {
-  @Input() patients: PatientResponse[] = [];
-  @Input() selectedPatientId: number | null = null;
-  @Input() isLoading = false;
-  @Input() searchTerm = '';
 
-  @Output() selectPatient = new EventEmitter<PatientResponse>();
-  @Output() searchChange = new EventEmitter<string>();
+  patients = input<PatientResponse[]>([]);
+  selectedPatientId = input<number | null>(null);
+  isLoading = input(false);
+  searchTerm = input('');
+
+  selectPatient = output<PatientResponse>();
+  searchChange = output<string>();
 
   onSearchInput(event: Event): void {
     const target = event.target as HTMLInputElement;

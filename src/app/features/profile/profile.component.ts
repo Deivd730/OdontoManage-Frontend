@@ -68,17 +68,17 @@ export class ProfileComponent {
     const user = this.authService.currentUser();
 
     if (!user || !user.id) {
-      alert('No se pudo encontrar la información del usuario.');
+      this.notificationService.error('No se pudo encontrar la información del usuario.');
       return;
     }
 
     if (this.passwordData.new !== this.passwordData.confirm) {
-      alert('Las contraseñas nuevas no coinciden');
+      this.notificationService.error('Las contraseñas nuevas no coinciden');
       return;
     }
 
     if (!this.passwordData.current || !this.passwordData.new) {
-      alert('Por favor, rellena todos los campos');
+      this.notificationService.error('Por favor, rellena todos los campos');
       return;
     }
 
@@ -87,12 +87,12 @@ export class ProfileComponent {
       newPassword: this.passwordData.new
     }).subscribe({
       next: (res) => {
-        alert(res.message || 'Contraseña cambiada con éxito');
+        this.notificationService.success(res.message || 'Contraseña cambiada con éxito');
         this.showPasswordModal.set(false);
         this.passwordData = { current: '', new: '', confirm: '' };
       },
       error: (err) => {
-        alert(err.error?.error || 'La contraseña actual es incorrecta');
+        this.notificationService.error(err.error?.error || 'La contraseña actual es incorrecta');
       }
     });
   }
@@ -122,7 +122,7 @@ export class ProfileComponent {
         },
         error: (err) => {
           console.error('Error al borrar cuenta:', err);
-          alert('Error al intentar eliminar la cuenta.');
+          this.notificationService.error('Error al intentar eliminar la cuenta.');
           this.showModal.set(false);
         }
       });

@@ -1,0 +1,115 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #ffffff;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.search-header {
+    margin-bottom: 1.2rem;
+}
+
+.search-header label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
+.search-header input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #e0e6e9;
+    background-color: #f9fafb;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+.search-header input:focus {
+    outline: none;
+    border-color: #277339;
+    background-color: #fff;
+}
+
+.list-body {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.patients-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.patient-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.patient-card:hover {
+    background: #f8fcf9;
+    border-color: #c2e0c9;
+}
+
+.patient-card.active {
+    background: #f0fdf4;
+    border-color: #277339;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    background: #e7f3ec;
+    color: #277339;
+    font-weight: bold;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.meta {
+    font-size: 0.75rem;
+    color: #999;
+}
+
+.status-msg {
+    padding: 2rem;
+    text-align: center;
+    color: #aaa;
+    font-style: italic;
+}
