@@ -44,7 +44,14 @@
 								(click)="selectPatient(patient)"
 							>
 								<div class="patient-avatar">
-									{{ patient.firstName.charAt(0) }}{{ patient.lastName.charAt(0) }}
+									@if (getPatientImageSrc(patient); as imageSrc) {
+										<img
+											[src]="imageSrc"
+											alt="Foto de {{ patient.firstName }} {{ patient.lastName }}"
+										/>
+									} @else {
+										{{ patient.firstName.charAt(0) }}{{ patient.lastName.charAt(0) }}
+									}
 								</div>
 								<div class="patient-summary">
 									<div class="patient-name">{{ patient.firstName }} {{ patient.lastName }}</div>
