@@ -1,0 +1,50 @@
+<div class="editor-page">
+  @if (odontogram()) {
+    <header class="editor-header">
+      <h2>Edición Dental</h2>
+      <button class="save-button" (click)="save()" [disabled]="isLoading()">
+        {{ isLoading() ? 'Guardando...' : 'Guardar odontograma' }}
+      </button>
+    </header>
+
+    <!-- Barra de Herramientas -->
+    <div class="editor-toolbar">
+      <p>Seleccione una patología para pintar el diente:</p>
+      <div class="tools">
+        @for (p of pathologies; track p.id) {
+          <button 
+            [class.active]="selectedPathology()?.id === p.id"
+            (click)="selectedPathology.set(p)"
+            [style.border-left-color]="p.color">
+            {{ p.name }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- El Mapa Dental -->
+    <div class="odontogram-visual">
+      <div class="arch upper">
+        @for (n of upperTeeth; track n) {
+          <app-tooth 
+            [toothNumber]="n" 
+            [appliedPathologies]="getPatosForTooth(n)"
+            (onFaceClick)="handleFaceClick(n, $event)" />
+        }
+      </div>
+
+      <div class="arch lower">
+        @for (n of lowerTeeth; track n) {
+          <app-tooth 
+            [toothNumber]="n" 
+            [appliedPathologies]="getPatosForTooth(n)"
+            (onFaceClick)="handleFaceClick(n, $event)" />
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="no-patient">
+      <p>Cargando datos del paciente...</p>
+    </div>
+  }
+</div>
