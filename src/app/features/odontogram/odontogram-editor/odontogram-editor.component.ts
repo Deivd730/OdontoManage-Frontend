@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { ToothComponent } from '@features/odontogram/tooth/tooth.component';
 import { Odontogram, Pathology, ToothPathology } from '@models/odontogram';
 import { OdontogramService } from '@services/odontogram.service';
+import { finalize } from 'rxjs';
+import { NotificationService } from '@services/notification.service';
 
 @Component({
   selector: 'app-odontogram-editor',
@@ -15,6 +17,8 @@ import { OdontogramService } from '@services/odontogram.service';
 export class OdontogramEditorComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private odontogramService = inject(OdontogramService);
+  private notificationService = inject(NotificationService);
+
 
   // Listado de dientes (Sistema ISO)
   upperTeeth = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28];
@@ -47,19 +51,44 @@ export class OdontogramEditorComponent implements OnInit {
     this.odontogramService.getOdontogramByPatient(patientId).subscribe({
       next: (res) => {
         if (res && res.length > 0) {
-          this.odontogram.set(res[0]);
-        } else {                    
+          this.odontogram.set(this.enrichWithColors(res[0]));
+        } else {
           this.odontogram.set({
-            patient: { id: patientId }, // Mandamos objeto con ID en lugar de string IRI
+            patient: { id: patientId },
             toothPathologies: []
           });
-
         }
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false)
     });
   }
+
+  private normalizeToothPathologies(value: unknown): ToothPathology[] {
+  if (Array.isArray(value)) return value as ToothPathology[];
+  if (value && typeof value === 'object') {
+    return Object.values(value as Record<string, ToothPathology>);
+  }
+  return [];
+}
+
+  /**
+   * Restores pathology colors from the local list after an API response,
+   * since Symfony does not store colors in the database.
+   */
+  private enrichWithColors(odontogram: Odontogram): Odontogram {
+  const tp = this.normalizeToothPathologies((odontogram as any).toothPathologies);
+  return {
+    ...odontogram,
+    toothPathologies: tp.map(item => ({
+      ...item,
+      pathology: {
+        ...item.pathology,
+        color: this.pathologies.find(p => p.id === item.pathology.id)?.color ?? item.pathology.color
+      }
+    }))
+  };
+}
 
   /**
    * AQUÍ ES DONDE SE EDITA EL DIENTE
@@ -69,7 +98,7 @@ export class OdontogramEditorComponent implements OnInit {
     const currentOdonto = this.odontogram();
 
     if (!activeTool) {
-      alert("Primero selecciona una patología (Caries, Obturación, etc.)");
+      this.notificationService.error('Primero selecciona una patología (Caries, Obturación, etc.)');
       return;
     }
 
@@ -83,7 +112,7 @@ export class OdontogramEditorComponent implements OnInit {
 
       // Buscamos si esa cara ya tiene algo
       const existingIdx = pathologies.findIndex(
-        p => p.tooth.number === toothNumber && p.toothFace === face
+        p => p.tooth.toothNumber === toothNumber && p.toothFace === face
       );
 
       if (existingIdx > -1) {
@@ -97,7 +126,7 @@ export class OdontogramEditorComponent implements OnInit {
       } else {
         // Si estaba vacío, añadimos la nueva patología
         pathologies.push({
-          tooth: { id: 0, number: toothNumber },
+          tooth: { id: 0, toothNumber: toothNumber },
           pathology: activeTool,
           toothFace: face,
           status: 'Activo'
@@ -109,31 +138,39 @@ export class OdontogramEditorComponent implements OnInit {
   }
 
   getPatosForTooth(num: number) {
-    return this.odontogram()?.toothPathologies.filter(p => p.tooth.number === num) || [];
+    return this.odontogram()?.toothPathologies.filter(p => p.tooth.toothNumber === num) || [];
   }
 
-    save() {
+  save() {
     const currentData = this.odontogram();
     if (!currentData) return;
 
-    // Limpiamos el objeto para enviar solo IDs y datos planos
+    // Send only the fields the backend expects; strip UI-only data (color, name)
     const dataToSend = {
       ...currentData,
-      patient: currentData.patient.id || currentData.patient // Enviamos solo el ID o el IRI
+      patient: { id: currentData.patient?.id ?? currentData.patient },
+      toothPathologies: currentData.toothPathologies.map(tp => ({
+        tooth: { toothNumber: tp.tooth.toothNumber },
+        pathology: { id: tp.pathology.id },
+        toothFace: tp.toothFace,
+        status: tp.status
+      }))
     };
 
     this.isLoading.set(true);
-    this.odontogramService.save(dataToSend).subscribe({
-      next: (saved) => {
-        this.odontogram.set(saved);
-        alert("¡Odontograma guardado!");
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error Symfony:', err.error); // Mira esto en la consola
-        alert("Error al guardar: " + (err.error?.error || 'Error desconocido'));
-        this.isLoading.set(false);
-      }
-    });
+    this.odontogramService.save(dataToSend as Odontogram)
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        next: (saved) => {
+          // Re-enrich colors since the API response does not include them
+          this.odontogram.set(this.enrichWithColors(saved));
+          this.notificationService.success('Odontograma guardado correctamente');
+        },
+        error: (err) => {
+          console.error('Error al guardar:', err.error);
+          this.notificationService.error(err.error?.error || 'Error al guardar odontograma');
+        }
+      });
   }
 }
+

@@ -6,7 +6,7 @@ export interface Pathology {
 
 export interface Tooth {
     id: number;
-    number: number;
+    toothNumber: number;
 }
 
 export interface ToothPathology {
