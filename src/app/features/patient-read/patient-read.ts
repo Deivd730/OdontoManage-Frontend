@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Patient, PatientResponse, PatientService } from '../../core/services/patient.service';
+import { catchError, forkJoin, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-patient-read',
@@ -12,6 +13,8 @@ import { Patient, PatientResponse, PatientService } from '../../core/services/pa
   styleUrls: ['./patient-read.css']
 })
 export class PatientRead implements OnInit {
+  private readonly allowedImageMimeTypes = ['image/jpeg', 'image/png'];
+
   patients = signal<PatientResponse[]>([]);
   selectedPatient = signal<PatientResponse | null>(null);
   searchTerm = signal('');
@@ -51,7 +54,7 @@ export class PatientRead implements OnInit {
       familyHistory: [''],
       lifestyleHabits: [''],
       medicationAllergies: [''],
-      profile_image_name: ['']
+      profile_image_name: [''],
     });
   }
 
@@ -65,7 +68,13 @@ export class PatientRead implements OnInit {
 
     this.patientService.getPatients().subscribe({
       next: (patients) => {
-        this.patients.set(patients);
+        const normalizedPatients = patients.map(patient => ({
+          ...patient,
+          profile_image_name: this.getPatientProfileImageValue(patient)
+        }));
+
+        this.patients.set(normalizedPatients);
+        this.hydrateMissingProfileImages(normalizedPatients);
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -75,7 +84,6 @@ export class PatientRead implements OnInit {
         } else {
           this.errorMessage.set('No se pudieron cargar los pacientes');
         }
-        console.error('Patients load error:', error);
       }
     });
   }
@@ -98,7 +106,7 @@ export class PatientRead implements OnInit {
       familyHistory: patient.familyHistory ?? '',
       lifestyleHabits: patient.lifestyleHabits ?? '',
       medicationAllergies: patient.medicationAllergies ?? '',
-      profile_image_name: patient.profile_image_name ?? ''
+      profile_image_name: this.getPatientProfileImageValue(patient)
     });
   }
 
@@ -143,11 +151,20 @@ export class PatientRead implements OnInit {
       return;
     }
 
+    const profileImage = (this.editForm.value.profile_image_name ?? '').trim();
+    if (profileImage && !this.isValidBase64DataUrl(profileImage)) {
+      this.errorMessage.set(
+        `Formato de imagen invalido. Formatos permitidos: ${this.getAllowedImageFormatsLabel()}.`
+      );
+      return;
+    }
+
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
     const payload: Patient = {
       ...this.editForm.value,
+      profile_image_name: profileImage,
       registrationDate: selected.registrationDate
     };
 
@@ -171,7 +188,6 @@ export class PatientRead implements OnInit {
         } else {
           this.errorMessage.set('Error al actualizar el paciente');
         }
-        console.error('Patient update error:', error);
       }
     });
   }
@@ -200,7 +216,6 @@ export class PatientRead implements OnInit {
         } else {
           this.errorMessage.set('Error al eliminar el paciente');
         }
-        console.error('Patient delete error:', error);
       }
     });
   }
@@ -212,10 +227,6 @@ export class PatientRead implements OnInit {
   updateSearch(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.searchTerm.set(target.value);
-  }
-
-  getPatientImageSrc(patient: PatientResponse): string | null {
-    return this.normalizeBase64Image(patient.profile_image_name);
   }
 
   isFieldInvalid(field: string): boolean {
@@ -234,29 +245,104 @@ export class PatientRead implements OnInit {
     });
   }
 
-  private normalizeBase64Image(imageData?: string): string | null {
-    if (!imageData) {
+  getPatientImageSrc(patient: PatientResponse): string | null {
+    const profileImage = this.getPatientProfileImageValue(patient);
+    if (!profileImage) {
       return null;
     }
 
-    const normalized = imageData
-      .trim()
-      .replace(/^['"]|['"]$/g, '')
-      .replace(/\s+/g, '');
-
-    if (!normalized) {
+    if (!this.isValidBase64DataUrl(profileImage)) {
       return null;
     }
+    
+    return profileImage;
+  }
 
-    if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
-      return normalized;
+  private getPatientProfileImageValue(patient: PatientResponse): string {
+    const rawPatient = patient as PatientResponse & {
+      profile_image?: string;
+      profileImage?: string;
+      profileImageName?: string;
+    };
+
+    const candidateValues = [
+      patient.profile_image_name,
+      rawPatient.profile_image,
+      rawPatient.profileImageName,
+      rawPatient.profileImage
+    ];
+
+    const firstAvailable = candidateValues.find(
+      value => typeof value === 'string' && value.trim().length > 0
+    );
+
+    return firstAvailable ? firstAvailable.trim() : '';
+  }
+
+  private isValidBase64DataUrl(value: string): boolean {
+    const escapedMimeTypes = this.allowedImageMimeTypes.map(mimeType => mimeType.replace('/', '\\/'));
+    const mimeTypesPattern = escapedMimeTypes.join('|');
+    const regex = new RegExp(`^data:(?:${mimeTypesPattern});base64,[A-Za-z0-9+/]+={0,2}$`);
+    return regex.test(value);
+  }
+
+  private hydrateMissingProfileImages(patients: PatientResponse[]): void {
+    const patientsWithoutImage = patients.filter(patient => !this.getPatientProfileImageValue(patient));
+    if (!patientsWithoutImage.length) {
+      return;
     }
 
-    if (normalized.startsWith('data:')) {
-      return normalized;
-    }
+    const detailRequests = patientsWithoutImage.map(patient =>
+      this.patientService.getPatient(patient.id).pipe(
+        map(fullPatient => ({
+          id: patient.id,
+          imageValue: this.getPatientProfileImageValue(fullPatient)
+        })),
+        catchError(() => of({ id: patient.id, imageValue: '' }))
+      )
+    );
 
-    const mimeType = normalized.startsWith('/9j/') ? 'image/jpeg' : 'image/png';
-    return `data:${mimeType};base64,${normalized}`;
+    forkJoin(detailRequests).subscribe(results => {
+      const imageById = new Map(
+        results
+          .filter(result => result.imageValue && this.isValidBase64DataUrl(result.imageValue))
+          .map(result => [result.id, result.imageValue])
+      );
+
+      if (!imageById.size) {
+        return;
+      }
+
+      this.patients.update(currentPatients =>
+        currentPatients.map(patient => {
+          const hydratedImage = imageById.get(patient.id);
+          if (!hydratedImage) {
+            return patient;
+          }
+
+          return {
+            ...patient,
+            profile_image_name: hydratedImage
+          };
+        })
+      );
+
+      const selected = this.selectedPatient();
+      if (selected) {
+        const selectedImage = imageById.get(selected.id);
+        if (selectedImage) {
+          this.selectedPatient.set({
+            ...selected,
+            profile_image_name: selectedImage
+          });
+        }
+      }
+    });
+  }
+
+  private getAllowedImageFormatsLabel(): string {
+    return this.allowedImageMimeTypes
+      .map(mimeType => `data:${mimeType};base64,...`)
+      .join(' o ');
   }
 }
