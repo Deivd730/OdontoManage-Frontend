@@ -1,0 +1,10 @@
+<div class="document-layout">
+  <aside class="sidebar-col">
+    <app-patient-list 
+      [selectedPatientId]="selectedPatientId()"
+      (selectPatient)="onPatientSelected($event)" />
+  </aside>
+  <main class="content-col">
+    <app-document-list [patientId]="selectedPatientId()" />
+  </main>
+</div>

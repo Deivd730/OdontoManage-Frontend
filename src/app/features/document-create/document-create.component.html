@@ -1,0 +1,68 @@
+<div class="document-container">
+  <div class="document-card">
+    <div class="document-header">
+      <h1>Añadir documento</h1>
+      <p>1 Selecciona un paciente 2 Sube el documento</p>
+    </div>
+
+    <form [formGroup]="documentForm" (ngSubmit)="submit()" class="document-form">
+      <label>
+        Paciente
+        <select formControlName="patientId" [class.input-error]="isFieldInvalid('patientId')">
+          <option [ngValue]="null">Selecciona un paciente</option>
+          @for (patient of patients(); track patient.id) {
+            <option [value]="patient.id">
+              {{ patient.firstName }} {{ patient.lastName }} - DNI {{ patient.nationalId }}
+            </option>
+          }
+        </select>
+        @if (hasError('patientId', 'required')) {
+          <span class="error">Debes seleccionar un paciente</span>
+        }
+      </label>
+
+      <label>
+        Tipo de documento
+        <input
+          type="text"
+          formControlName="type"
+          placeholder="Ej: Radiografía, informe, consentimiento"
+          [class.input-error]="isFieldInvalid('type')"
+        />
+        @if (hasError('type', 'required')) {
+          <span class="error">El tipo es obligatorio</span>
+        }
+      </label>
+
+      <label>
+        Fecha de captura
+        <input type="date" formControlName="captureDate" [class.input-error]="isFieldInvalid('captureDate')" />
+        @if (hasError('captureDate', 'required')) {
+          <span class="error">La fecha es obligatoria</span>
+        }
+      </label>
+
+      <label>
+        Archivo
+        <input type="file" accept=".pdf,image/*" (change)="onFileSelected($event)" />
+        @if (selectedFileName()) {
+          <span class="file-name">{{ selectedFileName() }}</span>
+        }
+        @if (hasError('documentFile', 'required')) {
+          <span class="error">Debes adjuntar un archivo</span>
+        }
+      </label>
+
+      <div class="actions">
+        <button type="button" class="btn ghost" (click)="cancel()">Cancelar</button>
+        <button type="submit" class="btn primary" [disabled]="isLoading()">
+          @if (isLoading()) {
+            Subiendo...
+          } @else {
+            Guardar documento
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
