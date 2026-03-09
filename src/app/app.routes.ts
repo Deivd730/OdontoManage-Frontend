@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { GuestGuard } from './core/guards/guest.guard';
 import { MainlayoutComponent } from './features/mainlayout/mainlayout.component';
+import { DocumentCreate } from '@features/document-create/document-create.component';
 
 export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent), canActivate: [GuestGuard] },
@@ -16,6 +17,8 @@ export const routes: Routes = [
       { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent) },
       { path: 'patients', loadComponent: () => import('./features/patient-read/patient-read').then(m => m.PatientRead) },
       { path: 'patients/create', loadComponent: () => import('./features/patient-create/patient-create').then(m => m.PatientCreate) },
+      { path: 'documents', loadComponent: () => import('./features/document/document.component').then(m => m.DocumentComponent) },
+      { path: 'documents/create', loadComponent: () => import('./features/document-create/document-create.component').then(m => m.DocumentCreate) },
       {
         path: 'odontogram',
         loadComponent: () => import('@features/odontogram/odontogram-layout/odontogram-layout.component').then(m => m.OdontogramLayoutComponent),
@@ -30,6 +33,7 @@ export const routes: Routes = [
           }
         ]
       },
+      { path: 'documents/create', loadComponent: () => import('@features/document-create/document-create.component').then(m => m.DocumentCreate) },
     ]
   },
   { path: '**', redirectTo: 'login' }

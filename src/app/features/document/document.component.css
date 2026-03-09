@@ -1,0 +1,32 @@
+.document-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  height: calc(100vh - 70px);
+  width: 100vw;
+  overflow: hidden;
+}
+
+.sidebar-col {
+  background: white;
+  border-right: 1px solid #e0e0e0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.content-col {
+  background: var(--bg-minimal);
+  height: 100%;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .document-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .sidebar-col {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+}

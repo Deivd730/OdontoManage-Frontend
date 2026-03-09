@@ -1,0 +1,128 @@
+.document-container {
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: var(--bg-minimal);
+}
+
+.document-card {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #eef2f0;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.document-header h1 {
+    margin: 0;
+    font-family: var(--font-title);
+    color: var(--primary-dark);
+}
+
+.document-header p {
+    margin: 0.25rem 0 1.5rem;
+    color: var(--text-muted);
+}
+
+.document-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.document-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.document-form input,
+.document-form select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #eef2f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    background: #ffffff;
+}
+
+.document-form input:focus,
+.document-form select:focus {
+    outline: none;
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 3px rgba(27, 115, 57, 0.1);
+}
+
+.input-error {
+    border-color: #d32f2f !important;
+}
+
+.error {
+    color: #d32f2f;
+    font-size: 0.8rem;
+}
+
+.file-name {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn.primary {
+    background-color: var(--primary-dark);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.btn.primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(27, 115, 57, 0.25);
+}
+
+.btn.primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn.ghost {
+    background: #fff;
+    color: var(--text-main);
+    border: 1px solid #eef2f0;
+    transition: all 0.3s ease;
+}
+
+.btn.ghost:hover {
+    background: #fafcfb;
+    border-color: var(--primary-medium);
+}
+
+@media (max-width: 640px) {
+    .document-container {
+        padding: 1rem;
+    }
+
+    .document-card {
+        padding: 1.25rem;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+}
