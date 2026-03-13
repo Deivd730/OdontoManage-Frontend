@@ -175,6 +175,17 @@
 								Alergias a medicamentos
 								<input type="text" formControlName="medicationAllergies" />
 							</label>
+							<label class="full">
+								Imagen de perfil
+								<input type="file" (change)="onImageSelected($event)" accept="image/jpeg,image/png,image/gif,image/webp" />
+								<small>Prevalidacion del navegador: {{ getAllowedImageFormatsLabel() }}, maximo {{ getMaxProfileImageSizeInMb() }} MB.</small>
+								@if (getSelectedImageFileName()) {
+									<small>Archivo listo para subir: {{ getSelectedImageFileName() }}</small>
+								}
+								@if (imageValidationError()) {
+									<span class="error">{{ imageValidationError() }}</span>
+								}
+							</label>
 						</div>
 					</form>
 				}

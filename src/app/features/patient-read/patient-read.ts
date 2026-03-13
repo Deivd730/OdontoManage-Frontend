@@ -4,6 +4,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { Patient, PatientResponse, PatientService } from '../../core/services/patient.service';
 import { catchError, forkJoin, map, of } from 'rxjs';
+import {
+  PROFILE_IMAGE_ALLOWED_MIME_TYPES,
+  PROFILE_IMAGE_MAX_SIZE_BYTES,
+  formatAllowedImageFormats,
+  validateImageFile
+} from './image-file.validator';
 
 @Component({
   selector: 'app-patient-read',
@@ -13,7 +19,8 @@ import { catchError, forkJoin, map, of } from 'rxjs';
   styleUrls: ['./patient-read.css']
 })
 export class PatientRead implements OnInit {
-  private readonly allowedImageMimeTypes = ['image/jpeg', 'image/png'];
+  private readonly allowedImageMimeTypes = [...PROFILE_IMAGE_ALLOWED_MIME_TYPES];
+  private readonly maxProfileImageSizeBytes = PROFILE_IMAGE_MAX_SIZE_BYTES;
 
   patients = signal<PatientResponse[]>([]);
   selectedPatient = signal<PatientResponse | null>(null);
@@ -22,6 +29,9 @@ export class PatientRead implements OnInit {
   isEditing = signal(false);
   errorMessage = signal<string | null>(null);
   deleteConfirm = signal(false);
+  imageValidationError = signal<string | null>(null);
+
+  selectedImageFile: File | null = null;
 
   editForm: FormGroup;
 
@@ -54,7 +64,6 @@ export class PatientRead implements OnInit {
       familyHistory: [''],
       lifestyleHabits: [''],
       medicationAllergies: [''],
-      profile_image_name: [''],
     });
   }
 
@@ -92,6 +101,8 @@ export class PatientRead implements OnInit {
     this.selectedPatient.set(patient);
     this.isEditing.set(false);
     this.deleteConfirm.set(false);
+    this.selectedImageFile = null;
+    this.imageValidationError.set(null);
     this.editForm.reset();
     this.editForm.patchValue({
       firstName: patient.firstName,
@@ -105,8 +116,7 @@ export class PatientRead implements OnInit {
       healthStatus: patient.healthStatus ?? '',
       familyHistory: patient.familyHistory ?? '',
       lifestyleHabits: patient.lifestyleHabits ?? '',
-      medicationAllergies: patient.medicationAllergies ?? '',
-      profile_image_name: this.getPatientProfileImageValue(patient)
+      medicationAllergies: patient.medicationAllergies ?? ''
     });
   }
 
@@ -114,6 +124,8 @@ export class PatientRead implements OnInit {
     if (!this.selectedPatient()) {
       return;
     }
+    this.selectedImageFile = null;
+    this.imageValidationError.set(null);
     this.isEditing.set(true);
   }
 
@@ -151,29 +163,27 @@ export class PatientRead implements OnInit {
       return;
     }
 
-    const profileImage = (this.editForm.value.profile_image_name ?? '').trim();
-    if (profileImage && !this.isValidBase64DataUrl(profileImage)) {
-      this.errorMessage.set(
-        `Formato de imagen invalido. Formatos permitidos: ${this.getAllowedImageFormatsLabel()}.`
-      );
-      return;
-    }
-
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
     const payload: Patient = {
       ...this.editForm.value,
-      profile_image_name: profileImage,
+      profile_image_name: this.getPatientProfileImageValue(selected),
       registrationDate: selected.registrationDate
     };
 
-    this.patientService.updatePatient(selected.id, payload).subscribe({
+    const updateRequest = this.selectedImageFile
+      ? this.patientService.updatePatientWithProfileImage(selected.id, payload, this.selectedImageFile)
+      : this.patientService.updatePatient(selected.id, payload);
+
+    updateRequest.subscribe({
       next: (updatedPatient) => {
         this.patients.set(
           this.patients().map(patient => patient.id === updatedPatient.id ? updatedPatient : patient)
         );
         this.selectedPatient.set(updatedPatient);
+        this.selectedImageFile = null;
+        this.imageValidationError.set(null);
         this.isEditing.set(false);
         this.isLoading.set(false);
       },
@@ -190,6 +200,43 @@ export class PatientRead implements OnInit {
         }
       }
     });
+  }
+
+  onImageSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const selectedFile = target.files?.item(0) ?? null;
+
+    this.selectedImageFile = null;
+    this.imageValidationError.set(null);
+
+    if (!selectedFile) {
+      return;
+    }
+
+    const validationError = validateImageFile(selectedFile, {
+      allowedMimeTypes: this.allowedImageMimeTypes,
+      maxSizeBytes: this.maxProfileImageSizeBytes
+    });
+
+    if (validationError) {
+      this.imageValidationError.set(validationError);
+      target.value = '';
+      return;
+    }
+
+    this.selectedImageFile = selectedFile;
+  }
+
+  getSelectedImageFileName(): string {
+    return this.selectedImageFile?.name ?? '';
+  }
+
+  getAllowedImageFormatsLabel(): string {
+    return formatAllowedImageFormats(this.allowedImageMimeTypes);
+  }
+
+  getMaxProfileImageSizeInMb(): number {
+    return Math.round(this.maxProfileImageSizeBytes / (1024 * 1024));
   }
 
   deletePatient(): void {
@@ -254,7 +301,7 @@ export class PatientRead implements OnInit {
     if (!this.isValidBase64DataUrl(profileImage)) {
       return null;
     }
-    
+
     return profileImage;
   }
 
@@ -340,9 +387,4 @@ export class PatientRead implements OnInit {
     });
   }
 
-  private getAllowedImageFormatsLabel(): string {
-    return this.allowedImageMimeTypes
-      .map(mimeType => `data:${mimeType};base64,...`)
-      .join(' o ');
-  }
 }
