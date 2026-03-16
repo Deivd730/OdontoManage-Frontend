@@ -1,0 +1,62 @@
+<div class="appointment-calendar-container-side">
+  <div class="calendar-wrapper-side">
+    <div class="calendar-header-compact centered">
+      <div class="today-row">
+        <button class="today-pill" (click)="goToToday()">Hoy</button>
+      </div>
+      <div class="header-row">
+        <button class="nav-square" (click)="previousMonth()">‹</button>
+        <div class="current-month-compact">{{ currentMonth() }}</div>
+        <button class="nav-square" (click)="nextMonth()">›</button>
+      </div>
+    </div>
+
+    <div class="calendar-grid-compact">
+      @for (day of weekDays; track day) {
+        <div class="calendar-weekday-compact">{{ day }}</div>
+      }
+
+      @for (calDay of calendarDays(); track calDay.date.getTime()) {
+        <div class="calendar-day-compact"
+             [class.other-month]="!calDay.isCurrentMonth"
+             [class.today]="calDay.isToday"
+             [class.has-appointments]="calDay.appointmentsCount > 0"
+             [class.selected]="calDay.isSelected"
+             (click)="selectDay(calDay)">
+          <span class="day-number">{{ calDay.day }}</span>
+          
+          @if (calDay.appointmentsCount > 0 && calDay.isCurrentMonth) {
+            <span class="appointments-badge">{{ calDay.appointmentsCount }}</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Panel lateral derecho para citas del día -->
+  <aside class="day-panel" [class.open]="showDayModal()">
+    <div class="panel-header">
+      <h3>Citas</h3>
+      <button class="close-btn" (click)="closeDayModal()">✕</button>
+    </div>
+    <div class="panel-date">@if (selectedDate()) { {{ formatDate(selectedDate()!.toISOString()) }} }</div>
+    <div class="panel-body">
+      @if (isLoading()) {
+        <div class="status-message">Cargando citas...</div>
+      } @else if (selectedDayAppointments().length === 0) {
+        <div class="status-message empty">No hay citas para este día.</div>
+      } @else {
+        @for (appointment of selectedDayAppointments(); track appointment.id) {
+          <div class="appointment-card">
+            <div class="appointment-time">{{ formatTime(appointment.visitDate) }}</div>
+            <div class="appointment-details">
+              <div class="patient-name">{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</div>
+              <div class="meta">{{ appointment.treatment.name }} • {{ appointment.dentist.name }} • Box: {{ appointment.box.id }}</div>
+              
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </aside>
+</div>

@@ -19,6 +19,7 @@ export const routes: Routes = [
       { path: 'patients/create', loadComponent: () => import('./features/patient-create/patient-create').then(m => m.PatientCreate) },
       { path: 'documents', loadComponent: () => import('./features/document/document.component').then(m => m.DocumentComponent) },
       { path: 'documents/create', loadComponent: () => import('./features/document-create/document-create.component').then(m => m.DocumentCreate) },
+      { path: 'appointments', loadComponent: () => import('./features/appointment/appointment').then(m => m.Appointment) },
       {
         path: 'odontogram',
         loadComponent: () => import('@features/odontogram/odontogram-layout/odontogram-layout.component').then(m => m.OdontogramLayoutComponent),

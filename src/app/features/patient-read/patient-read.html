@@ -71,13 +71,14 @@
 					<p>Elige un paciente en la lista para ver su informacion completa.</p>
 				</div>
 			} @else {
-				<div class="detail-header">
+					<div class="detail-header">
 					<div>
 						<h2>{{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}</h2>
 						<p>DNI {{ selectedPatient()?.nationalId }}</p>
 					</div>
-					<div class="detail-actions">
+						<div class="detail-actions">
 						@if (!isEditing()) {
+							<button class="btn new-appointment" (click)="createAppointment()">Nueva cita</button>
 							<button class="btn ghost" (click)="startEdit()">Editar</button>
 							<button class="btn danger" (click)="requestDelete()" [disabled]="isLoading()">Eliminar</button>
 						} @else {

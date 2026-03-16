@@ -22,6 +22,7 @@ import { PatientResponse } from '../../../core/services/patient.service';
           </div>
           <div class="detail-actions">
             @if (!isEditing) {
+              <button class="btn primary" (click)="newAppointment.emit()">Nueva cita</button>
               <button class="btn ghost" (click)="startEdit.emit()">Editar</button>
               <button class="btn danger" (click)="deletePatient.emit()" [disabled]="isLoading">Eliminar</button>
             } @else {
@@ -136,6 +137,7 @@ export class PatientDetailComponent {
   @Output() cancelEdit = new EventEmitter<void>();
   @Output() saveEdit = new EventEmitter<void>();
   @Output() deletePatient = new EventEmitter<void>();
+  @Output() newAppointment = new EventEmitter<void>();
 
   isFieldInvalid(field: string): boolean {
     const control = this.editForm.get(field);
