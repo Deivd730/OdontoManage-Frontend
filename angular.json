@@ -23,7 +23,12 @@
                 "glob": "**/*",
                 "input": "public"
               },
-              "src/assets/favicon.svg"
+              "src/assets/favicon.svg",
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              }
             ],
             "styles": [
               "src/material-theme.scss",
