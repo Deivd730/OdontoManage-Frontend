@@ -1,6 +1,6 @@
 /* Patients Read View */
 .patients-page {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   padding: 2rem;
   background-color: var(--bg-minimal);
   font-family: var(--font-body);
@@ -104,6 +104,7 @@
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  
 }
 
 .patients-list {
@@ -114,8 +115,8 @@
   border: 1px solid #eef2f0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  height: fit-content;
+  gap: 1rem;  
+  max-height: calc(100vh - 300px);
 }
 
 .search-box {
@@ -232,6 +233,7 @@
   border: 1px solid #eef2f0;
   position: relative;
   overflow: hidden;
+  max-height: calc(100vh - 300px);
 }
 
 .detail-empty {
