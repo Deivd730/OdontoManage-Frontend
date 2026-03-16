@@ -224,6 +224,15 @@ export class PatientRead implements OnInit {
     this.router.navigate(['/patients/create']);
   }
 
+  createAppointment(): void {
+    const selected = this.selectedPatient();
+    if (!selected) {
+      return;
+    }
+    // TODO: navigate to appointment creation or open modal with patient pre-selected
+    console.log('Create appointment for patient:', selected.id);
+  }
+
   updateSearch(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.searchTerm.set(target.value);
