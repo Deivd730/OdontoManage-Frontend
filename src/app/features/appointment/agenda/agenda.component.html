@@ -1,0 +1,23 @@
+<div class="panel-header">
+  <h3>Citas</h3>
+</div>
+
+<div class="panel-date">{{ store.formatDate(store.selectedDate()) }}</div>
+
+<div class="panel-body">
+  @if (store.isLoading()) {
+    <div class="status-message">Cargando citas...</div>
+  } @else if (store.selectedDayAppointments().length === 0) {
+    <div class="status-message empty">No hay citas para este dia.</div>
+  } @else {
+    @for (appointment of store.selectedDayAppointments(); track appointment.id) {
+      <div class="appointment-card">
+        <div class="appointment-time">{{ store.formatTime(appointment.visitDate) }}</div>
+        <div class="appointment-details">
+          <div class="patient-name">{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</div>
+          <div class="meta">{{ appointment.treatment.name }} • {{ appointment.dentist.name }} • Box: {{ appointment.box.id }}</div>
+        </div>
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,34 @@
+<div class="calendar-header-compact centered">
+  <div class="today-row">
+    <button class="today-pill" (click)="store.goToToday()">Hoy</button>
+  </div>
+  <div class="header-row">
+    <button class="nav-square" (click)="store.previousMonth()">&lsaquo;</button>
+    <div class="current-month-compact">{{ store.currentMonth() }}</div>
+    <button class="nav-square" (click)="store.nextMonth()">&rsaquo;</button>
+  </div>
+</div>
+
+<div class="calendar-grid-compact">
+  @for (day of store.weekDays; track day) {
+    <div class="calendar-weekday-compact">{{ day }}</div>
+  }
+
+  @for (calDay of store.calendarDays(); track calDay.date.getTime()) {
+    <button
+      type="button"
+      class="calendar-day-compact"
+      [class.other-month]="!calDay.isCurrentMonth"
+      [class.today]="calDay.isToday"
+      [class.has-appointments]="calDay.appointmentsCount > 0"
+      [class.selected]="calDay.isSelected"
+      [disabled]="!calDay.isCurrentMonth"
+      (click)="selectDay(calDay)">
+      <span class="day-number">{{ calDay.day }}</span>
+
+      @if (calDay.appointmentsCount > 0 && calDay.isCurrentMonth) {
+        <span class="appointments-badge">{{ calDay.appointmentsCount }}</span>
+      }
+    </button>
+  }
+</div>
