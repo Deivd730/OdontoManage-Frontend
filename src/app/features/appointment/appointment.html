@@ -34,10 +34,9 @@
   </div>
 
   <!-- Panel lateral derecho para citas del día -->
-  <aside class="day-panel" [class.open]="showDayModal()">
+  <aside class="day-panel open">
     <div class="panel-header">
       <h3>Citas</h3>
-      <button class="close-btn" (click)="closeDayModal()">✕</button>
     </div>
     <div class="panel-date">@if (selectedDate()) { {{ formatDate(selectedDate()!.toISOString()) }} }</div>
     <div class="panel-body">

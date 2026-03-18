@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppointmentService, AppointmentResponse } from '@services/appointment.service';
 
@@ -24,8 +24,7 @@ export class Appointment implements OnInit {
   // Signals
   allAppointments = signal<AppointmentResponse[]>([]);
   currentDate = signal<Date>(new Date());
-  selectedDate = signal<Date | null>(null);
-  showDayModal = signal(false);
+  selectedDate = signal<Date | null>(new Date());
   isLoading = signal(false);
 
   // Computed properties
@@ -51,6 +50,7 @@ export class Appointment implements OnInit {
   weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
   ngOnInit(): void {
+    this.selectedDate.set(new Date());
     this.loadAppointments();
   }
 
@@ -145,30 +145,9 @@ export class Appointment implements OnInit {
            date1.getDate() === date2.getDate();
   }
 
-  // handler para la tecla Escape
-  private keydownHandler = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      this.closeDayModal();
-    }
-  };
-
   selectDay(day: CalendarDay): void {
     if (!day.isCurrentMonth) return;
     this.selectedDate.set(day.date);
-    this.showDayModal.set(true);
-    // añadir listener para Esc
-    window.addEventListener('keydown', this.keydownHandler);
-  }
-
-  closeDayModal(): void {
-    this.showDayModal.set(false);
-    // limpiar listener
-    window.removeEventListener('keydown', this.keydownHandler);
-  }
-
-  ngOnDestroy(): void {
-    // asegurar limpieza
-    window.removeEventListener('keydown', this.keydownHandler);
   }
 
   getAppointmentsListForDate(date: Date): AppointmentResponse[] {
