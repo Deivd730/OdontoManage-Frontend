@@ -79,7 +79,9 @@ export class DocumentCreate implements OnInit {
       next: () => {
         this.isLoading.set(false);
         this.notificationService.success('Documento subido correctamente');
-        this.router.navigate(['/documents']);
+        this.router.navigate(['/documents'], {
+          queryParams: { patientId: value.patientId }
+        });
       },
       error: (error) => {
         this.isLoading.set(false);
@@ -90,7 +92,10 @@ export class DocumentCreate implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/documents']);
+    const patientId = this.documentForm.get('patientId')?.value;
+    this.router.navigate(['/documents'], {
+      queryParams: patientId ? { patientId } : {}
+    });
   }
 
   isFieldInvalid(field: string): boolean {
