@@ -44,4 +44,28 @@ export class PatientListComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     this.searchTerm.set(target.value);
   }
+
+  // ✅ NUEVO: mismo método que usa patient-read
+  getPatientImageSrc(patient: PatientResponse): string | null {
+    const raw = patient as PatientResponse & {
+      profile_image?: string;
+      profileImage?: string;
+      profileImageName?: string;
+    };
+
+    const value =
+      patient.profile_image_name ??
+      raw.profile_image ??
+      raw.profileImageName ??
+      raw.profileImage ??
+      '';
+
+    if (!value || value.trim() === '') return null;
+
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const escaped = allowedMimes.map(m => m.replace('/', '\\/'));
+    const regex = new RegExp(`^data:(?:${escaped.join('|')});base64,[A-Za-z0-9+/]+=*$`);
+
+    return regex.test(value.trim()) ? value.trim() : null;
+  }
 }

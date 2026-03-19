@@ -5,8 +5,8 @@
 
 .sidebar-container {
     display: flex;
-    flex-direction: column;
-    height: 100%;
+    flex-direction: column;    
+    height: 94%;
     background-color: #ffffff;
     padding: 1rem;
     box-sizing: border-box;
@@ -83,8 +83,9 @@
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #277339, #3ea055);
-    color: #fff;
+    background: var(--primary-light);
+    /* background: linear-gradient(135deg, #277339, #3ea055); */
+    color: #277339;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,7 +126,7 @@
 .avatar {
     width: 38px;
     height: 38px;
-    background: #e7f3ec;
+    background: var(--primary-light);
     color: #277339;
     font-weight: bold;
     border-radius: 6px;
@@ -155,4 +156,12 @@
     text-align: center;
     color: #aaa;
     font-style: italic;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
 }
