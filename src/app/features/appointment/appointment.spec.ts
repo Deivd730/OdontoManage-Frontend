@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
 import { Appointment } from './appointment';
+import { AppointmentService } from '@services/appointment.service';
 
 describe('Appointment', () => {
   let component: Appointment;
@@ -8,7 +10,15 @@ describe('Appointment', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Appointment]
+      imports: [Appointment],
+      providers: [
+        {
+          provide: AppointmentService,
+          useValue: {
+            getAppointments: () => of([]),
+          },
+        },
+      ],
     })
     .compileComponents();
 
