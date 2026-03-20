@@ -25,6 +25,8 @@ export class OdontogramEditorComponent implements OnInit {
   private readonly ADULT_LOWER_TEETH = [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38];
   private readonly CHILD_UPPER_TEETH = [55, 54, 53, 52, 51, 61, 62, 63, 64, 65];
   private readonly CHILD_LOWER_TEETH = [85, 84, 83, 82, 81, 71, 72, 73, 74, 75];
+  private readonly WHOLE_TOOTH_FACE = 0;
+  private readonly WHOLE_TOOTH_PATHOLOGY_IDS = new Set([3, 4, 5, 6]);
 
   // Herramientas de edicion
   pathologies: Pathology[] = [
@@ -32,7 +34,8 @@ export class OdontogramEditorComponent implements OnInit {
     { id: 2, name: 'Obturacion', color: '#0074D9' },
     { id: 3, name: 'Corona', color: '#FFDC00' },
     { id: 4, name: 'Ausente', color: '#AAAAAA' },
-    { id: 5, name: 'Endodoncia', color: '#B10DC9' }
+    { id: 5, name: 'Endodoncia', color: '#B10DC9' },
+    { id: 6, name: 'Exodoncia', color: '#111111' }
   ];
 
   selectedPathology = signal<Pathology | null>(null);
@@ -146,6 +149,10 @@ export class OdontogramEditorComponent implements OnInit {
     };
   }
 
+  private isWholeToothPathology(pathology: Pathology): boolean {
+    return this.WHOLE_TOOTH_PATHOLOGY_IDS.has(pathology.id);
+  }
+
   handleFaceClick(toothNumber: number, face: number): void {
     const activeTool = this.selectedPathology();
 
@@ -157,9 +164,39 @@ export class OdontogramEditorComponent implements OnInit {
     this.odontogram.update(prev => {
       if (!prev) return null;
 
+      const targetFace = this.isWholeToothPathology(activeTool) ? this.WHOLE_TOOTH_FACE : face;
+      const isGlobalTool = this.isWholeToothPathology(activeTool);
       const pathologies = [...prev.toothPathologies];
+
+      if (isGlobalTool) {
+        const existingGlobalSameToolIdx = pathologies.findIndex(
+          p =>
+            p.tooth.toothNumber === toothNumber &&
+            p.toothFace === this.WHOLE_TOOTH_FACE &&
+            p.pathology.id === activeTool.id
+        );
+
+        if (existingGlobalSameToolIdx > -1) {
+          pathologies.splice(existingGlobalSameToolIdx, 1);
+          return { ...prev, toothPathologies: pathologies };
+        }
+
+        const withoutOtherGlobalStates = pathologies.filter(
+          p => !(p.tooth.toothNumber === toothNumber && p.toothFace === this.WHOLE_TOOTH_FACE)
+        );
+
+        withoutOtherGlobalStates.push({
+          tooth: { id: 0, toothNumber },
+          pathology: activeTool,
+          toothFace: this.WHOLE_TOOTH_FACE,
+          status: 'Activo'
+        });
+
+        return { ...prev, toothPathologies: withoutOtherGlobalStates };
+      }
+
       const existingIdx = pathologies.findIndex(
-        p => p.tooth.toothNumber === toothNumber && p.toothFace === face
+        p => p.tooth.toothNumber === toothNumber && p.toothFace === targetFace
       );
 
       if (existingIdx > -1) {
@@ -172,7 +209,7 @@ export class OdontogramEditorComponent implements OnInit {
         pathologies.push({
           tooth: { id: 0, toothNumber },
           pathology: activeTool,
-          toothFace: face,
+          toothFace: targetFace,
           status: 'Activo'
         });
       }
