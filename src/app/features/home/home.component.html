@@ -7,8 +7,16 @@
                 <div class="user-profile-brief">
                     <div class="profile-details">
                         @if (authService.currentUser(); as user) {
-                        <p class="avatar-placeholder">{{ user.name }}</p>
-                        <p>{{ user.email }}</p>
+                        <div class="profile-content">
+                            <button class="avatar-placeholder" (click)="goToProfile()" type="button">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                            </button>
+                            <p class="user-role-badge">{{ getUserRole() }}</p>
+                            <p class="user-info-name">{{ user.name }}</p>
+                            <p class="user-info-email">{{ user.email }}</p>
+                        </div>
                         } @else {
                         <p>NoName</p>
                         }
@@ -42,6 +50,28 @@
                             </svg>
                         </div>
                         <span>Citas</span>
+                    </button>
+
+                    <button class="action-card" (click)="navigateTo('/documents')">
+                        <div class="icon-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <span>Documentos</span>
+                    </button>
+
+                    <button class="action-card" (click)="navigateTo('/odontogram')">
+                        <div class="icon-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <span>Odontogramas</span>
                     </button>
                 </div>
             </section>
