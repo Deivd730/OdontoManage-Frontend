@@ -12,10 +12,26 @@
   } @else {
     @for (appointment of store.selectedDayAppointments(); track appointment.id) {
       <div class="appointment-card">
-        <div class="appointment-time">{{ store.formatTime(appointment.visitDate) }}</div>
-        <div class="appointment-details">
-          <div class="patient-name">{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</div>
-          <div class="meta">{{ appointment.treatment.name }} • {{ appointment.dentist.name }} • Box: {{ appointment.box.id }}</div>
+        <div class="appointment-header">
+          <div class="appointment-datetime">{{ store.formatTime(appointment.visitDate) }}</div>
+          <div class="appointment-box">{{ appointment.box.name || appointment.box.id }}</div>
+        </div>
+
+        <div class="appointment-dentist">{{ store.getDentistDisplayName(appointment) }}</div>
+
+        <div class="appointment-body">
+          <div class="info-row">
+            <span class="info-label">Paciente</span>
+            <span class="info-value">{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Razon de consulta</span>
+            <span class="info-value">{{ appointment.consultationReason || 'Sin razon registrada' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Tratamiento</span>
+            <span class="info-value">{{ appointment.treatment.name }}</span>
+          </div>
         </div>
       </div>
     }

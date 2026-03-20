@@ -47,21 +47,22 @@
 }
 
 .today-pill {
-  background: white;
-  color: #2e7d32;
-  border: 1.5px solid #2e7d32;
-  padding: 6px 10px;
+  border: 1px solid #eef2f0;
+  background: #ffffff;
+  color: var(--text-main);
+  padding: 0.5rem 0.9rem;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 0.85rem;
   cursor: pointer;
   font-weight: 600;
-  transition: background 160ms ease, color 160ms ease, transform 120ms ease;
+  font-family: var(--font-body);
+  line-height: 1;
+  transition: all 0.3s ease;
 }
 
 .today-pill:hover {
-  background: #2e7d32;
-  color: white;
-  transform: translateY(-1px);
+  background-color: #fafcfb;
+  border-color: var(--primary-medium);
 }
 
 .current-month-compact {

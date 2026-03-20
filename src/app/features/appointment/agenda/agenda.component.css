@@ -7,13 +7,14 @@
 }
 
 .panel-date {
-  padding: 8px 16px;
+  padding: 7px 14px;
   color: #666;
   text-transform: capitalize;
+  font-size: 0.9rem;
 }
 
 .panel-body {
-  padding: 18px 20px;
+  padding: 14px 16px;
   overflow: auto;
 }
 
@@ -31,45 +32,83 @@
 
 .appointment-card {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-left: 4px solid #4caf50;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  transition: all 0.2s;
+  flex-direction: column;
+  gap: 0.62rem;
+  padding: 0.78rem 0.82rem 0.86rem;
+  background: #f7f8fb;
+  border-left: 3px solid #4caf50;
+  border-radius: 9px;
+  margin-bottom: 0.72rem;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .appointment-card:hover {
-  background: #f0f0f0;
-  transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #f2f4f8;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
-.appointment-time {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #4caf50;
-  min-width: 60px;
-}
-
-.appointment-details {
-  flex: 1;
+.appointment-header {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
 }
 
-.patient-name {
+.appointment-datetime {
+  font-size: 0.74rem;
   font-weight: 600;
-  font-size: 1.05rem;
-  color: #333;
+  color: #60656f;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
 }
 
-.meta {
+.appointment-box {
+  font-size: 0.74rem;
+  color: #2f6f43;
+  background: #eef8f0;
+  border: 1px solid #d8ecdb;
+  border-radius: 999px;
+  padding: 0.16rem 0.5rem;
+  white-space: nowrap;
+}
+
+.appointment-dentist {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2f3440;
+  line-height: 1.2;
+}
+
+.appointment-body {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.9rem;
-  color: #555;
+  gap: 0.36rem;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 132px) 1fr;
+  gap: 0.56rem;
+  align-items: start;
+}
+
+.info-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #7b8089;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.info-value {
+  font-size: 0.86rem;
+  color: #2f3440;
+  line-height: 1.3;
+}
+
+@media (max-width: 640px) {
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
 }
