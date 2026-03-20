@@ -8,6 +8,7 @@ export interface Patient {
   firstName: string;
   lastName: string;
   nationalId: string;
+  birthDate?: string;
   socialSecurityNumber?: string;
   phone?: string;
   email?: string;
@@ -26,6 +27,7 @@ export interface PatientResponse extends Patient {
   firstName: string;
   lastName: string;
   nationalId: string;
+  birthDate?: string;
   socialSecurityNumber?: string;
   phone?: string;
   email?: string;

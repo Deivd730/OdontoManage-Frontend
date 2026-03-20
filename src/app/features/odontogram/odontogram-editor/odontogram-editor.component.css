@@ -8,6 +8,22 @@
   margin-bottom: 20px;
 }
 
+.editor-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.odontogram-type-tag {
+  background: #edf4ff;
+  color: #1d4f91;
+  border: 1px solid #cfe0fb;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .editor-toolbar {
   background: white;
   padding: 20px;
@@ -20,6 +36,7 @@
   display: flex;
   gap: 15px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .tools button {
@@ -38,18 +55,65 @@
 }
 
 .odontogram-visual {
-  display: flex;
-  flex-direction: column;
-  gap: 60px;
-  align-items: center;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 44px 34px;
   background: white;
-  padding: 50px;
+  padding: 42px;
   border-radius: 12px;
+  border: 1px solid #e9edf4;
+  overflow: hidden;
 }
 
-.arch {
+.quadrant {
   display: flex;
-  gap: 4px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.quadrant h3 {
+  margin: 0 0 14px 0;
+  color: #3a7896;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+}
+
+.teeth-row {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.bottom-right h3,
+.bottom-left h3 {
+  margin-top: 4px;
+}
+
+.cross-line {
+  position: absolute;
+  background: #ff8a9c;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.cross-line.vertical {
+  width: 2px;
+  height: calc(100% - 64px);
+  left: 50%;
+  top: 32px;
+  transform: translateX(-50%);
+}
+
+.cross-line.horizontal {
+  height: 2px;
+  width: calc(100% - 64px);
+  top: 50%;
+  left: 32px;
+  transform: translateY(-50%);
 }
 
 .save-button {
@@ -60,4 +124,39 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+}
+
+@media (max-width: 1200px) {
+  .quadrant h3 {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 980px) {
+  .editor-page {
+    padding: 16px;
+  }
+
+  .editor-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .odontogram-visual {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding: 24px;
+  }
+
+  .top-right,
+  .bottom-right,
+  .top-left,
+  .bottom-left {
+    justify-self: start;
+  }
+
+  .cross-line {
+    display: none;
+  }
 }
