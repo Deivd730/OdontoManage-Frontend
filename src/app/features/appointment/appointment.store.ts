@@ -74,6 +74,44 @@ export class AppointmentStore {
     return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   }
 
+  formatDateTime(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleString('es-ES', {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  getDentistDisplayName(appointment: AppointmentResponse): string {
+    const dentist = appointment.dentist as unknown as {
+      name?: string;
+      fullName?: string;
+      firstName?: string;
+      lastName?: string;
+    };
+
+    if (dentist?.name?.trim()) {
+      return dentist.name;
+    }
+
+    if (dentist?.fullName?.trim()) {
+      return dentist.fullName;
+    }
+
+    const firstName = dentist?.firstName?.trim() ?? '';
+    const lastName = dentist?.lastName?.trim() ?? '';
+    const composedName = `${firstName} ${lastName}`.trim();
+
+    return composedName || 'Dentista no disponible';
+  }
+
+  getBoxDisplayName(appointment: AppointmentResponse): string {
+    return `Box ${appointment.box.id}`;
+  }
+
   formatDate(date: Date): string {
     return date.toLocaleDateString('es-ES', {
       weekday: 'long',
