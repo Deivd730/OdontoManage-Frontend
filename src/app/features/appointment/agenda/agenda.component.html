@@ -11,29 +11,63 @@
     <div class="status-message empty">No hay citas para este dia.</div>
   } @else {
     @for (appointment of store.selectedDayAppointments(); track appointment.id) {
-      <div class="appointment-card">
-        <div class="appointment-header">
-          <div class="appointment-datetime">{{ store.formatTime(appointment.visitDate) }}</div>
-          <div class="appointment-box">{{ appointment.box.name || appointment.box.id }}</div>
+      <div
+        class="appointment-card"
+        [class.expanded]="expandedAppointmentId() === appointment.id"
+        [class.collapsed]="expandedAppointmentId() !== appointment.id"
+        (click)="onAppointmentClick(appointment.id, $event)"
+      >
+        <!-- Información resumida (siempre visible) -->
+        <div class="appointment-summary">
+          <div class="summary-item">
+            <span class="summary-label">Hora:</span>
+            <span class="summary-value">{{ store.formatTime(appointment.visitDate) }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Tto:</span>
+            <span class="summary-value">{{ appointment.treatment.name }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Dentista:</span>
+            <span class="summary-value">{{ store.getDentistDisplayName(appointment) }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Box:</span>
+            <span class="summary-value">{{ store.getBoxDisplayName(appointment) }}</span>
+          </div>
         </div>
 
-        <div class="appointment-dentist">{{ store.getDentistDisplayName(appointment) }}</div>
+        <!-- Información completa (se muestra en hover o cuando está expandido por click) -->
+        <div class="appointment-details">
+          <div class="appointment-header">
+            <div class="appointment-datetime">{{ store.formatTime(appointment.visitDate) }}</div>
+            <div class="appointment-box">{{ store.getBoxDisplayName(appointment) }}</div>
+          </div>
 
-        <div class="appointment-body">
-          <div class="info-row">
-            <span class="info-label">Paciente</span>
-            <span class="info-value">{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Razon de consulta</span>
-            <span class="info-value">{{ appointment.consultationReason || 'Sin razon registrada' }}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Tratamiento</span>
-            <span class="info-value">{{ appointment.treatment.name }}</span>
+          <div class="appointment-dentist">{{ store.getDentistDisplayName(appointment) }}</div>
+
+          <div class="appointment-body">
+            <div class="info-row">
+              <span class="info-label">Paciente</span>
+              <span class="info-value">{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Razon de consulta</span>
+              <span class="info-value">{{ appointment.consultationReason || 'Sin razon registrada' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Tratamiento</span>
+              <span class="info-value">{{ appointment.treatment.name }}</span>
+            </div>
           </div>
         </div>
       </div>
     }
   }
+</div>
+
+<div class="agenda-footer">
+  <button class="agenda-new-appointment-btn" type="button" (click)="onNewAppointmentClick($event)">
+    Nueva cita
+  </button>
 </div>

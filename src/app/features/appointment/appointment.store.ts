@@ -108,6 +108,10 @@ export class AppointmentStore {
     return composedName || 'Dentista no disponible';
   }
 
+  getBoxDisplayName(appointment: AppointmentResponse): string {
+    return `Box ${appointment.box.id}`;
+  }
+
   formatDate(date: Date): string {
     return date.toLocaleDateString('es-ES', {
       weekday: 'long',
