@@ -32,10 +32,43 @@
   margin-bottom: 40px;
 }
 
+.toolbar-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.pathology-filter {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pathology-filter:hover {
+  border-color: #999;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pathology-filter:focus {
+  outline: none;
+  border-color: #333;
+  box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.1);
+}
+
 .tools {
   display: flex;
   gap: 15px;
-  margin-top: 10px;
   flex-wrap: wrap;
 }
 
