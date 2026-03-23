@@ -20,20 +20,40 @@
         <!-- Información resumida (siempre visible) -->
         <div class="appointment-summary">
           <div class="summary-item">
-            <span class="summary-label">Hora:</span>
             <span class="summary-value">{{ store.formatTime(appointment.visitDate) }}</span>
           </div>
           <div class="summary-item">
-            <span class="summary-label">Tto:</span>
             <span class="summary-value">{{ appointment.treatment.name }}</span>
           </div>
           <div class="summary-item">
-            <span class="summary-label">Dentista:</span>
             <span class="summary-value">{{ store.getDentistDisplayName(appointment) }}</span>
           </div>
           <div class="summary-item">
-            <span class="summary-label">Box:</span>
             <span class="summary-value">{{ store.getBoxDisplayName(appointment) }}</span>
+          </div>
+
+          <div class="summary-actions" role="group" aria-label="Acciones de la cita">
+            <button
+              type="button"
+              class="summary-action-btn edit"
+              aria-label="Actualizar cita"
+              title="Actualizar cita"
+              (click)="onEditAppointmentClick(appointment.id, $event)"
+            >
+              &#9998;
+            </button>
+            <button
+              type="button"
+              class="summary-action-btn delete"
+              aria-label="Eliminar cita"
+              title="Eliminar cita"
+              (click)="onDeleteAppointmentClick(appointment.id, $event)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
           </div>
         </div>
 

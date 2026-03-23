@@ -11,6 +11,8 @@ import { AppointmentStore } from '../appointment.store';
 })
 export class AgendaComponent {
   @Output() readonly newAppointmentRequested = new EventEmitter<void>();
+  @Output() readonly editAppointmentRequested = new EventEmitter<number>();
+  @Output() readonly deleteAppointmentRequested = new EventEmitter<number>();
   readonly store = inject(AppointmentStore);
   expandedAppointmentId = signal<number | null>(null);
 
@@ -29,5 +31,15 @@ export class AgendaComponent {
   onNewAppointmentClick(event: Event): void {
     event.stopPropagation();
     this.newAppointmentRequested.emit();
+  }
+
+  onEditAppointmentClick(appointmentId: number, event: Event): void {
+    event.stopPropagation();
+    this.editAppointmentRequested.emit(appointmentId);
+  }
+
+  onDeleteAppointmentClick(appointmentId: number, event: Event): void {
+    event.stopPropagation();
+    this.deleteAppointmentRequested.emit(appointmentId);
   }
 }
