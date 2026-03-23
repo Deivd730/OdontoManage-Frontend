@@ -31,17 +31,29 @@ export class OdontogramEditorComponent implements OnInit {
   // Herramientas de edicion
   pathologies: Pathology[] = [
     { id: 1, name: 'Caries', color: '#FF4136' },
+    { id: 7, name: 'Caries', color: '#6f36ffff' },
+    { id: 2, name: 'Obturacion', color: '#d96900ff' },
     { id: 2, name: 'Obturacion', color: '#0074D9' },
-    { id: 3, name: 'Corona', color: '#FFDC00' },
-    { id: 4, name: 'Ausente', color: '#AAAAAA' },
-    { id: 5, name: 'Endodoncia', color: '#B10DC9' },
-    { id: 6, name: 'Exodoncia', color: '#111111' }
+    { id: 3, name: 'Corona', color: '#ff5e00ff' },
+    { id: 3, name: 'Corona', color: '#4400ffff' },
+    { id: 4, name: 'Ausente', color: '#0c0000ff' },
+    { id: 5, name: 'Endodoncia', color: '#420dc9ff' },
+    { id: 5, name: 'Endodoncia', color: '#c90d0dff' },
+    { id: 6, name: 'Exodoncia', color: '#111111ff' },
+    { id: 6, name: 'Exodonciaort', color: '#3813f1ff' },
+    { id: 6, name: 'Exodonciaort', color: '#761313ff' },
+    { id: 6, name: 'cariesX', color: '#0c902fff' },
+    { id: 6, name: 'fisuras', color: '#c2d814ff' },
+    { id: 6, name: 'puente', color: '#0c0e01ff' },
+    { id: 6, name: 'Exodoncia', color: '#111111ff' }
   ];
 
   selectedPathology = signal<Pathology | null>(null);
   odontogram = signal<Odontogram | null>(null);
   isLoading = signal(false);
   odontogramType = signal<'adult' | 'child'>('adult');
+  filteredPathologyId = signal<number | null>(null);
+  filteredTreatment = signal<string | null>(null);
 
   upperRightTeeth = computed(() => this.odontogramType() === 'child'
     ? this.CHILD_UPPER_TEETH.slice(0, 5)
@@ -55,6 +67,16 @@ export class OdontogramEditorComponent implements OnInit {
   lowerLeftTeeth = computed(() => this.odontogramType() === 'child'
     ? this.CHILD_LOWER_TEETH.slice(5)
     : this.ADULT_LOWER_TEETH.slice(8));
+
+  // Patologías únicas para el combo box
+  uniquePathologies = computed(() => {
+    const seen = new Set<number>();
+    return this.pathologies.filter(p => {
+      if (seen.has(p.id)) return false;
+      seen.add(p.id);
+      return true;
+    });
+  });
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -252,5 +274,15 @@ export class OdontogramEditorComponent implements OnInit {
           this.notificationService.error(err.error?.error || 'Error al guardar odontograma');
         }
       });
+  }
+
+  onPathologyFilterChange(event: any): void {
+    const value = event.target.value;
+    this.filteredPathologyId.set(value ? Number(value) : null);
+  }
+
+  onTreatmentFilterChange(event: any): void {
+    const value = event.target.value;
+    this.filteredTreatment.set(value || null);
   }
 }
