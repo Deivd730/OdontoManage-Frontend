@@ -22,13 +22,29 @@
       </label>
 
       <label>
-        Tipo de documento
+        Nombre del documento
         <input
           type="text"
-          formControlName="type"
-          placeholder="Ej: Radiografía, informe, consentimiento"
-          [class.input-error]="isFieldInvalid('type')"
+          formControlName="name"
+          placeholder="Ej: Radiografía dental frontal, Consentimiento operatorio"
+          [class.input-error]="isFieldInvalid('name')"
         />
+        @if (hasError('name', 'required')) {
+          <span class="error">El nombre es obligatorio</span>
+        }
+      </label>
+
+      <label>
+        Tipo de documento
+        <select formControlName="type" [class.input-error]="isFieldInvalid('type')">
+          <option [ngValue]="">Selecciona un tipo</option>
+          <option value="Radiografía">Radiografía</option>
+          <option value="Informe">Informe</option>
+          <option value="Consentimiento">Consentimiento</option>
+          <option value="Prescripción">Prescripción</option>
+          <option value="Fotografía">Fotografía</option>
+          <option value="Otro">Otro</option>
+        </select>
         @if (hasError('type', 'required')) {
           <span class="error">El tipo es obligatorio</span>
         }
