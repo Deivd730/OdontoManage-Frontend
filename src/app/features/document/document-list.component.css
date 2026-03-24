@@ -142,7 +142,7 @@
 .document-info {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .document-info h3 {
@@ -150,12 +150,26 @@
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-main);
+  line-height: 1.4;
+}
+
+.document-type {
+  margin: 0;
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 20px;
+  font-weight: 600;
+  width: fit-content;
 }
 
 .document-date {
   margin: 0;
   font-size: 0.85rem;
   color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .document-actions {

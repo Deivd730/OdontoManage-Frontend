@@ -31,6 +31,7 @@ export class DocumentCreate implements OnInit {
     this.documentForm = this.fb.group({
       patientId: [null, Validators.required],
       type: ['', [Validators.required, Validators.minLength(2)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
       captureDate: [this.getTodayDate(), Validators.required],
       documentFile: [null, Validators.required]
     });
@@ -73,6 +74,7 @@ export class DocumentCreate implements OnInit {
     this.documentService.create({
       patientId: Number(value.patientId),
       type: String(value.type).trim(),
+      name: String(value.name).trim(),
       captureDate: String(value.captureDate),
       file: file
     }).subscribe({

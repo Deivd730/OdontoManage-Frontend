@@ -7,6 +7,7 @@ export interface PatientDocument {
   id: number;
   patient: unknown;
   type: string;
+  name: string;
   fileUrl: string | null;
   captureDate: string;
 }
@@ -14,6 +15,7 @@ export interface PatientDocument {
 export interface CreatePatientDocumentPayload {
   patientId: number;
   type: string;
+  name: string;
   captureDate: string;
   file: File;
 }
@@ -33,6 +35,7 @@ export class DocumentService {
     const formData = new FormData();
     formData.append('patient', String(payload.patientId));
     formData.append('type', payload.type);
+    formData.append('name', payload.name);
     formData.append('captureDate', payload.captureDate);
     formData.append('documentFile', payload.file);
 

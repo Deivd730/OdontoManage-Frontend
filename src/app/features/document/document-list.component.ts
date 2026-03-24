@@ -38,7 +38,11 @@ export class DocumentListComponent implements OnInit {
     this.isLoading.set(true);
     this.documentService.getByPatient(patientId).subscribe({
       next: (docs) => {
-        this.documents.set(docs);
+        // Ordenar documentos de más reciente a más antiguo
+        const sortedDocs = docs.sort((a, b) => {
+          return new Date(b.captureDate).getTime() - new Date(a.captureDate).getTime();
+        });
+        this.documents.set(sortedDocs);
         this.isLoading.set(false);
       },
       error: (err) => {
