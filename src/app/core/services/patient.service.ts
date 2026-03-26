@@ -18,7 +18,11 @@ export interface Patient {
   familyHistory?: string;
   lifestyleHabits?: string;
   medicationAllergies?: string;
-  registrationDate: string;
+  medicalTreatmentConsent?: boolean;
+  anesthesiaConsent?: boolean;
+  hasInfectiousDiseases?: boolean;
+  infectiousDiseases?: string;
+  registrationDate?: string;
   profile_image_name?: string;
 }
 
