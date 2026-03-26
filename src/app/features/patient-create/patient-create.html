@@ -68,7 +68,24 @@
           <div class="form-group">
             <label for="socialSecurityNumber">Número de Seguro Social</label>
             <input type="text" id="socialSecurityNumber" formControlName="socialSecurityNumber" [class.input-error]="isFieldInvalid('socialSecurityNumber')" placeholder="Ingresa el número de seguro social (opcional)"/>
+            
+            @if (hasError('socialSecurityNumber', 'minlength')) {
+              <span class="error-message">El número de seguro social debe tener al menos 5 caracteres</span>
+            }
           </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="birthDate">Fecha de nacimiento</label>
+            <input required type="date" id="birthDate" formControlName="birthDate" [max]="today" [class.input-error]="isFieldInvalid('birthDate')"/>
+            
+            @if (hasError('birthDate', 'required')) {
+              <span class="error-message">La fecha de nacimiento es requerida</span>
+            }
+            @if (hasError('birthDate', 'futureDate')) {
+              <span class="error-message">La fecha de nacimiento no puede ser futura</span>
+            }
+          </div>          
         </div>
       </div>
 
@@ -93,17 +110,28 @@
             @if (hasError('email', 'email')) {
               <span class="error-message">El email no es válido</span>
             }
+            @if (hasError('email', 'minlength')) {
+              <span class="error-message">El email debe tener al menos 5 caracteres</span>
+            }
           </div>
         </div>
 
         <div class="form-group full-width">
           <label for="address">Dirección</label>
           <input type="text" id="address" formControlName="address" [class.input-error]="isFieldInvalid('address')" placeholder="Ingresa la dirección completa (opcional)"/>
+          
+          @if (hasError('address', 'minlength')) {
+            <span class="error-message">La dirección debe tener al menos 5 caracteres</span>
+          }
         </div>
 
         <div class="form-group full-width">
           <label for="billingData">Información de Facturación</label>
           <input type="text" id="billingData" formControlName="billingData" [class.input-error]="isFieldInvalid('billingData')" placeholder="Ingresa la información de facturación (opcional)"/>
+          
+          @if (hasError('billingData', 'minlength')) {
+            <span class="error-message">La información de facturación debe tener al menos 5 caracteres</span>
+          }
         </div>
       </div>
 
@@ -114,22 +142,86 @@
         <div class="form-group full-width">
           <label for="healthStatus">Estado de Salud</label>
           <input type="text" id="healthStatus" formControlName="healthStatus" [class.input-error]="isFieldInvalid('healthStatus')" placeholder="Ingresa el estado de salud actual del paciente (opcional)"/>
+          
+          @if (hasError('healthStatus', 'minlength')) {
+            <span class="error-message">El estado de salud debe tener al menos 3 caracteres</span>
+          }
         </div>
 
         <div class="form-group full-width">
           <label for="familyHistory">Antecedentes Familiares</label>
           <input type="text" id="familyHistory" formControlName="familyHistory" [class.input-error]="isFieldInvalid('familyHistory')" placeholder="Ingresa los antecedentes familiares relevantes (opcional)"/>
+          
+          @if (hasError('familyHistory', 'minlength')) {
+            <span class="error-message">Los antecedentes familiares deben tener al menos 3 caracteres</span>
+          }
         </div>
 
         <div class="form-group full-width">
           <label for="lifestyleHabits">Hábitos de Vida</label>
           <input type="text" id="lifestyleHabits" formControlName="lifestyleHabits" [class.input-error]="isFieldInvalid('lifestyleHabits')" placeholder="Ingresa los hábitos de vida (opcional)"/>
+          
+          @if (hasError('lifestyleHabits', 'minlength')) {
+            <span class="error-message">Los hábitos de vida deben tener al menos 3 caracteres</span>
+          }
         </div>
 
         <div class="form-group full-width">
           <label for="medicationAllergies">Alergias a Medicamentos</label>
           <input type="text" id="medicationAllergies" formControlName="medicationAllergies" [class.input-error]="isFieldInvalid('medicationAllergies')" placeholder="Ingresa las alergias a medicamentos (opcional)"/>
+          
+          @if (hasError('medicationAllergies', 'minlength')) {
+            <span class="error-message">Las alergias a medicamentos deben tener al menos 3 caracteres</span>
+          }
         </div>
+
+        <div class="form-row">
+          <div class="form-group consent-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="medicalTreatmentConsent" />
+              <span>Acepto el consentimiento de tratamiento medico</span>
+            </label>
+            @if (hasError('medicalTreatmentConsent', 'required')) {
+              <span class="error-message">Debes aceptar este consentimiento</span>
+            }
+          </div>
+
+          <div class="form-group consent-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="anesthesiaConsent" />
+              <span>Acepto el consentimiento de anestesia</span>
+            </label>
+            @if (hasError('anesthesiaConsent', 'required')) {
+              <span class="error-message">Debes aceptar este consentimiento</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-group full-width consent-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="hasInfectiousDiseases" />
+            <span>El paciente tiene enfermedades infecciosas</span>
+          </label>
+        </div>
+
+        @if (patientForm.get('hasInfectiousDiseases')?.value) {
+          <div class="form-group full-width">
+            <label for="infectiousDiseases">Enfermedades infecciosas</label>
+            <textarea
+              id="infectiousDiseases"
+              formControlName="infectiousDiseases"
+              [class.input-error]="isFieldInvalid('infectiousDiseases') || hasFormError('infectiousDiseasesRequired')"
+              placeholder="Especifica las enfermedades infecciosas"
+              rows="3"
+            ></textarea>
+            @if (hasFormError('infectiousDiseasesRequired')) {
+              <span class="error-message">Debes especificar las enfermedades infecciosas</span>
+            }
+            @if (hasError('infectiousDiseases', 'minlength')) {
+              <span class="error-message">Las enfermedades infecciosas deben tener al menos 3 caracteres</span>
+            }
+          </div>
+        }
       </div>
 
       <button 
