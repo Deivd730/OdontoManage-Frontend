@@ -31,6 +31,7 @@ export class DocumentCreate implements OnInit {
     this.documentForm = this.fb.group({
       patientId: [null, Validators.required],
       type: ['', [Validators.required, Validators.minLength(2)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
       captureDate: [this.getTodayDate(), Validators.required],
       documentFile: [null, Validators.required]
     });
@@ -73,13 +74,16 @@ export class DocumentCreate implements OnInit {
     this.documentService.create({
       patientId: Number(value.patientId),
       type: String(value.type).trim(),
+      name: String(value.name).trim(),
       captureDate: String(value.captureDate),
       file: file
     }).subscribe({
       next: () => {
         this.isLoading.set(false);
         this.notificationService.success('Documento subido correctamente');
-        this.router.navigate(['/documents']);
+        this.router.navigate(['/documents'], {
+          queryParams: { patientId: value.patientId }
+        });
       },
       error: (error) => {
         this.isLoading.set(false);
@@ -90,7 +94,10 @@ export class DocumentCreate implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/documents']);
+    const patientId = this.documentForm.get('patientId')?.value;
+    this.router.navigate(['/documents'], {
+      queryParams: patientId ? { patientId } : {}
+    });
   }
 
   isFieldInvalid(field: string): boolean {

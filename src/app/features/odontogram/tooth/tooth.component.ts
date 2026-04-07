@@ -1,4 +1,4 @@
-import { Component, input, output, computed } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { ToothPathology } from '@models/odontogram';
 
 @Component({
@@ -8,17 +8,30 @@ import { ToothPathology } from '@models/odontogram';
   styleUrls: ['./tooth.component.css']
 })
 export class ToothComponent {
-  // Inputs basados en Signals
+  private readonly WHOLE_TOOTH_FACE = 0;
+
+  // Inputs based on Signals
   toothNumber = input.required<number>();
   appliedPathologies = input<ToothPathology[]>([]);
-  
+
   // Output moderno
   onFaceClick = output<number>();
 
-  // Función para determinar el color (podría ser un computed si fuera más complejo)
+  // If a whole-tooth pathology exists, paint all faces with that color.
   getFaceColor(face: number): string {
     const pathologies = this.appliedPathologies();
+    const wholeTooth = pathologies.find(p => p.toothFace === this.WHOLE_TOOTH_FACE);
+
+    if (wholeTooth) {
+      return wholeTooth.pathology.color || '#ff0000';
+    }
+
     const found = pathologies.find(p => p.toothFace === face);
     return found ? found.pathology.color || '#ff0000' : '#ffffff';
+  }
+
+  hasPathologyId5(): boolean {
+    const pathologies = this.appliedPathologies();
+    return pathologies.some(p => p.pathology.id === 5);
   }
 }

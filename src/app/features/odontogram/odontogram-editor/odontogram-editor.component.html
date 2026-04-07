@@ -1,18 +1,36 @@
 <div class="editor-page">
   @if (odontogram()) {
     <header class="editor-header">
-      <h2>Edición Dental</h2>
+      <h2>
+        Edicion Dental
+        <span class="odontogram-type-tag">{{ odontogramType() === 'child' ? 'Infantil' : 'Adulto' }}</span>
+      </h2>
       <button class="save-button" (click)="save()" [disabled]="isLoading()">
         {{ isLoading() ? 'Guardando...' : 'Guardar odontograma' }}
       </button>
     </header>
 
-    <!-- Barra de Herramientas -->
-    <div class="editor-toolbar">
-      <p>Seleccione una patología para pintar el diente:</p>
+    <div class="editor-toolbar">      
+     
+      <div class="toolbar-section">
+        <label for="treatment-filter" class="filter-label">Tratamiento:</label>
+        <select 
+          id="treatment-filter"
+          class="pathology-filter"
+          (change)="onTreatmentFilterChange($event)">
+          <option value="">Todos</option>
+          <option value="pending">Pendiente</option>
+          <option value="done">Hecho</option>
+          <option value="caries">Caries</option>
+          <option value="radio">Radio</option>
+          <option value="fisuras">Fisuras</option>
+          <option value="ausencias">Ausencias</option>
+        </select>
+      </div>
+
       <div class="tools">
         @for (p of pathologies; track p.id) {
-          <button 
+          <button
             [class.active]="selectedPathology()?.id === p.id"
             (click)="selectedPathology.set(p)"
             [style.border-left-color]="p.color">
@@ -22,25 +40,57 @@
       </div>
     </div>
 
-    <!-- El Mapa Dental -->
     <div class="odontogram-visual">
-      <div class="arch upper">
-        @for (n of upperTeeth; track n) {
-          <app-tooth 
-            [toothNumber]="n" 
-            [appliedPathologies]="getPatosForTooth(n)"
-            (onFaceClick)="handleFaceClick(n, $event)" />
-        }
-      </div>
+      <div class="cross-line vertical"></div>
+      <div class="cross-line horizontal"></div>
 
-      <div class="arch lower">
-        @for (n of lowerTeeth; track n) {
-          <app-tooth 
-            [toothNumber]="n" 
-            [appliedPathologies]="getPatosForTooth(n)"
-            (onFaceClick)="handleFaceClick(n, $event)" />
-        }
-      </div>
+      <section class="quadrant top-right">
+        <h3>Cuadrante superior derecho</h3>
+        <div class="teeth-row">
+          @for (n of upperRightTeeth(); track n) {
+            <app-tooth
+              [toothNumber]="n"
+              [appliedPathologies]="getPatosForTooth(n)"
+              (onFaceClick)="handleFaceClick(n, $event)" />
+          }
+        </div>
+      </section>
+
+      <section class="quadrant top-left">
+        <h3>Cuadrante superior izquierdo</h3>
+        <div class="teeth-row">
+          @for (n of upperLeftTeeth(); track n) {
+            <app-tooth
+              [toothNumber]="n"
+              [appliedPathologies]="getPatosForTooth(n)"
+              (onFaceClick)="handleFaceClick(n, $event)" />
+          }
+        </div>
+      </section>
+
+      <section class="quadrant bottom-right">
+        <h3>Cuadrante inferior derecho</h3>
+        <div class="teeth-row">
+          @for (n of lowerRightTeeth(); track n) {
+            <app-tooth
+              [toothNumber]="n"
+              [appliedPathologies]="getPatosForTooth(n)"
+              (onFaceClick)="handleFaceClick(n, $event)" />
+          }
+        </div>
+      </section>
+
+      <section class="quadrant bottom-left">
+        <h3>Cuadrante inferior izquierdo</h3>
+        <div class="teeth-row">
+          @for (n of lowerLeftTeeth(); track n) {
+            <app-tooth
+              [toothNumber]="n"
+              [appliedPathologies]="getPatosForTooth(n)"
+              (onFaceClick)="handleFaceClick(n, $event)" />
+          }
+        </div>
+      </section>
     </div>
   } @else {
     <div class="no-patient">

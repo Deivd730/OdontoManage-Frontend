@@ -8,6 +8,7 @@ export interface Patient {
   firstName: string;
   lastName: string;
   nationalId: string;
+  birthDate?: string;
   socialSecurityNumber?: string;
   phone?: string;
   email?: string;
@@ -17,7 +18,11 @@ export interface Patient {
   familyHistory?: string;
   lifestyleHabits?: string;
   medicationAllergies?: string;
-  registrationDate: string;
+  medicalTreatmentConsent?: boolean;
+  anesthesiaConsent?: boolean;
+  hasInfectiousDiseases?: boolean;
+  infectiousDiseases?: string;
+  registrationDate?: string;
   profile_image_name?: string;
 }
 
@@ -26,6 +31,7 @@ export interface PatientResponse extends Patient {
   firstName: string;
   lastName: string;
   nationalId: string;
+  birthDate?: string;
   socialSecurityNumber?: string;
   phone?: string;
   email?: string;

@@ -1,9 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PatientResponse } from '@services/patient.service';
 import { PatientListComponent } from '@features/patient-list/patient-list.component';
 import { DocumentListComponent } from './document-list.component';
-import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-document',
@@ -19,23 +18,20 @@ export class DocumentComponent implements OnInit {
   selectedPatientId = signal<number | null>(null);
 
   ngOnInit(): void {
-    this.syncIdFromUrl();
+    // Leer el patientId de la URL al cargar (viene de document-create o de un refresh)
+    const paramId = this.route.snapshot.queryParamMap.get('patientId');
+    if (paramId) {
+      this.selectedPatientId.set(Number(paramId));
+    }
   }
 
-  private syncIdFromUrl(): void {
-    // Captura el patientId de la URL si existe
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      const child = this.route.firstChild;
-      if (child) {
-        const id = child.snapshot.paramMap.get('id');
-        this.selectedPatientId.set(id ? Number(id) : null);
-      }
-    });
-  }
-
-  onPatientSelected(patient: PatientResponse) {
+  onPatientSelected(patient: PatientResponse): void {
     this.selectedPatientId.set(patient.id);
+    // Actualizar la URL con el paciente seleccionado
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { patientId: patient.id },
+      queryParamsHandling: 'merge'
+    });
   }
 }

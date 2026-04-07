@@ -20,6 +20,7 @@ export interface ToothPathology {
 export interface Odontogram {
     id?: number;
     patient: any;
-    appointment?: any;    
+    appointment?: any;
+    type?: 'adult' | 'child';
     toothPathologies: ToothPathology[];
 }

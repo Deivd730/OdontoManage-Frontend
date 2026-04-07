@@ -5,21 +5,12 @@ import { PatientResponse } from '@services/patient.service';
   selector: 'app-patient-list',
   standalone: true,
   template: `
-    <aside class="patients-list">
-      <div class="search-box">
-        <input
-          type="text"
-          placeholder="Buscar por nombre o DNI"
-          [value]="searchTerm()"
-          (input)="onSearchInput($event)"
-        />
-      </div>
-
+    <aside class="patients-list">    
       <div class="list-body">
         @if (isLoading()) {
           <div class="empty-state">Cargando pacientes...</div>
         } @else if (patients().length === 0) {
-          <div class="empty-state">No hay pacientes para mostrar.</div>
+          <div class="empty-state h2 ">Selecciona un paciente</div>
         } @else {
           <div class="patients-items">
             @for (patient of patients(); track patient.id) {

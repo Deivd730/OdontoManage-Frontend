@@ -2,9 +2,9 @@
     display: grid;
     grid-template-columns: 350px 1fr;
     /* Sidebar de 350px y el resto para el editor */
-    height: calc(100vh - 70px);
+    height: calc(100vh - 80px);
     /* Ajusta según el alto de tu navbar */
-    width: 100vw;
+    width: 100%;
     overflow: hidden;
 }
 

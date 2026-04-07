@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PatientService } from '../../core/services/patient.service';
 
@@ -16,6 +16,7 @@ export class PatientCreate {
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
   isLoading = signal<boolean>(false);
+  readonly today = new Date().toISOString().split('T')[0];
 
   constructor(
     private fb: FormBuilder,
@@ -27,15 +28,22 @@ export class PatientCreate {
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       nationalId: ['', [Validators.required, Validators.minLength(5)]],
-      socialSecurityNumber: [''],
-      phone: ['', [Validators.pattern(/^\d{9,}$/)]],
-      email: ['', [Validators.email]],
-      address: [''],
-      billingData: [''],
-      healthStatus: [''],
-      familyHistory: [''],
-      lifestyleHabits: [''],
-      medicationAllergies: ['']
+      socialSecurityNumber: ['', [Validators.minLength(5), Validators.maxLength(20)]],
+      birthDate: ['', [Validators.required, this.noPastDateValidator()]],
+      phone: ['', [Validators.pattern(/^\d{9,}$/), Validators.maxLength(20)]],
+      email: ['', [Validators.email, Validators.minLength(5)]],
+      address: ['', [Validators.minLength(5)]],
+      billingData: ['', [Validators.minLength(5)]],
+      healthStatus: ['', [Validators.minLength(3)]],
+      familyHistory: ['', [Validators.minLength(3)]],
+      lifestyleHabits: ['', [Validators.minLength(3)]],
+      medicationAllergies: ['', [Validators.minLength(3)]],
+      medicalTreatmentConsent: [false, [Validators.requiredTrue]],
+      anesthesiaConsent: [false, [Validators.requiredTrue]],
+      hasInfectiousDiseases: [false],
+      infectiousDiseases: ['', [Validators.minLength(3)]]
+    }, {
+      validators: [this.infectiousDiseasesRequiredWhenCheckedValidator()]
     });
   }
 
@@ -49,8 +57,13 @@ export class PatientCreate {
     this.errorMessage.set(null);
     this.successMessage.set(null);
 
+    const hasInfectiousDiseases = !!this.patientForm.value.hasInfectiousDiseases;
+    const infectiousDiseases = (this.patientForm.value.infectiousDiseases ?? '').trim();
+
     const patientData = {
       ...this.patientForm.value,
+      birthDate: this.patientForm.value.birthDate,
+      infectiousDiseases: hasInfectiousDiseases ? infectiousDiseases : (infectiousDiseases || 'None'),
       registrationDate: new Date().toISOString()
     };
 
@@ -103,5 +116,41 @@ export class PatientCreate {
   isFieldInvalid(field: string): boolean {
     const control = this.patientForm.get(field);
     return !!(control && control.invalid && control.touched);
+  }
+
+  hasFormError(error: string): boolean {
+    return !!(this.patientForm.hasError(error) && this.patientForm.touched);
+  }
+
+  private infectiousDiseasesRequiredWhenCheckedValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const hasInfectiousDiseases = control.get('hasInfectiousDiseases')?.value;
+      const infectiousDiseases = control.get('infectiousDiseases')?.value;
+
+      if (hasInfectiousDiseases && !String(infectiousDiseases ?? '').trim()) {
+        return { infectiousDiseasesRequired: true };
+      }
+
+      return null;
+    };
+  }
+
+  private noPastDateValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) {
+        return null;
+      }
+
+      const selectedDate = new Date(control.value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      selectedDate.setHours(0, 0, 0, 0);
+
+      if (selectedDate > today) {
+        return { futureDate: true };
+      }
+
+      return null;
+    };
   }
 }

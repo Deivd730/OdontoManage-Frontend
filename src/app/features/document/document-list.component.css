@@ -1,75 +1,108 @@
-﻿.document-list-container {
+﻿/* Document List View */
+.document-list-container {
   padding: 2rem;
   background: var(--bg-minimal);
   height: 100%;
   overflow-y: auto;
+  font-family: var(--font-body);
+  color: var(--text-main);
 }
 
 .empty-state {
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 3rem 1.25rem;
   color: var(--text-muted);
+  font-size: 0.95rem;
 }
 
 .empty-state h2 {
   font-family: var(--font-title);
   color: var(--primary-dark);
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--text-muted);
 }
 
 .document-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 
 .document-header h2 {
   font-family: var(--font-title);
-  color: var(--primary-dark);
+  font-size: 1.75rem;
   margin: 0;
+  color: var(--primary-dark);
 }
 
 .btn {
   border: none;
   border-radius: 8px;
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.5rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   transition: all 0.3s ease;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
 }
 
 .btn.primary {
   background-color: var(--primary-dark);
   color: #fff;
+  box-shadow: 0 4px 15px rgba(27, 115, 57, 0.15);
 }
 
-.btn.primary:hover {
+.btn.primary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(27, 115, 57, 0.25);
 }
 
 .btn.ghost {
-  background: #fff;
+  background: #ffffff;
   color: var(--text-main);
   border: 1px solid #eef2f0;
+}
+
+.btn.ghost:hover:not(:disabled) {
+  background-color: #fafcfb;
+  border-color: var(--primary-medium);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .loading-state {
   text-align: center;
   padding: 2rem;
   color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 .empty-documents {
   text-align: center;
   padding: 3rem 2rem;
-  background: #fff;
+  background: #ffffff;
   border-radius: 12px;
   border: 1px solid #eef2f0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.empty-documents p {
+  margin: 0 0 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
 }
 
 .documents-grid {
@@ -78,7 +111,7 @@
 }
 
 .document-card {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #eef2f0;
   border-radius: 12px;
   padding: 1.5rem;
@@ -87,10 +120,12 @@
   gap: 1rem;
   align-items: center;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
 }
 
 .document-card:hover {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-medium);
 }
 
 .document-icon {
@@ -101,18 +136,40 @@
   display: grid;
   place-items: center;
   color: var(--primary-dark);
+  flex-shrink: 0;
+}
+
+.document-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .document-info h3 {
-  margin: 0 0 0.25rem;
-  font-size: 1rem;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--text-main);
+  line-height: 1.4;
+}
+
+.document-type {
+  margin: 0;
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 20px;
+  font-weight: 600;
+  width: fit-content;
 }
 
 .document-date {
   margin: 0;
   font-size: 0.85rem;
   color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .document-actions {
@@ -125,13 +182,14 @@
   height: 36px;
   border-radius: 8px;
   border: 1px solid #eef2f0;
-  background: #fff;
+  background: #ffffff;
   display: grid;
   place-items: center;
   cursor: pointer;
   transition: all 0.3s ease;
   color: var(--text-main);
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .btn-icon:hover {
@@ -140,12 +198,17 @@
   color: var(--primary-dark);
 }
 
+.btn-icon.danger {
+  color: #d32f2f;
+}
+
 .btn-icon.danger:hover {
   background: #fff5f5;
   border-color: #ffcccc;
   color: #d32f2f;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .document-list-container {
     padding: 1rem;
@@ -157,6 +220,14 @@
     gap: 1rem;
   }
 
+  .document-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    flex: 1;
+  }
+
   .document-card {
     grid-template-columns: auto 1fr;
     gap: 1rem;
@@ -165,5 +236,19 @@
   .document-actions {
     grid-column: 1 / -1;
     justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .document-list-container {
+    padding: 1rem;
+  }
+
+  .document-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .document-card {
+    padding: 1rem;
   }
 }
