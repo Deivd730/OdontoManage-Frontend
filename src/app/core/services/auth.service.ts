@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core'; // Añadido signal
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -32,6 +32,8 @@ export class AuthService {
   private tokenKey = environment.tokenKey;
   private refreshTokenKey = environment.refreshTokenKey;
   private jwtHelper = new JwtHelperService();
+  private tokenExpirationTimer: ReturnType<typeof setTimeout> | null = null;
+  private isLoggingOut = false;
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
@@ -41,7 +43,9 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router
-  ) { }
+  ) {
+    this.initializeSessionFromStoredToken();
+  }
 
   /**
    * Realiza el login del usuario con Symfony/Lexik JWT
@@ -55,9 +59,9 @@ export class AuthService {
             this.setRefreshToken(response.refresh_token);
           }
 
-          // ACTUALIZACIÓN DE ESTADOS
           this.isAuthenticatedSubject.next(true);
-          this.currentUser.set(this.getDecodedToken()); // Actualizamos el signal al loguear
+          this.currentUser.set(this.getDecodedToken());
+          this.scheduleAutoLogout(response.token);
         }
       })
     );
@@ -68,17 +72,28 @@ export class AuthService {
   }
 
   /**
-   * Cierra la sesión del usuario
+   * Cierra la sesion del usuario
    */
-  logout(): void {
+  logout(reason: 'manual' | 'expired' | 'unauthorized' = 'manual'): void {
+    if (this.isLoggingOut) {
+      return;
+    }
+
+    this.isLoggingOut = true;
+    this.clearAutoLogoutTimer();
     this.removeToken();
     this.removeRefreshToken();
 
-    // ACTUALIZACIÓN DE ESTADOS
     this.isAuthenticatedSubject.next(false);
-    this.currentUser.set(null); // Limpiamos el signal al cerrar sesión
+    this.currentUser.set(null);
 
-    this.router.navigate(['/login']);
+    const navigationExtras = reason === 'expired'
+      ? { queryParams: { sessionExpired: '1' } }
+      : undefined;
+
+    this.router.navigate(['/login'], navigationExtras).finally(() => {
+      this.isLoggingOut = false;
+    });
   }
 
   /**
@@ -90,6 +105,7 @@ export class AuthService {
 
   private setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
+    this.scheduleAutoLogout(token);
   }
 
   private removeToken(): void {
@@ -126,17 +142,16 @@ export class AuthService {
       if (token && !this.jwtHelper.isTokenExpired(token)) {
         return this.jwtHelper.decodeToken(token) as UserData;
       }
-    } catch (e) {
+    } catch {
       return null;
     }
+
     return null;
   }
 
   /**
    * Obtiene el usuario actual desde el token (Mantenido por compatibilidad)
    */
-
-
   getCurrentUser(): UserData | null {
     return this.getDecodedToken();
   }
@@ -177,4 +192,54 @@ export class AuthService {
     }
   }
 
+  private initializeSessionFromStoredToken(): void {
+    const token = this.getToken();
+    if (!token) {
+      return;
+    }
+
+    if (this.jwtHelper.isTokenExpired(token)) {
+      this.logout('expired');
+      return;
+    }
+
+    this.isAuthenticatedSubject.next(true);
+    this.currentUser.set(this.getDecodedToken());
+    this.scheduleAutoLogout(token);
+  }
+
+  private scheduleAutoLogout(token: string): void {
+    this.clearAutoLogoutTimer();
+
+    let expirationDate: Date | null;
+    try {
+      expirationDate = this.jwtHelper.getTokenExpirationDate(token);
+    } catch {
+      this.logout('unauthorized');
+      return;
+    }
+
+    if (!expirationDate) {
+      this.logout('unauthorized');
+      return;
+    }
+
+    const expiresInMs = expirationDate.getTime() - Date.now();
+    if (expiresInMs <= 0) {
+      this.logout('expired');
+      return;
+    }
+
+
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.logout('expired');
+    }, expiresInMs);
+  }
+
+  private clearAutoLogoutTimer(): void {
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+      this.tokenExpirationTimer = null;
+    }
+  }
 }

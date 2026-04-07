@@ -2,25 +2,30 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 
 export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.getToken();
 
-  console.log('--- Interceptando Petición ---');
-  console.log('URL:', req.url);
-  console.log('Token encontrado:', !!token); // Debería salir 'true'
-
   const isLoginRequest = req.url.includes('/api/login');
+  const isRegisterRequest = req.url.includes('/api/users/register');
+  const isPublicAuthRequest = isLoginRequest || isRegisterRequest;
 
-  if (token && !isLoginRequest) {
-    console.log('Añadiendo cabecera Authorization...');
+  if (token && !isPublicAuthRequest) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
       }
     });
   }
-  return next(req).pipe( /* ... resto del código ... */);
-}
+
+  return next(req).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401 && !isPublicAuthRequest) {
+        authService.logout('unauthorized');
+      }
+
+      return throwError(() => error);
+    })
+  );
+};
