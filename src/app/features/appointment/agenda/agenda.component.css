@@ -43,7 +43,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 0.58rem 0.88rem;
+  padding: 0.45rem 0.75rem;
   background: #f7f8fb;
   border-left: 3px solid #4caf50;
   border-radius: 9px;
@@ -51,7 +51,7 @@
   transition: background 0.2s ease, box-shadow 0.2s ease, max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
-  max-height: 46px;
+  max-height: 42px;
   overflow: hidden;
 }
 
@@ -62,19 +62,19 @@
 
 .appointment-card.expanded {
   max-height: none;
-  padding: 0.9rem 0.88rem 0.96rem;
+  padding: 0.8rem 0.75rem 0.9rem;
   background: #f2f4f8;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .appointment-summary {
   display: grid;
-  grid-template-columns: minmax(52px, auto) minmax(0, 1.2fr) minmax(0, 1.3fr) auto;
+  grid-template-columns: minmax(52px, auto) minmax(0, 1.15fr) minmax(0, 1.15fr) auto;
   align-items: center;
-  gap: 0.62rem;
+  gap: 0.32rem;
   flex-shrink: 0;
-  min-height: 30px;
-  max-height: 30px;
+  min-height: 28px;
+  max-height: 28px;
   opacity: 1;
   transform: translateY(0);
   overflow: hidden;
@@ -107,29 +107,31 @@
 .summary-actions {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.22rem;
   justify-content: flex-end;
+  justify-self: end;
 }
 
 .btn-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid #eef2f0;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid #e6ebf2;
   background: #ffffff;
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
   color: #546072;
   text-decoration: none;
   flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.05);
 }
 
 .btn-icon:hover {
-  background: #eef3ff;
-  border-color: #9cb0e3;
-  color: #3556a8;
+  transform: translateY(-1px);
+  border-color: #cfd8e4;
+  box-shadow: 0 3px 8px rgba(17, 24, 39, 0.08);
 }
 
 .btn-icon:active {
@@ -142,11 +144,13 @@
 }
 
 .btn-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
 }
 
 .btn-icon.edit:hover {
+  background: #f4fbf6;
+  border-color: #c8e2cf;
   color: #2f6f43;
 }
 
@@ -155,8 +159,8 @@
 }
 
 .btn-icon.danger:hover {
-  background: #fff5f5;
-  border-color: #ffcccc;
+  background: #fff3f3;
+  border-color: #f2bcbc;
   color: #b3261e;
 }
 
@@ -272,13 +276,13 @@
   }
 
   .appointment-card {
-    max-height: 50px;
+    max-height: 44px;
   }
 
   .appointment-summary {
-    grid-template-columns: 1fr 1fr auto auto;
-    max-height: 38px;
-    gap: 0.34rem 0.5rem;
+    grid-template-columns: 1fr 1fr minmax(84px, auto);
+    max-height: 32px;
+    gap: 0.28rem 0.45rem;
   }
 
   .summary-item {
@@ -291,17 +295,17 @@
 
   .summary-actions {
     margin-left: 0;
+    gap: 0.18rem;
   }
 
-  .summary-action-btn {
+  .btn-icon {
     width: 24px;
     height: 24px;
-    font-size: 0.78rem;
   }
 
-  .summary-action-btn svg {
-    width: 14px;
-    height: 14px;
+  .btn-icon svg {
+    width: 13px;
+    height: 13px;
   }
 
   .agenda-new-appointment-btn {
