@@ -69,7 +69,7 @@
 
 .appointment-summary {
   display: grid;
-  grid-template-columns: minmax(52px, auto) minmax(0, 1.1fr) minmax(0, 1.2fr) auto auto;
+  grid-template-columns: minmax(52px, auto) minmax(0, 1.2fr) minmax(0, 1.3fr) auto;
   align-items: center;
   gap: 0.62rem;
   flex-shrink: 0;
@@ -107,50 +107,56 @@
 .summary-actions {
   display: inline-flex;
   align-items: center;
-  gap: 0.34rem;
-  margin-left: 0.12rem;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
-.summary-action-btn {
-  width: 27px;
-  height: 27px;
-  border: 1px solid #d8dde5;
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #eef2f0;
   background: #ffffff;
-  border-radius: 7px;
-  color: #546072;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.88rem;
-  line-height: 1;
+  display: grid;
+  place-items: center;
   cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  transition: all 0.3s ease;
+  color: #546072;
+  text-decoration: none;
+  flex-shrink: 0;
 }
 
-.summary-action-btn svg {
-  width: 16px;
-  height: 16px;
+.btn-icon:hover {
+  background: #eef3ff;
+  border-color: #9cb0e3;
+  color: #3556a8;
 }
 
-.summary-action-btn:hover {
-  border-color: #b6c0cf;
-  background: #f6f8fb;
-}
-
-.summary-action-btn:active {
+.btn-icon:active {
   transform: translateY(1px);
 }
 
-.summary-action-btn:focus-visible {
+.btn-icon:focus-visible {
   outline: 2px solid #3459a4;
   outline-offset: 1px;
 }
 
-.summary-action-btn.edit:hover {
+.btn-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.btn-icon.edit:hover {
   color: #2f6f43;
 }
 
-.summary-action-btn.delete:hover {
+.btn-icon.danger {
+  color: #d32f2f;
+}
+
+.btn-icon.danger:hover {
+  background: #fff5f5;
+  border-color: #ffcccc;
   color: #b3261e;
 }
 
