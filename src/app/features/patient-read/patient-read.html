@@ -78,7 +78,6 @@
 					</div>
 						<div class="detail-actions">
 						@if (!isEditing()) {
-							<button class="btn new-appointment" (click)="createAppointment()">Nueva cita</button>
 							<button class="btn ghost" (click)="startEdit()">Editar</button>
 							<button class="btn danger" (click)="requestDelete()" [disabled]="isLoading()">Eliminar</button>
 						} @else {
