@@ -248,9 +248,9 @@
 
 .agenda-new-appointment-btn {
   width: 100%;
-  border: 1px dashed #9cb0e3;
-  background: #eef3ff;
-  color: #3556a8;
+  border: 1px dashed #7ebc92;
+  background: #edf8f1;
+  color: #1f6c3e;
   border-radius: 10px;
   padding: 0.62rem 0.8rem;
   font-size: 0.83rem;
@@ -260,13 +260,18 @@
 }
 
 .agenda-new-appointment-btn:hover {
-  background: #e3ebff;
-  border-color: #7e97d8;
-  box-shadow: 0 4px 10px rgba(53, 86, 168, 0.14);
+  background: #e4f3ea;
+  border-color: #58a678;
+  box-shadow: 0 4px 10px rgba(31, 108, 62, 0.18);
 }
 
 .agenda-new-appointment-btn:active {
   transform: translateY(1px);
+}
+
+.agenda-new-appointment-btn:focus-visible {
+  outline: 2px solid #2f8f57;
+  outline-offset: 2px;
 }
 
 @media (max-width: 640px) {
