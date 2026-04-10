@@ -1,5 +1,20 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { AppointmentResponse, AppointmentService } from '@services/appointment.service';
+import {
+  AppointmentResponse,
+  AppointmentService,
+  CreateAppointmentRequest,
+} from '@services/appointment.service';
+import { NotificationService } from '@services/notification.service';
+import { PatientService } from '@services/patient.service';
+import {
+  AppointmentEditorAlert,
+  AppointmentFormValue,
+  BaseOption,
+  TreatmentOption,
+  UpdateAppointmentOutcome,
+} from './appointment.models';
+import { AppointmentConflictValidatorService } from './domain/appointment-conflict-validator.service';
+import { AppointmentErrorMapperService } from './domain/appointment-error-mapper.service';
 
 export interface CalendarDay {
   date: Date;
@@ -13,11 +28,22 @@ export interface CalendarDay {
 @Injectable()
 export class AppointmentStore {
   private readonly appointmentService = inject(AppointmentService);
+  private readonly patientService = inject(PatientService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly conflictValidator = inject(AppointmentConflictValidatorService);
+  private readonly errorMapper = inject(AppointmentErrorMapperService);
 
   readonly allAppointments = signal<AppointmentResponse[]>([]);
   readonly currentDate = signal<Date>(new Date());
   readonly selectedDate = signal<Date>(new Date());
   readonly isLoading = signal(false);
+  readonly isSaving = signal(false);
+  readonly editorAlert = signal<AppointmentEditorAlert | null>(null);
+
+  readonly patientOptions = signal<BaseOption[]>([]);
+  readonly dentistOptions = signal<BaseOption[]>([]);
+  readonly boxOptions = signal<BaseOption[]>([]);
+  readonly treatmentOptions = signal<TreatmentOption[]>([]);
 
   readonly weekDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'] as const;
 
@@ -43,6 +69,7 @@ export class AppointmentStore {
     this.currentDate.set(today);
     this.selectedDate.set(today);
     this.loadAppointments();
+    this.loadPatients();
   }
 
   previousMonth(): void {
@@ -121,18 +148,223 @@ export class AppointmentStore {
     });
   }
 
+  getAppointmentById(appointmentId: number): AppointmentResponse | undefined {
+    return this.allAppointments().find((appointment) => appointment.id === appointmentId);
+  }
+
+  clearEditorAlert(): void {
+    this.editorAlert.set(null);
+  }
+
+  createAppointment(formValue: AppointmentFormValue, onSuccess?: () => void): void {
+    if (!this.prepareSave(formValue)) {
+      return;
+    }
+
+    this.appointmentService.createAppointment(this.toRequest(formValue, false)).subscribe({
+      next: (createdAppointment) => {
+        this.allAppointments.update((appointments) => [...appointments, createdAppointment]);
+        this.refreshReferenceOptions(this.allAppointments());
+        this.notificationService.success(
+          `Cita creada para ${this.getDentistDisplayName(createdAppointment)} a las ${this.formatTime(createdAppointment.visitDate)}.`,
+        );
+        this.isSaving.set(false);
+        onSuccess?.();
+      },
+      error: (error) => {
+        this.editorAlert.set(this.errorMapper.map(error, 'create'));
+        this.isSaving.set(false);
+      },
+    });
+  }
+
+  updateAppointment(
+    appointmentId: number,
+    formValue: AppointmentFormValue,
+    originalBoxId: number | null,
+    onSuccess?: (outcome: UpdateAppointmentOutcome) => void,
+  ): void {
+    if (!this.prepareSave(formValue, appointmentId)) {
+      return;
+    }
+
+    this.appointmentService
+      .updateAppointment(appointmentId, this.toRequest(formValue, true))
+      .subscribe({
+        next: (updatedAppointment) => {
+          this.allAppointments.update((appointments) =>
+            appointments.map((appointment) =>
+              appointment.id === appointmentId ? updatedAppointment : appointment,
+            ),
+          );
+          this.refreshReferenceOptions(this.allAppointments());
+          this.notificationService.success(
+            `Cita actualizada: ${this.formatTime(updatedAppointment.visitDate)} - ${updatedAppointment.treatment.name}.`,
+          );
+
+          const manualBoxChanged = Boolean(formValue.box && originalBoxId && formValue.box !== originalBoxId);
+          const boxReassigned = Boolean(manualBoxChanged && formValue.box && updatedAppointment.box.id !== formValue.box);
+
+          this.isSaving.set(false);
+          onSuccess?.({
+            manualBoxChanged,
+            selectedBoxId: formValue.box ?? null,
+            assignedBoxLabel: updatedAppointment.box.name?.trim() || `Box ${updatedAppointment.box.id}`,
+            boxReassigned,
+          });
+        },
+        error: (error) => {
+          this.editorAlert.set(this.errorMapper.map(error, 'update'));
+          this.isSaving.set(false);
+        },
+      });
+  }
+
+  deleteAppointment(appointmentId: number, onSuccess?: () => void): void {
+    this.isSaving.set(true);
+
+    this.appointmentService.deleteAppointment(appointmentId).subscribe({
+      next: () => {
+        this.allAppointments.update((appointments) =>
+          appointments.filter((appointment) => appointment.id !== appointmentId),
+        );
+        this.refreshReferenceOptions(this.allAppointments());
+        this.notificationService.success('La cita se elimino correctamente.');
+        this.isSaving.set(false);
+        onSuccess?.();
+      },
+      error: (error) => {
+        this.notificationService.error(this.errorMapper.map(error, 'delete').message);
+        this.isSaving.set(false);
+      },
+    });
+  }
+
   private loadAppointments(): void {
     this.isLoading.set(true);
     this.appointmentService.getAppointments().subscribe({
       next: (data) => {
         this.allAppointments.set(data);
+        this.refreshReferenceOptions(data);
         this.isLoading.set(false);
       },
       error: (err) => {
+        this.notificationService.error('No se pudieron cargar las citas.');
         console.error('Error loading appointments:', err);
         this.isLoading.set(false);
       },
     });
+  }
+
+  private loadPatients(): void {
+    this.patientService.getPatients().subscribe({
+      next: (patients) => {
+        const patientOptions = patients.map((patient) => ({
+          id: patient.id,
+          label: `${patient.firstName} ${patient.lastName}`.trim(),
+        }));
+
+        this.patientOptions.update((existing) => this.mergeOptions(existing, patientOptions));
+      },
+      error: () => {
+        this.notificationService.error('No se pudo cargar el listado de pacientes.');
+      },
+    });
+  }
+
+  private refreshReferenceOptions(appointments: AppointmentResponse[]): void {
+    const patientOptions = appointments.map((appointment) => ({
+      id: appointment.patient.id,
+      label: `${appointment.patient.firstName} ${appointment.patient.lastName}`.trim(),
+    }));
+    this.patientOptions.update((existing) => this.mergeOptions(existing, patientOptions));
+
+    this.dentistOptions.set(
+      this.uniqueOptions(
+        appointments.map((appointment) => ({
+          id: appointment.dentist.id,
+          label: this.getDentistDisplayName(appointment),
+        })),
+      ),
+    );
+
+    this.boxOptions.set(
+      this.uniqueOptions(
+        appointments.map((appointment) => ({
+          id: appointment.box.id,
+          label: appointment.box.name?.trim() || `Box ${appointment.box.id}`,
+        })),
+      ),
+    );
+
+    this.treatmentOptions.set(
+      this.uniqueOptions(
+        appointments.map((appointment) => ({
+          id: appointment.treatment.id,
+          label: appointment.treatment.name,
+          durationMinutes: appointment.treatment.durationMinutes ?? 30,
+        })),
+      ),
+    );
+  }
+
+  private toRequest(formValue: AppointmentFormValue, includeManualBox: boolean): CreateAppointmentRequest {
+    const normalizedVisitDate = this.normalizeVisitDate(formValue.visitDate);
+
+    return {
+      patient: formValue.patient,
+      dentist: formValue.dentist,
+      treatment: formValue.treatment,
+      visitDate: normalizedVisitDate,
+      consultationReason: formValue.consultationReason?.trim() || undefined,
+      parentAppointment: null,
+      ...(includeManualBox && formValue.box ? { box: formValue.box } : {}),
+    };
+  }
+
+  private mergeOptions<T extends BaseOption>(
+    current: readonly T[],
+    incoming: readonly T[],
+  ): T[] {
+    return this.uniqueOptions([...current, ...incoming]);
+  }
+
+  private uniqueOptions<T extends BaseOption>(options: readonly T[]): T[] {
+    const map = new Map<number, T>();
+
+    for (const option of options) {
+      if (!map.has(option.id) || option.label.trim()) {
+        map.set(option.id, option);
+      }
+    }
+
+    return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label, 'es'));
+  }
+
+  private normalizeVisitDate(value: string): string {
+    if (!value) {
+      return value;
+    }
+
+    return value.length === 16 ? `${value}:00` : value;
+  }
+
+  private prepareSave(formValue: AppointmentFormValue, editingAppointmentId?: number): boolean {
+    const conflictAlert = this.conflictValidator.findConflict(
+      formValue,
+      this.allAppointments(),
+      this.treatmentOptions(),
+      (value) => this.formatTime(value),
+      editingAppointmentId,
+    );
+    if (conflictAlert) {
+      this.editorAlert.set(conflictAlert);
+      return false;
+    }
+
+    this.isSaving.set(true);
+    this.editorAlert.set(null);
+    return true;
   }
 
   private generateCalendarDays(): CalendarDay[] {

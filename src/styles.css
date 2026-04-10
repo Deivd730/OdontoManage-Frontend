@@ -100,3 +100,15 @@ h1, h2, h3 {
 a{
   text-decoration: none;
 }
+
+.mat-mdc-snack-bar-container.toast-shell {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.mat-mdc-snack-bar-container.toast-shell .mdc-snackbar__surface {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}

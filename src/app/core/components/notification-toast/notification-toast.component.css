@@ -1,0 +1,73 @@
+:host {
+  display: block;
+}
+
+.toast-card {
+  position: relative;
+  width: 300px;
+  background: #ffffff;
+  border: 1px solid #e8ecef;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+  padding: 0.9rem 0.9rem 0.8rem;
+  text-align: center;
+}
+
+.toast-close {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.35rem;
+  border: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: transparent;
+  color: #475467;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.toast-icon {
+  margin: 0.1rem auto 0.45rem;
+  display: grid;
+  place-items: center;
+}
+
+.toast-title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.toast-message {
+  margin: 0.35rem auto 0.72rem;
+  font-size: 0.74rem;
+  line-height: 1.35;
+  color: #667085;
+  max-width: 250px;
+}
+
+.toast-action {
+  width: 100%;
+  border: 0;
+  border-radius: 7px;
+  height: 30px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.toast-card[data-variant='success'] .toast-action {
+  background: #34b154;
+}
+
+.toast-card[data-variant='error'] .toast-action {
+  background: #ef4444;
+}
+
+.toast-card[data-variant='info'] .toast-action {
+  background: #2f6cb0;
+}

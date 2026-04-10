@@ -34,17 +34,6 @@ export interface Treatment {
 }
 
 // Interface para Appointment
-export interface Appointment {
-  id?: number;
-  patient: Patient | number;
-  dentist: Dentist | number;
-  box: Box | number;
-  treatment: Treatment | number;
-  visitDate: string | Date;
-  consultationReason?: string;
-  parentAppointment?: Appointment | number | null;
-}
-
 // Interface para la respuesta del backend
 export interface AppointmentResponse {
   id: number;
@@ -63,11 +52,11 @@ export interface AppointmentResponse {
 export interface CreateAppointmentRequest {
   patient: number;
   dentist: number;
-  box: number;
   treatment: number;
   visitDate: string;
   consultationReason?: string;
   parentAppointment?: number | null;
+  box?: number;
 }
 
 @Injectable({
@@ -114,8 +103,8 @@ export class AppointmentService {
   }
 
   /**
-   * Obtener citas por consultorio/box
-   * @param boxId ID del consultorio
+   * Obtener citas por box
+   * @param boxId ID del box
    */
   getAppointmentsByBox(boxId: number): Observable<AppointmentResponse[]> {
     return this.http.get<AppointmentResponse[]>(`${this.apiUrl}/box/${boxId}`);
@@ -144,21 +133,5 @@ export class AppointmentService {
    */
   deleteAppointment(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-
-  /**
-   * Método helper para convertir Date a string ISO
-   * @param date Fecha a convertir
-   */
-  formatDateForApi(date: Date): string {
-    return date.toISOString();
-  }
-
-  /**
-   * Método helper para parsear fecha de string a Date
-   * @param dateString String de fecha
-   */
-  parseApiDate(dateString: string): Date {
-    return new Date(dateString);
   }
 }

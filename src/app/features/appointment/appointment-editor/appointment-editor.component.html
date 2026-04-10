@@ -1,0 +1,117 @@
+<div class="editor-overlay" (click)="onOverlayClick($event)">
+  <section class="editor-dialog" role="dialog" aria-modal="true" [attr.aria-label]="title()">
+    <header class="editor-header">
+      <h3>{{ title() }}</h3>
+      <button
+        type="button"
+        class="close-btn"
+        aria-label="Cerrar formulario"
+        title="Cerrar"
+        (click)="onCloseClick()"
+        [disabled]="isSaving()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18"></path>
+          <path d="M6 6l12 12"></path>
+        </svg>
+      </button>
+    </header>
+
+    <form class="editor-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      @if (alert(); as editorAlert) {
+        <section class="editor-alert" role="alert" aria-live="assertive">
+          <div class="editor-alert-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 9v4"></path>
+              <path d="M12 17h.01"></path>
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            </svg>
+          </div>
+          <div class="editor-alert-content">
+            <h4>{{ editorAlert.title }}</h4>
+            <p>{{ editorAlert.message }}</p>
+            @if (editorAlert.recommendations.length > 0) {
+              <ul>
+                @for (recommendation of editorAlert.recommendations; track recommendation) {
+                  <li>{{ recommendation }}</li>
+                }
+              </ul>
+            }
+          </div>
+        </section>
+      }
+
+      <label>
+        Paciente
+        <select formControlName="patient">
+          <option [ngValue]="0">Selecciona un paciente</option>
+          @for (option of patientOptions(); track option.id) {
+            <option [ngValue]="option.id">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+      @if (patientOptions().length === 0) {
+        <small class="hint">No hay pacientes disponibles.</small>
+      }
+
+      <label>
+        Dentista
+        <select formControlName="dentist">
+          <option [ngValue]="0">Selecciona un dentista</option>
+          @for (option of dentistOptions(); track option.id) {
+            <option [ngValue]="option.id">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+      @if (dentistOptions().length === 0) {
+        <small class="hint">No hay dentistas en el listado actual de citas.</small>
+      }
+
+      @if (showManualBox()) {
+        <label>
+          Box
+          <select formControlName="box">
+            <option [ngValue]="0">Selecciona un box</option>
+            @for (option of boxOptions(); track option.id) {
+              <option [ngValue]="option.id">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+        <small class="hint">Forzar box especifico.</small>
+      } @else {
+        <small class="hint">El box se asigna automaticamente segun disponibilidad.</small>
+      }
+
+      <label>
+        Tratamiento
+        <select formControlName="treatment">
+          <option [ngValue]="0">Selecciona un tratamiento</option>
+          @for (option of treatmentOptions(); track option.id) {
+            <option [ngValue]="option.id">{{ option.label }}</option>
+          }
+        </select>
+      </label>
+      @if (treatmentOptions().length === 0) {
+        <small class="hint">No hay tratamientos en el listado actual de citas.</small>
+      }
+
+      <label>
+        Fecha y hora
+        <input type="datetime-local" formControlName="visitDateLocal" />
+      </label>
+
+      <label>
+        Razon de consulta
+        <textarea rows="3" formControlName="consultationReason"></textarea>
+      </label>
+
+      <footer class="editor-actions">
+        <button type="button" class="btn secondary" (click)="onCloseClick()" [disabled]="isSaving()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn primary" [disabled]="form.invalid || isSaving()">
+          {{ isSaving() ? 'Guardando...' : (mode() === 'create' ? 'Crear cita' : 'Guardar cambios') }}
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>
