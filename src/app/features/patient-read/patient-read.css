@@ -58,18 +58,6 @@
   box-shadow: 0 6px 20px rgba(27, 115, 57, 0.25);
 }
 
-.btn.new-appointment {
-  background-color: var(--primary-light);
-  color: #000;
-  box-shadow: 0 2px 8px rgba(197, 232, 143, 0.2);
-}
-
-.btn.new-appointment:hover:not(:disabled) {
-  background-color: #b8e67d;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(197, 232, 143, 0.3);
-}
-
 .btn.ghost {
   background: #ffffff;
   color: var(--text-main);
