@@ -11,11 +11,12 @@
   display: grid;
   place-items: center;
   padding: 1rem;
+  overflow-y: auto;
 }
 
 .editor-dialog {
-  width: min(680px, 100%);
-  max-height: 92vh;
+  width: min(680px, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
   overflow: auto;
   background: #ffffff;
   border-radius: 14px;
@@ -124,6 +125,13 @@ textarea {
   padding: 0.55rem 0.6rem;
   font: inherit;
   background: #ffffff;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
 }
 
 .hint {
@@ -137,6 +145,7 @@ textarea {
   justify-content: flex-end;
   gap: 0.6rem;
   padding-top: 0.2rem;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -161,4 +170,39 @@ textarea {
 .close-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .editor-overlay {
+    padding: 0.5rem;
+    place-items: start center;
+  }
+
+  .editor-dialog {
+    width: 100%;
+    max-height: calc(100dvh - 1rem);
+    border-radius: 12px;
+  }
+
+  .editor-header {
+    padding: 0.85rem 0.9rem;
+  }
+
+  .editor-form {
+    padding: 0.85rem 0.9rem 1rem;
+  }
+
+  .editor-alert {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-actions .btn {
+    flex: 1 1 9rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .editor-actions .btn {
+    width: 100%;
+  }
 }
