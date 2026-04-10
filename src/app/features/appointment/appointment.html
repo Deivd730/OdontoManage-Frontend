@@ -4,6 +4,55 @@
   </section>
 
   <aside class="day-panel open">
-    <app-agenda></app-agenda>
+    <app-agenda
+      (newAppointmentRequested)="onNewAppointmentRequested()"
+      (editAppointmentRequested)="onEditAppointmentRequested($event)"
+      (deleteAppointmentRequested)="onDeleteAppointmentRequested($event)"></app-agenda>
   </aside>
 </div>
+
+@if (isEditorOpen) {
+  <app-appointment-editor
+    [mode]="editorMode"
+    [selectedDate]="store.selectedDate()"
+    [initialValue]="editorInitialValue"
+    [isSaving]="store.isSaving()"
+    [alert]="store.editorAlert()"
+    [patientOptions]="store.patientOptions()"
+    [dentistOptions]="store.dentistOptions()"
+    [boxOptions]="store.boxOptions()"
+    [treatmentOptions]="store.treatmentOptions()"
+    (closeRequested)="onEditorClose()"
+    (saveRequested)="onEditorSave($event)"></app-appointment-editor>
+}
+
+@if (isDeleteConfirmOpen) {
+  <div class="modal-backdrop" (click)="onDeleteModalClose()">
+    <section class="modal-card" role="dialog" aria-modal="true" aria-label="Confirmar eliminacion de cita" (click)="$event.stopPropagation()">
+      <h3 class="modal-title">Confirmar eliminacion</h3>
+      <p class="modal-text">
+        Estas a punto de eliminar esta cita. Esta accion no se puede deshacer.
+      </p>
+      <div class="modal-actions">
+        <button class="btn ghost" type="button" (click)="onDeleteModalClose()" [disabled]="store.isSaving()">
+          Cancelar
+        </button>
+        <button class="btn danger" type="button" (click)="onDeleteConfirm()" [disabled]="store.isSaving()">
+          Eliminar definitivamente
+        </button>
+      </div>
+    </section>
+  </div>
+}
+
+@if (isBoxAdjustedModalOpen) {
+  <div class="modal-backdrop" (click)="onBoxAdjustedModalClose()">
+    <section class="modal-card" role="dialog" aria-modal="true" aria-label="Ajuste de box" (click)="$event.stopPropagation()">
+      <h3 class="modal-title">Ajuste de box</h3>
+      <p class="modal-text">{{ boxAdjustedMessage }}</p>
+      <div class="modal-actions">
+        <button class="btn primary" type="button" (click)="onBoxAdjustedModalClose()">Entendido</button>
+      </div>
+    </section>
+  </div>
+}

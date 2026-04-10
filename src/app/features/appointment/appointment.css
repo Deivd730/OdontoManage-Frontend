@@ -33,6 +33,95 @@
   display: flex;
   flex-direction: column;
 }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 60;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 460px;
+  border: 1px solid #eef2f0;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #1b7339;
+}
+
+.modal-text {
+  margin: 0;
+  color: #667085;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn.ghost {
+  background: #ffffff;
+  color: #1f2937;
+  border: 1px solid #eef2f0;
+}
+
+.btn.ghost:hover:not(:disabled) {
+  background: #fafcfb;
+  border-color: #b8dfc5;
+}
+
+.btn.primary {
+  background-color: #1b7339;
+  color: #fff;
+}
+
+.btn.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(27, 115, 57, 0.22);
+}
+
+.btn.danger {
+  background-color: #d32f2f;
+  color: #fff;
+}
+
+.btn.danger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(211, 47, 47, 0.25);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 @media (max-width: 1200px) {
   .appointment-calendar-container-side { grid-template-columns: 1fr; }
   .day-panel { width:100%; max-height:60vh; }

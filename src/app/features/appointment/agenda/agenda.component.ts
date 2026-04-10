@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Output, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppointmentStore } from '../appointment.store';
 
@@ -8,9 +8,14 @@ import { AppointmentStore } from '../appointment.store';
   templateUrl: './agenda.component.html',
   styleUrl: './agenda.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:click)': 'onDocumentClick()',
+  },
 })
 export class AgendaComponent {
-  @Output() readonly newAppointmentRequested = new EventEmitter<void>();
+  readonly newAppointmentRequested = output<void>();
+  readonly editAppointmentRequested = output<number>();
+  readonly deleteAppointmentRequested = output<number>();
   readonly store = inject(AppointmentStore);
   expandedAppointmentId = signal<number | null>(null);
 
@@ -21,7 +26,6 @@ export class AgendaComponent {
     );
   }
 
-  @HostListener('document:click')
   onDocumentClick(): void {
     this.expandedAppointmentId.set(null);
   }
@@ -29,5 +33,15 @@ export class AgendaComponent {
   onNewAppointmentClick(event: Event): void {
     event.stopPropagation();
     this.newAppointmentRequested.emit();
+  }
+
+  onEditAppointmentClick(appointmentId: number, event: Event): void {
+    event.stopPropagation();
+    this.editAppointmentRequested.emit(appointmentId);
+  }
+
+  onDeleteAppointmentClick(appointmentId: number, event: Event): void {
+    event.stopPropagation();
+    this.deleteAppointmentRequested.emit(appointmentId);
   }
 }
