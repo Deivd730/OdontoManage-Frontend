@@ -50,7 +50,6 @@ export class Appointment implements OnInit {
     this.editorInitialValue = {
       patient: appointment.patient.id,
       dentist: appointment.dentist.id,
-      box: appointment.box.id,
       treatment: appointment.treatment.id,
       visitDate: appointment.visitDate,
       consultationReason: appointment.consultationReason,
@@ -111,21 +110,11 @@ export class Appointment implements OnInit {
     this.store.updateAppointment(
       this.editingAppointmentId,
       payload,
-      this.editorInitialValue?.box ?? null,
       (outcome) => this.handleUpdateOutcome(outcome),
     );
   }
 
   private handleUpdateOutcome(outcome: UpdateAppointmentOutcome): void {
     this.isEditorOpen = false;
-
-    if (!outcome.boxReassigned) {
-      return;
-    }
-
-    this.boxAdjustedMessage = outcome.assignedBoxLabel
-      ? `Se aplicaron los cambios, pero para mantener la disponibilidad se asigno automaticamente ${outcome.assignedBoxLabel}.`
-      : 'Se aplicaron los cambios, pero para mantener la disponibilidad se asigno automaticamente otro box.';
-    this.isBoxAdjustedModalOpen = true;
   }
 }

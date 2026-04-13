@@ -64,6 +64,8 @@
       </label>
       @if (dentistOptions().length === 0) {
         <small class="hint">No hay dentistas en el listado actual de citas.</small>
+      } @else if (getSelectedDentistAvailableDays(); as availableDays) {
+        <small class="hint">Días disponibles: {{ translateAvailableDays(availableDays) }}</small>
       }
 
       @if (showManualBox()) {
