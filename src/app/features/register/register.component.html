@@ -1,7 +1,7 @@
 <div class="login-container">
   <div class="login-card">
     <h1 class="brand-name">OdontoManage</h1>
-    <p class="subtitle">Crea tu cuenta profesional</p>
+    <p class="subtitle">Crea el teu compte professional</p>
 
     @if (errorMessage) {
       <div class="minimal-alert">
@@ -10,35 +10,35 @@
     }
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      
+
       <!-- NOMBRE COMPLETO (Nuevo) -->
       <div class="form-group">
-        <label>Nombre Completo</label>
-        <input type="text" formControlName="name" placeholder="Ej: Juan Perez"
+        <label>Nom complet</label>
+        <input type="text" formControlName="name" placeholder="Ex.: Joan Perez"
                [class.input-error]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
       </div>
 
       <!-- EMAIL -->
       <div class="form-group">
-        <label>Correo Electrónico</label>
+        <label>Correu electronic</label>
         <input type="email" formControlName="email" placeholder="juan@test.com"
                [class.input-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
       </div>
 
       <!-- PASSWORD -->
       <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres"
+        <label>Contrasenya</label>
+        <input type="password" formControlName="password" placeholder="Minim 6 caracters"
                [class.input-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
       </div>
 
       <!-- CONFIRMAR PASSWORD -->
       <div class="form-group">
-        <label>Confirmar Contraseña</label>
-        <input type="password" formControlName="confirmPassword" placeholder="Repite tu contraseña"
+        <label>Confirma la contrasenya</label>
+        <input type="password" formControlName="confirmPassword" placeholder="Torna a escriure la contrasenya"
                [class.input-error]="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
         @if (registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched) {
-          <small class="error-text">Las contraseñas no coinciden</small>
+          <small class="error-text">Les contrasenyes no coincideixen</small>
         }
       </div>
 
@@ -46,15 +46,15 @@
         @if (loading) {
           <span class="dot-loader"></span>
         } @else {
-          Crear Cuenta
+          Crea el compte
         }
       </button>
     </form>
 
     <div class="login-footer">
       <div class="register-section">
-        ¿Ya eres parte? 
-        <a routerLink="/login" class="main-link">Inicia sesión aquí</a>
+        Ja en formes part?
+        <a routerLink="/login" class="main-link">Inicia sessio aqui</a>
       </div>
     </div>
   </div>

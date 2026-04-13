@@ -30,7 +30,7 @@ export class LoginComponent {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
     if (this.route.snapshot.queryParams['sessionExpired'] === '1') {
-      this.errorMessage.set('Tu sesion expiro, inicia sesion de nuevo.');
+      this.errorMessage.set('La sessio ha expirat, inicia sessio de nou.');
     }
 
     this.loginForm = this.fb.group({
@@ -61,11 +61,11 @@ export class LoginComponent {
         this.isLoading.set(false);
 
         if (error.status === 401) {
-          this.errorMessage.set('Email o contrasena incorrectos');
+          this.errorMessage.set('Correu electronic o contrasenya incorrectes');
         } else if (error.status === 0) {
-          this.errorMessage.set('No se puede conectar al servidor');
+          this.errorMessage.set('No es pot connectar amb el servidor');
         } else {
-          this.errorMessage.set('Error al iniciar sesion. Por favor, intenta nuevamente.');
+          this.errorMessage.set('Error en iniciar sessio. Si us plau, torna-ho a provar.');
         }
 
         console.error('Login error:', error);

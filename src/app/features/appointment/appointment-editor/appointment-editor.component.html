@@ -5,8 +5,8 @@
       <button
         type="button"
         class="close-btn"
-        aria-label="Cerrar formulario"
-        title="Cerrar"
+        aria-label="Tanca formulari"
+        title="Tanca"
         (click)="onCloseClick()"
         [disabled]="isSaving()">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -41,31 +41,31 @@
       }
 
       <label>
-        Paciente
+        Pacient
         <select formControlName="patient">
-          <option [ngValue]="0">Selecciona un paciente</option>
+          <option [ngValue]="0">Selecciona un pacient</option>
           @for (option of patientOptions(); track option.id) {
             <option [ngValue]="option.id">{{ option.label }}</option>
           }
         </select>
       </label>
       @if (patientOptions().length === 0) {
-        <small class="hint">No hay pacientes disponibles.</small>
+        <small class="hint">No hi ha pacients disponibles.</small>
       }
 
       <label>
         Dentista
         <select formControlName="dentist">
-          <option [ngValue]="0">Selecciona un dentista</option>
+          <option [ngValue]="0">Selecciona un odontoleg</option>
           @for (option of dentistOptions(); track option.id) {
             <option [ngValue]="option.id">{{ option.label }}</option>
           }
         </select>
       </label>
       @if (dentistOptions().length === 0) {
-        <small class="hint">No hay dentistas en el listado actual de citas.</small>
+        <small class="hint">No hi ha odontolegs al llistat actual de cites.</small>
       } @else if (getSelectedDentistAvailableDays(); as availableDays) {
-        <small class="hint">Días disponibles: {{ translateAvailableDays(availableDays) }}</small>
+        <small class="hint">Dies disponibles: {{ translateAvailableDays(availableDays) }}</small>
       }
 
       @if (showManualBox()) {
@@ -78,40 +78,40 @@
             }
           </select>
         </label>
-        <small class="hint">Forzar box especifico.</small>
+        <small class="hint">Forca un box especific.</small>
       } @else {
-        <small class="hint">El box se asigna automaticamente segun disponibilidad.</small>
+        <small class="hint">El box s'assigna automaticament segons disponibilitat.</small>
       }
 
       <label>
-        Tratamiento
+        Tractament
         <select formControlName="treatment">
-          <option [ngValue]="0">Selecciona un tratamiento</option>
+          <option [ngValue]="0">Selecciona un tractament</option>
           @for (option of treatmentOptions(); track option.id) {
             <option [ngValue]="option.id">{{ option.label }}</option>
           }
         </select>
       </label>
       @if (treatmentOptions().length === 0) {
-        <small class="hint">No hay tratamientos en el listado actual de citas.</small>
+        <small class="hint">No hi ha tractaments al llistat actual de cites.</small>
       }
 
       <label>
-        Fecha y hora
+        Data i hora
         <input type="datetime-local" formControlName="visitDateLocal" />
       </label>
 
       <label>
-        Razon de consulta
+        Rao de consulta
         <textarea rows="3" formControlName="consultationReason"></textarea>
       </label>
 
       <footer class="editor-actions">
         <button type="button" class="btn secondary" (click)="onCloseClick()" [disabled]="isSaving()">
-          Cancelar
+          Cancel·la
         </button>
         <button type="submit" class="btn primary" [disabled]="form.invalid || isSaving()">
-          {{ isSaving() ? 'Guardando...' : (mode() === 'create' ? 'Crear cita' : 'Guardar cambios') }}
+          {{ isSaving() ? 'Desant...' : (mode() === 'create' ? 'Crea cita' : 'Desa canvis') }}
         </button>
       </footer>
     </form>

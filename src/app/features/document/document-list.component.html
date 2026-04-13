@@ -1,27 +1,27 @@
 ﻿<div class="document-list-container">
   @if (!patientId()) {
     <div class="empty-state">
-      <h2>Selecciona un paciente</h2>
-      <p>Elige un paciente en la lista para ver sus documentos.</p>
+      <h2>Selecciona un pacient</h2>
+      <p>Tria un pacient de la llista per veure els seus documents.</p>
     </div>
   } @else {
     <div class="document-header">
-      <h2>Documentos del paciente</h2>
+      <h2>Documents del pacient</h2>
       <button class="btn primary" (click)="addDocument()">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
-        Añadir documento
+        Afegeix document
       </button>
     </div>
 
     @if (isLoading()) {
-      <div class="loading-state">Cargando documentos...</div>
+      <div class="loading-state">Carregant documents...</div>
     } @else if (documents().length === 0) {
       <div class="empty-documents">
-        <p>No hay documentos para este paciente.</p>
-        <button class="btn ghost" (click)="addDocument()">Añadir primer documento</button>
+        <p>No hi ha documents per a aquest pacient.</p>
+        <button class="btn ghost" (click)="addDocument()">Afegeix el primer document</button>
       </div>
     } @else {
       <div class="documents-grid">
@@ -48,14 +48,14 @@
             </div>
             <div class="document-actions">
               @if (doc.fileUrl) {
-                <a [href]="getDocumentUrl(doc.fileUrl)" target="_blank" class="btn-icon" title="Ver documento">
+                <a [href]="getDocumentUrl(doc.fileUrl)" target="_blank" class="btn-icon" title="Veure document">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                   </svg>
                 </a>
               }
-              <button class="btn-icon danger" (click)="deleteDocument(doc)" title="Eliminar">
+              <button class="btn-icon danger" (click)="deleteDocument(doc)" title="Elimina">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

@@ -48,10 +48,10 @@ export class AppointmentStore {
   readonly boxOptions = signal<BaseOption[]>([]);
   readonly treatmentOptions = signal<TreatmentOption[]>([]);
 
-  readonly weekDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'] as const;
+  readonly weekDays = ['Dl', 'Dt', 'Dc', 'Dj', 'Dv', 'Ds', 'Dg'] as const;
 
   readonly currentMonth = computed(() => {
-    return this.currentDate().toLocaleDateString('es-ES', {
+    return this.currentDate().toLocaleDateString('ca-ES', {
       month: 'long',
       year: 'numeric',
     });
@@ -102,12 +102,12 @@ export class AppointmentStore {
 
   formatTime(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit' });
   }
 
   formatDateTime(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleString('es-ES', {
+    return date.toLocaleString('ca-ES', {
       weekday: 'short',
       day: '2-digit',
       month: 'short',
@@ -130,7 +130,7 @@ export class AppointmentStore {
   }
 
   formatDate(date: Date): string {
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('ca-ES', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -156,7 +156,7 @@ export class AppointmentStore {
         this.allAppointments.update((appointments) => [...appointments, createdAppointment]);
         this.refreshReferenceOptions(this.allAppointments());
         this.notificationService.success(
-          `Cita creada para ${this.getDentistDisplayName(createdAppointment)} a las ${this.formatTime(createdAppointment.visitDate)}.`,
+          `Cita creada per a ${this.getDentistDisplayName(createdAppointment)} a les ${this.formatTime(createdAppointment.visitDate)}.`,
         );
         this.isSaving.set(false);
         onSuccess?.();
@@ -188,7 +188,7 @@ export class AppointmentStore {
           );
           this.refreshReferenceOptions(this.allAppointments());
           this.notificationService.success(
-            `Cita actualizada: ${this.formatTime(updatedAppointment.visitDate)} - ${updatedAppointment.treatment.name}.`,
+            `Cita actualitzada: ${this.formatTime(updatedAppointment.visitDate)} - ${updatedAppointment.treatment.name}.`,
           );
 
           this.isSaving.set(false);
@@ -215,7 +215,7 @@ export class AppointmentStore {
           appointments.filter((appointment) => appointment.id !== appointmentId),
         );
         this.refreshReferenceOptions(this.allAppointments());
-        this.notificationService.success('La cita se elimino correctamente.');
+        this.notificationService.success('La cita s\'ha eliminat correctament.');
         this.isSaving.set(false);
         onSuccess?.();
       },
@@ -238,7 +238,7 @@ export class AppointmentStore {
         this.isLoading.set(false);
       },
       error: (err) => {
-        this.notificationService.error('No se pudieron cargar las citas.');
+        this.notificationService.error('No s\'han pogut carregar les cites.');
         console.error('Error loading appointments:', err);
         this.isLoading.set(false);
       },
@@ -256,7 +256,7 @@ export class AppointmentStore {
         this.patientOptions.update((existing) => this.mergeOptions(existing, patientOptions));
       },
       error: () => {
-        this.notificationService.error('No se pudo cargar el listado de pacientes.');
+        this.notificationService.error('No s\'ha pogut carregar el llistat de pacients.');
       },
     });
   }
@@ -350,7 +350,7 @@ export class AppointmentStore {
       }
     }
 
-    return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label, 'es'));
+    return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label, 'ca'));
   }
 
   private formatDentistDisplayName(dentist: {
@@ -371,7 +371,7 @@ export class AppointmentStore {
     const lastName = dentist.lastName?.trim() ?? '';
     const composedName = `${firstName} ${lastName}`.trim();
 
-    return composedName || 'Dentista no disponible';
+    return composedName || 'Odontoleg no disponible';
   }
 
   private normalizeVisitDate(value: string): string {

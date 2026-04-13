@@ -70,11 +70,11 @@ export class PatientCreate {
     this.patientService.createPatient(patientData).subscribe({
       next: (response) => {
         this.isLoading.set(false);
-        this.successMessage.set('Paciente creado exitosamente');
-        
+        this.successMessage.set('Pacient creat correctament');
+
         // Limpiar el formulario
         this.patientForm.reset();
-        
+
         // Redirigir al dashboard después de 2 segundos
         setTimeout(() => {
           this.router.navigate(['/patients']);
@@ -82,18 +82,18 @@ export class PatientCreate {
       },
       error: (error) => {
         this.isLoading.set(false);
-        
+
         // Manejar diferentes tipos de errores
         if (error.status === 400) {
-          this.errorMessage.set('Datos del paciente inválidos. Por favor, verifica la información.');
+          this.errorMessage.set('Dades del pacient invalides. Si us plau, revisa la informacio.');
         } else if (error.status === 409) {
-          this.errorMessage.set('El paciente ya existe en el sistema.');
+          this.errorMessage.set('El pacient ja existeix al sistema.');
         } else if (error.status === 0) {
-          this.errorMessage.set('No se puede conectar al servidor');
+          this.errorMessage.set('No es pot connectar amb el servidor');
         } else {
-          this.errorMessage.set('Error al crear el paciente. Por favor, intenta nuevamente.');
+          this.errorMessage.set('Error en crear el pacient. Si us plau, torna-ho a provar.');
         }
-        
+
         console.error('Patient creation error:', error);
       }
     });

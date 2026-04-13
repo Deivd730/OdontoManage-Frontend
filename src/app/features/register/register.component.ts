@@ -34,20 +34,20 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       this.loading = true;
-      
+
       // Extraemos solo los campos que pide tu backend (JSON del Postman)
       const payload = {
         name: this.registerForm.value.name,
         email: this.registerForm.value.email,
         password: this.registerForm.value.password
       };
-      
+
       this.authService.register(payload).subscribe({
         next: () => {
           this.router.navigate(['/login'], { queryParams: { registered: 'true' } });
         },
         error: (err) => {
-          this.errorMessage = 'Hubo un error al registrar. Inténtalo de nuevo.';
+          this.errorMessage = 'Hi ha hagut un error en registrar-te. Torna-ho a provar.';
           this.loading = false;
         }
       });

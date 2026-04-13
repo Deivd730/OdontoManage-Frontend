@@ -1,14 +1,14 @@
 <div class="panel-header">
-  <h3>Citas</h3>
+  <h3>Cites</h3>
 </div>
 
 <div class="panel-date">{{ store.formatDate(store.selectedDate()) }}</div>
 
 <div class="panel-body">
   @if (store.isLoading()) {
-    <div class="status-message">Cargando citas...</div>
+    <div class="status-message">Carregant cites...</div>
   } @else if (store.selectedDayAppointments().length === 0) {
-    <div class="status-message empty">No hay citas para este dia.</div>
+    <div class="status-message empty">No hi ha cites per a aquest dia.</div>
   } @else {
     @for (appointment of store.selectedDayAppointments(); track appointment.id) {
       <div
@@ -28,12 +28,12 @@
           <div class="summary-item">
             <span class="summary-value">{{ store.getDentistDisplayName(appointment) }}</span>
           </div>
-            <div class="summary-actions" role="group" aria-label="Acciones de la cita">
+            <div class="summary-actions" role="group" aria-label="Accions de la cita">
               <button
                 type="button"
                 class="btn-icon edit"
-                aria-label="Editar cita"
-                title="Editar cita"
+                aria-label="Edita cita"
+                title="Edita cita"
                 (click)="onEditAppointmentClick(appointment.id, $event)"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -44,8 +44,8 @@
               <button
                 type="button"
                 class="btn-icon danger"
-                aria-label="Eliminar cita"
-                title="Eliminar cita"
+                aria-label="Elimina cita"
+                title="Elimina cita"
                 (click)="onDeleteAppointmentClick(appointment.id, $event)"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -67,15 +67,15 @@
 
           <div class="appointment-body">
             <div class="info-row">
-              <span class="info-label">Paciente</span>
+              <span class="info-label">Pacient</span>
               <span class="info-value">{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Razon de consulta</span>
-              <span class="info-value">{{ appointment.consultationReason || 'Sin razon registrada' }}</span>
+              <span class="info-label">Rao de consulta</span>
+              <span class="info-value">{{ appointment.consultationReason || 'Sense rao registrada' }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Tratamiento</span>
+              <span class="info-label">Tractament</span>
               <span class="info-value">{{ appointment.treatment.name }}</span>
             </div>
           </div>
@@ -87,6 +87,6 @@
 
 <div class="agenda-footer">
   <button class="agenda-new-appointment-btn" type="button" (click)="onNewAppointmentClick($event)">
-    Nueva cita
+    Cita nova
   </button>
 </div>

@@ -28,17 +28,17 @@
 
 @if (isDeleteConfirmOpen) {
   <div class="modal-backdrop" (click)="onDeleteModalClose()">
-    <section class="modal-card" role="dialog" aria-modal="true" aria-label="Confirmar eliminacion de cita" (click)="$event.stopPropagation()">
-      <h3 class="modal-title">Confirmar eliminacion</h3>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-label="Confirma eliminacio de cita" (click)="$event.stopPropagation()">
+      <h3 class="modal-title">Confirma eliminacio</h3>
       <p class="modal-text">
-        Estas a punto de eliminar esta cita. Esta accion no se puede deshacer.
+        Estas a punt d'eliminar aquesta cita. Aquesta accio no es pot desfer.
       </p>
       <div class="modal-actions">
         <button class="btn ghost" type="button" (click)="onDeleteModalClose()" [disabled]="store.isSaving()">
-          Cancelar
+          Cancel·la
         </button>
         <button class="btn danger" type="button" (click)="onDeleteConfirm()" [disabled]="store.isSaving()">
-          Eliminar definitivamente
+          Elimina definitivament
         </button>
       </div>
     </section>
@@ -47,11 +47,11 @@
 
 @if (isBoxAdjustedModalOpen) {
   <div class="modal-backdrop" (click)="onBoxAdjustedModalClose()">
-    <section class="modal-card" role="dialog" aria-modal="true" aria-label="Ajuste de box" (click)="$event.stopPropagation()">
-      <h3 class="modal-title">Ajuste de box</h3>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-label="Ajust de box" (click)="$event.stopPropagation()">
+      <h3 class="modal-title">Ajust de box</h3>
       <p class="modal-text">{{ boxAdjustedMessage }}</p>
       <div class="modal-actions">
-        <button class="btn primary" type="button" (click)="onBoxAdjustedModalClose()">Entendido</button>
+        <button class="btn primary" type="button" (click)="onBoxAdjustedModalClose()">Entes</button>
       </div>
     </section>
   </div>

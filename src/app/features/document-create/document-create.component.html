@@ -1,15 +1,15 @@
 <div class="document-container">
   <div class="document-card">
     <div class="document-header">
-      <h1>Añadir documento</h1>
-      <p>1 Selecciona un paciente 2 Sube el documento</p>
+      <h1>Afegeix document</h1>
+      <p>1 Selecciona un pacient 2 Puja el document</p>
     </div>
 
     <form [formGroup]="documentForm" (ngSubmit)="submit()" class="document-form">
       <label>
-        Paciente
+        Pacient
         <select formControlName="patientId" [class.input-error]="isFieldInvalid('patientId')">
-          <option [ngValue]="null">Selecciona un paciente</option>
+          <option [ngValue]="null">Selecciona un pacient</option>
           @for (patient of patients(); track patient.id) {
             <option [value]="patient.id">
               {{ patient.firstName }} {{ patient.lastName }} - DNI {{ patient.nationalId }}
@@ -17,65 +17,65 @@
           }
         </select>
         @if (hasError('patientId', 'required')) {
-          <span class="error">Debes seleccionar un paciente</span>
+          <span class="error">Has de seleccionar un pacient</span>
         }
       </label>
 
       <label>
-        Nombre del documento
+        Nom del document
         <input
           type="text"
           formControlName="name"
-          placeholder="Ej: Radiografía dental frontal, Consentimiento operatorio"
+          placeholder="Ex.: Radiografia dental frontal, Consentiment operatori"
           [class.input-error]="isFieldInvalid('name')"
         />
         @if (hasError('name', 'required')) {
-          <span class="error">El nombre es obligatorio</span>
+          <span class="error">El nom es obligatori</span>
         }
       </label>
 
       <label>
-        Tipo de documento
+        Tipus de document
         <select formControlName="type" [class.input-error]="isFieldInvalid('type')">
-          <option [ngValue]="">Selecciona un tipo</option>
-          <option value="Radiografía">Radiografía</option>
+          <option [ngValue]="">Selecciona un tipus</option>
+          <option value="Radiografía">Radiografia</option>
           <option value="Informe">Informe</option>
-          <option value="Consentimiento">Consentimiento</option>
-          <option value="Prescripción">Prescripción</option>
-          <option value="Fotografía">Fotografía</option>
-          <option value="Otro">Otro</option>
+          <option value="Consentimiento">Consentiment</option>
+          <option value="Prescripción">Prescripcio</option>
+          <option value="Fotografía">Fotografia</option>
+          <option value="Otro">Altre</option>
         </select>
         @if (hasError('type', 'required')) {
-          <span class="error">El tipo es obligatorio</span>
+          <span class="error">El tipus es obligatori</span>
         }
       </label>
 
       <label>
-        Fecha de captura
+        Data de captura
         <input type="date" formControlName="captureDate" [class.input-error]="isFieldInvalid('captureDate')" />
         @if (hasError('captureDate', 'required')) {
-          <span class="error">La fecha es obligatoria</span>
+          <span class="error">La data es obligatoria</span>
         }
       </label>
 
       <label>
-        Archivo
+        Fitxer
         <input type="file" accept=".pdf,image/*" (change)="onFileSelected($event)" />
         @if (selectedFileName()) {
           <span class="file-name">{{ selectedFileName() }}</span>
         }
         @if (hasError('documentFile', 'required')) {
-          <span class="error">Debes adjuntar un archivo</span>
+          <span class="error">Has d'adjuntar un fitxer</span>
         }
       </label>
 
       <div class="actions">
-        <button type="button" class="btn ghost" (click)="cancel()">Cancelar</button>
+        <button type="button" class="btn ghost" (click)="cancel()">Cancel·la</button>
         <button type="submit" class="btn primary" [disabled]="isLoading()">
           @if (isLoading()) {
-            Subiendo...
+            Pujant...
           } @else {
-            Guardar documento
+            Desa document
           }
         </button>
       </div>

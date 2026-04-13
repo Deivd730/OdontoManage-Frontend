@@ -1,17 +1,17 @@
 <aside class="sidebar-container">
     <div class="search-header">
-        <label>Buscar Paciente</label>
-        <input type="text" placeholder="Nombre o DNI..." (input)="updateSearch($event)" [value]="searchTerm()" />
+        <label>Cerca pacient</label>
+        <input type="text" placeholder="Nom o DNI..." (input)="updateSearch($event)" [value]="searchTerm()" />
     </div>
 
     <div class="list-body">
         @if (isLoading()) {
-            <div class="status-msg">Cargando pacientes...</div>
+            <div class="status-msg">Carregant pacients...</div>
         } @else {
             <div class="patients-stack">
                 @for (patient of filteredPatients(); track patient.id) {
                     <button class="patient-card" [class.active]="selectedPatientId() === patient.id"
-                        (click)="selectPatient.emit(patient)">                        
+                        (click)="selectPatient.emit(patient)">
                         <div class="avatar">
                             @if (getPatientImageSrc(patient); as src) {
                                 <img [src]="src" [alt]="patient.firstName + ' ' + patient.lastName" />
@@ -26,7 +26,7 @@
                         </div>
                     </button>
                 } @empty {
-                    <div class="status-msg">No se encontraron pacientes.</div>
+                    <div class="status-msg">No s'han trobat pacients.</div>
                 }
             </div>
         }
