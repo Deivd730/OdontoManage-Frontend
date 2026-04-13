@@ -7,6 +7,10 @@ export interface TreatmentOption extends BaseOption {
   durationMinutes: number;
 }
 
+export interface DentistOption extends BaseOption {
+  availableDays?: string | null;
+}
+
 export interface AppointmentFormValue {
   patient: number;
   dentist: number;

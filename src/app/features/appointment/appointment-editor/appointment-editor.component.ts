@@ -11,6 +11,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   AppointmentEditorAlert,
   BaseOption,
+  DentistOption,
   TreatmentOption,
 } from '../appointment.models';
 
@@ -37,7 +38,7 @@ export class AppointmentEditorComponent {
   readonly alert = input<AppointmentEditorAlert | null>(null);
 
   readonly patientOptions = input<readonly BaseOption[]>([]);
-  readonly dentistOptions = input<readonly BaseOption[]>([]);
+  readonly dentistOptions = input<readonly DentistOption[]>([]);
   readonly boxOptions = input<readonly BaseOption[]>([]);
   readonly treatmentOptions = input<readonly TreatmentOption[]>([]);
 
@@ -138,5 +139,36 @@ export class AppointmentEditorComponent {
     }
 
     return localValue.length === 16 ? `${localValue}:00` : localValue;
+  }
+
+  getSelectedDentistAvailableDays(): string | null | undefined {
+    const dentistId = this.form.get('dentist')?.value;
+    if (!dentistId) {
+      return null;
+    }
+
+    const dentist = this.dentistOptions().find((d) => d.id === dentistId);
+    return dentist?.availableDays || null;
+  }
+
+  translateAvailableDays(days: string | null | undefined): string | null {
+    if (!days) {
+      return null;
+    }
+
+    const dayMap: Record<string, string> = {
+      Mon: 'Lunes',
+      Tue: 'Martes',
+      Wed: 'Miércoles',
+      Thu: 'Jueves',
+      Fri: 'Viernes',
+      Sat: 'Sábado',
+      Sun: 'Domingo',
+    };
+
+    return days
+      .split(',')
+      .map((day) => dayMap[day.trim()] || day.trim())
+      .join(', ');
   }
 }

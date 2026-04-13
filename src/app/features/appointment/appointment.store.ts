@@ -10,6 +10,7 @@ import {
   AppointmentEditorAlert,
   AppointmentFormValue,
   BaseOption,
+  DentistOption,
   TreatmentOption,
   UpdateAppointmentOutcome,
 } from './appointment.models';
@@ -41,7 +42,7 @@ export class AppointmentStore {
   readonly editorAlert = signal<AppointmentEditorAlert | null>(null);
 
   readonly patientOptions = signal<BaseOption[]>([]);
-  readonly dentistOptions = signal<BaseOption[]>([]);
+  readonly dentistOptions = signal<DentistOption[]>([]);
   readonly boxOptions = signal<BaseOption[]>([]);
   readonly treatmentOptions = signal<TreatmentOption[]>([]);
 
@@ -280,6 +281,7 @@ export class AppointmentStore {
         appointments.map((appointment) => ({
           id: appointment.dentist.id,
           label: this.getDentistDisplayName(appointment),
+          availableDays: (appointment.dentist as unknown as { availableDays?: string }).availableDays || null,
         })),
       ),
     );

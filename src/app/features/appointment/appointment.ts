@@ -50,7 +50,6 @@ export class Appointment implements OnInit {
     this.editorInitialValue = {
       patient: appointment.patient.id,
       dentist: appointment.dentist.id,
-      box: appointment.box.id,
       treatment: appointment.treatment.id,
       visitDate: appointment.visitDate,
       consultationReason: appointment.consultationReason,
