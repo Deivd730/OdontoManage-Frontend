@@ -26,22 +26,22 @@ export class AppointmentErrorMapperService {
 
       if (error.status === 404) {
         return {
-          title: 'Cita no encontrada',
-          message: 'La cita indicada no fue encontrada.',
-          recommendations: ['Recarga la agenda y vuelve a intentarlo.'],
+          title: 'Cita no trobada',
+          message: 'No s\'ha trobat la cita indicada.',
+          recommendations: ['Recarrega l\'agenda i torna-ho a provar.'],
         };
       }
 
       if (backendMessage.includes('does not work on')) {
         const availableDays = this.translateAvailableDays(this.extractAvailableDays(backendMessageRaw));
         return {
-          title: 'Dentista fuera de agenda semanal',
+          title: 'Odontoleg fora de l\'agenda setmanal',
           message: availableDays
-            ? `Ese dentista no trabaja el dia seleccionado. Dias activos: ${availableDays}.`
-            : 'Ese dentista no trabaja el dia seleccionado.',
+            ? `Aquest odontoleg no treballa el dia seleccionat. Dies actius: ${availableDays}.`
+            : 'Aquest odontoleg no treballa el dia seleccionat.',
           recommendations: [
-            'Cambia la fecha de la cita a un dia habilitado.',
-            'Selecciona otro dentista disponible para ese dia.',
+            'Canvia la data de la cita a un dia habilitat.',
+            'Selecciona un altre odontoleg disponible per a aquell dia.',
           ],
         };
       }
@@ -53,34 +53,34 @@ export class AppointmentErrorMapperService {
           backendMessage.includes('already')
         ) {
           return {
-            title: 'Dentista ocupado',
-            message: 'El dentista ya tiene una cita superpuesta en ese tramo horario.',
-            recommendations: ['Prueba otra hora.', 'Selecciona otro dentista.'],
+            title: 'Odontoleg ocupat',
+            message: 'L\'odontoleg ja te una cita solapada en aquesta franja horaria.',
+            recommendations: ['Prova una altra hora.', 'Selecciona un altre odontoleg.'],
           };
         }
 
         if (backendMessage.includes('available') || backendMessage.includes('disponible')) {
           return {
-            title: 'Dentista no disponible',
-            message: 'El dentista no esta disponible en esa hora. Puede deberse a agenda o disponibilidad semanal.',
-            recommendations: ['Ajusta hora o dentista.'],
+            title: 'Odontoleg no disponible',
+            message: 'L\'odontoleg no esta disponible en aquesta hora. Pot ser per agenda o disponibilitat setmanal.',
+            recommendations: ['Ajusta hora o odontoleg.'],
           };
         }
 
         if (backendMessage.includes('special') || backendMessage.includes('especial')) {
           return {
-            title: 'Especialidad incompatible',
-            message: 'El dentista no es especialista en ese tratamiento.',
-            recommendations: ['Selecciona un dentista con la especialidad adecuada.'],
+            title: 'Especialitat incompatible',
+            message: 'L\'odontoleg no es especialista en aquest tractament.',
+            recommendations: ['Selecciona un odontoleg amb l\'especialitat adequada.'],
           };
         }
       }
 
       if (backendMessage.includes('only auxiliars and admins')) {
         return {
-          title: 'Permisos insuficientes',
-          message: 'No tienes permisos para crear o modificar citas.',
-          recommendations: ['Solicita acceso a un administrador.'],
+          title: 'Permisos insuficients',
+          message: 'No tens permisos per crear o modificar cites.',
+          recommendations: ['Sol\'licita acces a un administrador.'],
         };
       }
 
@@ -89,9 +89,9 @@ export class AppointmentErrorMapperService {
         backendMessage.includes('appointments must be scheduled between')
       ) {
         return {
-          title: 'Horario fuera de rango',
-          message: 'La cita debe estar entre las 09:00 y las 17:00, incluyendo buffer de 5 minutos.',
-          recommendations: ['Ajusta la hora de inicio.'],
+          title: 'Horari fora de rang',
+          message: 'La cita ha d\'estar entre les 09:00 i les 17:00, incloent buffer de 5 minuts.',
+          recommendations: ['Ajusta l\'hora d\'inici.'],
         };
       }
 
@@ -100,41 +100,41 @@ export class AppointmentErrorMapperService {
         backendMessage.includes('already booked for the selected time slot')
       ) {
         return {
-          title: 'No hay box disponible',
-          message: 'No hay box disponible para ese horario.',
-          recommendations: ['Prueba otra hora o dia.'],
+          title: 'No hi ha box disponible',
+          message: 'No hi ha box disponible per a aquest horari.',
+          recommendations: ['Prova una altra hora o dia.'],
         };
       }
 
       if (backendMessage.includes('patient not found')) {
         return {
-          title: 'Paciente no encontrado',
-          message: 'Paciente no encontrado.',
-          recommendations: ['Verifica el paciente seleccionado.'],
+          title: 'Pacient no trobat',
+          message: 'Pacient no trobat.',
+          recommendations: ['Verifica el pacient seleccionat.'],
         };
       }
 
       if (backendMessage.includes('dentist not found')) {
         return {
-          title: 'Dentista no encontrado',
-          message: 'Dentista no encontrado.',
-          recommendations: ['Verifica el dentista seleccionado.'],
+          title: 'Odontoleg no trobat',
+          message: 'Odontoleg no trobat.',
+          recommendations: ['Verifica l\'odontoleg seleccionat.'],
         };
       }
 
       if (backendMessage.includes('treatment not found')) {
         return {
-          title: 'Tratamiento no encontrado',
-          message: 'Tratamiento no encontrado.',
-          recommendations: ['Selecciona un tratamiento valido.'],
+          title: 'Tractament no trobat',
+          message: 'Tractament no trobat.',
+          recommendations: ['Selecciona un tractament valid.'],
         };
       }
 
       if (backendMessage.includes('visitdate is required')) {
         return {
-          title: 'Fecha requerida',
-          message: 'Debes indicar fecha y hora de la cita.',
-          recommendations: ['Completa la fecha y hora del formulario.'],
+          title: 'Data requerida',
+          message: 'Has d\'indicar data i hora de la cita.',
+          recommendations: ['Completa la data i hora del formulari.'],
         };
       }
 
@@ -145,61 +145,61 @@ export class AppointmentErrorMapperService {
           backendMessage.includes('already')
         ) {
           return {
-            title: 'Paciente ocupado',
-            message: 'El paciente ya tiene otra cita en ese horario.',
-            recommendations: ['Selecciona otro horario para el paciente.'],
+            title: 'Pacient ocupat',
+            message: 'El pacient ja te una altra cita en aquest horari.',
+            recommendations: ['Selecciona un altre horari per al pacient.'],
           };
         }
       }
 
       if (error.status === 409) {
         return {
-          title: 'Conflicto de agenda',
-          message: 'Existe un conflicto de agenda para la cita solicitada.',
-          recommendations: ['Prueba con otro horario.'],
+          title: 'Conflicte d\'agenda',
+          message: 'Existeix un conflicte d\'agenda per a la cita sol\'licitada.',
+          recommendations: ['Prova amb un altre horari.'],
         };
       }
 
       if (error.status === 400) {
         const details = this.getBackendMessage(error);
         return {
-          title: 'Datos no validos',
+          title: 'Dades no valides',
           message: details
-            ? `Los datos de la cita no son validos. Detalle: ${details}`
-            : 'Los datos de la cita no son validos.',
-          recommendations: ['Revisa los datos del formulario y vuelve a intentarlo.'],
+            ? `Les dades de la cita no son valides. Detall: ${details}`
+            : 'Les dades de la cita no son valides.',
+          recommendations: ['Revisa les dades del formulari i torna-ho a provar.'],
         };
       }
 
       if (error.status === 0) {
         return {
-          title: 'Sin conexion',
-          message: 'No se pudo conectar con el servidor.',
-          recommendations: ['Comprueba tu conexion e intentalo de nuevo.'],
+          title: 'Sense connexio',
+          message: 'No s\'ha pogut connectar amb el servidor.',
+          recommendations: ['Comprova la connexio i torna-ho a provar.'],
         };
       }
     }
 
     if (action === 'delete') {
       return {
-        title: 'No se pudo eliminar la cita',
-        message: 'No se pudo eliminar la cita.',
-        recommendations: ['Intentalo nuevamente en unos segundos.'],
+        title: 'No s\'ha pogut eliminar la cita',
+        message: 'No s\'ha pogut eliminar la cita.',
+        recommendations: ['Torna-ho a provar en uns segons.'],
       };
     }
 
     if (action === 'update') {
       return {
-        title: 'No se pudo actualizar la cita',
-        message: 'No se pudo actualizar la cita.',
-        recommendations: ['Revisa los cambios y vuelve a intentarlo.'],
+        title: 'No s\'ha pogut actualitzar la cita',
+        message: 'No s\'ha pogut actualitzar la cita.',
+        recommendations: ['Revisa els canvis i torna-ho a provar.'],
       };
     }
 
     return {
-      title: 'No se pudo crear la cita',
-      message: 'No se pudo crear la cita.',
-      recommendations: ['Revisa los datos y vuelve a intentarlo.'],
+      title: 'No s\'ha pogut crear la cita',
+      message: 'No s\'ha pogut crear la cita.',
+      recommendations: ['Revisa les dades i torna-ho a provar.'],
     };
   }
 
@@ -246,13 +246,13 @@ export class AppointmentErrorMapperService {
     }
 
     const map: Record<string, string> = {
-      Mon: 'Lunes',
-      Tue: 'Martes',
-      Wed: 'Miercoles',
-      Thu: 'Jueves',
-      Fri: 'Viernes',
-      Sat: 'Sabado',
-      Sun: 'Domingo',
+      Mon: 'Dilluns',
+      Tue: 'Dimarts',
+      Wed: 'Dimecres',
+      Thu: 'Dijous',
+      Fri: 'Divendres',
+      Sat: 'Dissabte',
+      Sun: 'Diumenge',
     };
 
     return days

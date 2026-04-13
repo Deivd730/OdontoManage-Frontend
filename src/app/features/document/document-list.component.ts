@@ -46,7 +46,7 @@ export class DocumentListComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: (err) => {
-        this.notificationService.error('Error al cargar documentos');
+        this.notificationService.error('Error en carregar documents');
         console.error('Document load error:', err);
         this.isLoading.set(false);
       }
@@ -61,17 +61,17 @@ export class DocumentListComponent implements OnInit {
   }
 
   deleteDocument(doc: PatientDocument): void {
-    if (!confirm(`¿Eliminar el documento "${doc.type}"?`)) {
+    if (!confirm(`Vols eliminar el document "${doc.type}"?`)) {
       return;
     }
 
     this.documentService.delete(doc.id).subscribe({
       next: () => {
         this.documents.set(this.documents().filter(d => d.id !== doc.id));
-        this.notificationService.success('Documento eliminado');
+        this.notificationService.success('Document eliminat');
       },
       error: (err) => {
-        this.notificationService.error('Error al eliminar documento');
+        this.notificationService.error('Error en eliminar el document');
         console.error('Document delete error:', err);
       }
     });

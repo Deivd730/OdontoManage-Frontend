@@ -89,9 +89,9 @@ export class PatientRead implements OnInit {
       error: (error) => {
         this.isLoading.set(false);
         if (error.status === 0) {
-          this.errorMessage.set('No se puede conectar al servidor');
+          this.errorMessage.set('No es pot connectar amb el servidor');
         } else {
-          this.errorMessage.set('No se pudieron cargar los pacientes');
+          this.errorMessage.set('No s\'han pogut carregar els pacients');
         }
       }
     });
@@ -190,13 +190,13 @@ export class PatientRead implements OnInit {
       error: (error) => {
         this.isLoading.set(false);
         if (error.status === 400) {
-          this.errorMessage.set('Datos del paciente invalidos. Verifica la informacion.');
+          this.errorMessage.set('Dades del pacient invalides. Revisa la informacio.');
         } else if (error.status === 409) {
-          this.errorMessage.set('El paciente ya existe en el sistema.');
+          this.errorMessage.set('El pacient ja existeix al sistema.');
         } else if (error.status === 0) {
-          this.errorMessage.set('No se puede conectar al servidor');
+          this.errorMessage.set('No es pot connectar amb el servidor');
         } else {
-          this.errorMessage.set('Error al actualizar el paciente');
+          this.errorMessage.set('Error en actualitzar el pacient');
         }
       }
     });
@@ -259,9 +259,9 @@ export class PatientRead implements OnInit {
       error: (error) => {
         this.isLoading.set(false);
         if (error.status === 0) {
-          this.errorMessage.set('No se puede conectar al servidor');
+          this.errorMessage.set('No es pot connectar amb el servidor');
         } else {
-          this.errorMessage.set('Error al eliminar el paciente');
+          this.errorMessage.set('Error en eliminar el pacient');
         }
       }
     });

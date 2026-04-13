@@ -2,7 +2,7 @@
   <div class="login-card">
     <header class="login-header">
       <h1 class="brand-name">OdontoManage</h1>
-      <p class="subtitle">Bienvenido de nuevo</p>
+      <p class="subtitle">Benvingut de nou</p>
     </header>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
@@ -24,7 +24,7 @@
       </div>
 
       <div class="form-group">
-        <label for="password">Contraseña</label>
+        <label for="password">Contrasenya</label>
         <input
           type="password"
           id="password"
@@ -38,16 +38,16 @@
         @if (isLoading()) {
           <span class="dot-loader"></span>
         } @else {
-          Iniciar Sesión
+          Inicia la sessio
         }
       </button>
     </form>
 
     <footer class="login-footer">
-      <a href="/forgot-password" class="secondary-link">¿Olvidaste tu contraseña?</a>
+      <a href="/forgot-password" class="secondary-link">Has oblidat la contrasenya?</a>
       <div class="register-section">
-        <span>¿No tienes cuenta?</span>
-        <a href="/register" class="main-link">Regístrate</a>
+        <span>No tens compte?</span>
+        <a href="/register" class="main-link">Registra't</a>
       </div>
     </footer>
   </div>

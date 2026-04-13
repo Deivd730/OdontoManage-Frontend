@@ -46,7 +46,7 @@ export class AppointmentEditorComponent {
   readonly saveRequested = output<AppointmentEditorSubmit>();
 
   readonly title = computed(() =>
-    this.mode() === 'create' ? 'Nueva cita' : 'Editar cita',
+    this.mode() === 'create' ? 'Cita nova' : 'Edita cita',
   );
 
   readonly showManualBox = computed(() => false);
@@ -157,13 +157,13 @@ export class AppointmentEditorComponent {
     }
 
     const dayMap: Record<string, string> = {
-      Mon: 'Lunes',
-      Tue: 'Martes',
-      Wed: 'Miércoles',
-      Thu: 'Jueves',
-      Fri: 'Viernes',
-      Sat: 'Sábado',
-      Sun: 'Domingo',
+      Mon: 'Dilluns',
+      Tue: 'Dimarts',
+      Wed: 'Dimecres',
+      Thu: 'Dijous',
+      Fri: 'Divendres',
+      Sat: 'Dissabte',
+      Sun: 'Diumenge',
     };
 
     return days

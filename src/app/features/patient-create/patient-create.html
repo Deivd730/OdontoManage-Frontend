@@ -1,8 +1,8 @@
 <div class="patient-container">
   <div class="patient-card">
     <div class="patient-header">
-      <h1>Crear Nuevo Paciente</h1>
-      <p>Completa los datos del paciente para registrarlo en el sistema</p>
+      <h1>Crea un pacient nou</h1>
+      <p>Completa les dades del pacient per registrar-lo al sistema</p>
     </div>
 
     @if (successMessage()) {
@@ -23,155 +23,155 @@
     <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" class="patient-form">
       <!-- Sección: Información Personal -->
       <div class="form-section">
-        <h2 class="section-title">Información Personal</h2>
-        
+        <h2 class="section-title">Informacio personal</h2>
+
         <div class="form-row">
           <div class="form-group">
-            <label for="firstName">Nombre</label>
-            <input type="text" id="firstName" formControlName="firstName" [class.input-error]="isFieldInvalid('firstName')" placeholder="Ingresa el nombre"/>
-            
+            <label for="firstName">Nom</label>
+            <input type="text" id="firstName" formControlName="firstName" [class.input-error]="isFieldInvalid('firstName')" placeholder="Introdueix el nom"/>
+
             @if (hasError('firstName', 'required')) {
-              <span class="error-message">El nombre es requerido</span>
+              <span class="error-message">El nom es obligatori</span>
             }
             @if (hasError('firstName', 'minlength')) {
-              <span class="error-message">El nombre debe tener al menos 2 caracteres</span>
+              <span class="error-message">El nom ha de tenir almenys 2 caracters</span>
             }
           </div>
 
           <div class="form-group">
-            <label for="lastName">Apellido</label>
-            <input type="text" id="lastName" formControlName="lastName" [class.input-error]="isFieldInvalid('lastName')" placeholder="Ingresa el apellido"/>
-            
+            <label for="lastName">Cognom</label>
+            <input type="text" id="lastName" formControlName="lastName" [class.input-error]="isFieldInvalid('lastName')" placeholder="Introdueix el cognom"/>
+
             @if (hasError('lastName', 'required')) {
-              <span class="error-message">El apellido es requerido</span>
+              <span class="error-message">El cognom es obligatori</span>
             }
             @if (hasError('lastName', 'minlength')) {
-              <span class="error-message">El apellido debe tener al menos 2 caracteres</span>
+              <span class="error-message">El cognom ha de tenir almenys 2 caracters</span>
             }
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="nationalId">Cédula/DNI</label>
-            <input type="text" id="nationalId" formControlName="nationalId" [class.input-error]="isFieldInvalid('nationalId')" placeholder="Ingresa la cédula/DNI"/>
-            
+            <label for="nationalId">Cedula/DNI</label>
+            <input type="text" id="nationalId" formControlName="nationalId" [class.input-error]="isFieldInvalid('nationalId')" placeholder="Introdueix la cedula/DNI"/>
+
             @if (hasError('nationalId', 'required')) {
-              <span class="error-message">La cédula/DNI es requerida</span>
+              <span class="error-message">La cedula/DNI es obligatoria</span>
             }
-            
+
             @if (hasError('nationalId', 'minlength')) {
-              <span class="error-message">La cédula/DNI debe tener al menos 5 caracteres</span>
+              <span class="error-message">La cedula/DNI ha de tenir almenys 5 caracters</span>
             }
           </div>
 
           <div class="form-group">
-            <label for="socialSecurityNumber">Número de Seguro Social</label>
-            <input type="text" id="socialSecurityNumber" formControlName="socialSecurityNumber" [class.input-error]="isFieldInvalid('socialSecurityNumber')" placeholder="Ingresa el número de seguro social (opcional)"/>
-            
+            <label for="socialSecurityNumber">Numero de seguretat social</label>
+            <input type="text" id="socialSecurityNumber" formControlName="socialSecurityNumber" [class.input-error]="isFieldInvalid('socialSecurityNumber')" placeholder="Introdueix el numero de seguretat social (opcional)"/>
+
             @if (hasError('socialSecurityNumber', 'minlength')) {
-              <span class="error-message">El número de seguro social debe tener al menos 5 caracteres</span>
+              <span class="error-message">El numero de seguretat social ha de tenir almenys 5 caracters</span>
             }
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label for="birthDate">Fecha de nacimiento</label>
+            <label for="birthDate">Data de naixement</label>
             <input required type="date" id="birthDate" formControlName="birthDate" [max]="today" [class.input-error]="isFieldInvalid('birthDate')"/>
-            
+
             @if (hasError('birthDate', 'required')) {
-              <span class="error-message">La fecha de nacimiento es requerida</span>
+              <span class="error-message">La data de naixement es obligatoria</span>
             }
             @if (hasError('birthDate', 'futureDate')) {
-              <span class="error-message">La fecha de nacimiento no puede ser futura</span>
+              <span class="error-message">La data de naixement no pot ser futura</span>
             }
-          </div>          
+          </div>
         </div>
       </div>
 
       <!-- Sección: Contacto -->
       <div class="form-section">
-        <h2 class="section-title">Información de Contacto</h2>
-        
+        <h2 class="section-title">Informacio de contacte</h2>
+
         <div class="form-row">
           <div class="form-group">
-            <label for="phone">Teléfono</label>
-            <input type="tel" id="phone" formControlName="phone" [class.input-error]="isFieldInvalid('phone')" placeholder="Ingresa el teléfono (opcional)"/>
-            
+            <label for="phone">Telefon</label>
+            <input type="tel" id="phone" formControlName="phone" [class.input-error]="isFieldInvalid('phone')" placeholder="Introdueix el telefon (opcional)"/>
+
             @if (hasError('phone', 'pattern')) {
-              <span class="error-message">El teléfono debe contener al menos 9 dígitos</span>
+              <span class="error-message">El telefon ha de contenir almenys 9 digits</span>
             }
           </div>
 
           <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" formControlName="email" [class.input-error]="isFieldInvalid('email')" placeholder="Ingresa el email (opcional)"/>
-            
+            <label for="email">Correu electronic</label>
+            <input type="email" id="email" formControlName="email" [class.input-error]="isFieldInvalid('email')" placeholder="Introdueix el correu electronic (opcional)"/>
+
             @if (hasError('email', 'email')) {
-              <span class="error-message">El email no es válido</span>
+              <span class="error-message">El correu electronic no es valid</span>
             }
             @if (hasError('email', 'minlength')) {
-              <span class="error-message">El email debe tener al menos 5 caracteres</span>
+              <span class="error-message">El correu electronic ha de tenir almenys 5 caracters</span>
             }
           </div>
         </div>
 
         <div class="form-group full-width">
-          <label for="address">Dirección</label>
-          <input type="text" id="address" formControlName="address" [class.input-error]="isFieldInvalid('address')" placeholder="Ingresa la dirección completa (opcional)"/>
-          
+          <label for="address">Adreca</label>
+          <input type="text" id="address" formControlName="address" [class.input-error]="isFieldInvalid('address')" placeholder="Introdueix l'adreca completa (opcional)"/>
+
           @if (hasError('address', 'minlength')) {
-            <span class="error-message">La dirección debe tener al menos 5 caracteres</span>
+            <span class="error-message">L'adreca ha de tenir almenys 5 caracters</span>
           }
         </div>
 
         <div class="form-group full-width">
-          <label for="billingData">Información de Facturación</label>
-          <input type="text" id="billingData" formControlName="billingData" [class.input-error]="isFieldInvalid('billingData')" placeholder="Ingresa la información de facturación (opcional)"/>
-          
+          <label for="billingData">Informacio de facturacio</label>
+          <input type="text" id="billingData" formControlName="billingData" [class.input-error]="isFieldInvalid('billingData')" placeholder="Introdueix la informacio de facturacio (opcional)"/>
+
           @if (hasError('billingData', 'minlength')) {
-            <span class="error-message">La información de facturación debe tener al menos 5 caracteres</span>
+            <span class="error-message">La informacio de facturacio ha de tenir almenys 5 caracters</span>
           }
         </div>
       </div>
 
       <!-- Sección: Información de Salud -->
       <div class="form-section">
-        <h2 class="section-title">Información de Salud</h2>
-        
+        <h2 class="section-title">Informacio de salut</h2>
+
         <div class="form-group full-width">
-          <label for="healthStatus">Estado de Salud</label>
-          <input type="text" id="healthStatus" formControlName="healthStatus" [class.input-error]="isFieldInvalid('healthStatus')" placeholder="Ingresa el estado de salud actual del paciente (opcional)"/>
-          
+          <label for="healthStatus">Estat de salut</label>
+          <input type="text" id="healthStatus" formControlName="healthStatus" [class.input-error]="isFieldInvalid('healthStatus')" placeholder="Introdueix l'estat de salut actual del pacient (opcional)"/>
+
           @if (hasError('healthStatus', 'minlength')) {
-            <span class="error-message">El estado de salud debe tener al menos 3 caracteres</span>
+            <span class="error-message">L'estat de salut ha de tenir almenys 3 caracters</span>
           }
         </div>
 
         <div class="form-group full-width">
-          <label for="familyHistory">Antecedentes Familiares</label>
-          <input type="text" id="familyHistory" formControlName="familyHistory" [class.input-error]="isFieldInvalid('familyHistory')" placeholder="Ingresa los antecedentes familiares relevantes (opcional)"/>
-          
+          <label for="familyHistory">Antecedents familiars</label>
+          <input type="text" id="familyHistory" formControlName="familyHistory" [class.input-error]="isFieldInvalid('familyHistory')" placeholder="Introdueix els antecedents familiars rellevants (opcional)"/>
+
           @if (hasError('familyHistory', 'minlength')) {
-            <span class="error-message">Los antecedentes familiares deben tener al menos 3 caracteres</span>
+            <span class="error-message">Els antecedents familiars han de tenir almenys 3 caracters</span>
           }
         </div>
 
         <div class="form-group full-width">
-          <label for="lifestyleHabits">Hábitos de Vida</label>
-          <input type="text" id="lifestyleHabits" formControlName="lifestyleHabits" [class.input-error]="isFieldInvalid('lifestyleHabits')" placeholder="Ingresa los hábitos de vida (opcional)"/>
-          
+          <label for="lifestyleHabits">Habits de vida</label>
+          <input type="text" id="lifestyleHabits" formControlName="lifestyleHabits" [class.input-error]="isFieldInvalid('lifestyleHabits')" placeholder="Introdueix els habits de vida (opcional)"/>
+
           @if (hasError('lifestyleHabits', 'minlength')) {
-            <span class="error-message">Los hábitos de vida deben tener al menos 3 caracteres</span>
+            <span class="error-message">Els habits de vida han de tenir almenys 3 caracters</span>
           }
         </div>
 
         <div class="form-group full-width">
-          <label for="medicationAllergies">Alergias a Medicamentos</label>
-          <input type="text" id="medicationAllergies" formControlName="medicationAllergies" [class.input-error]="isFieldInvalid('medicationAllergies')" placeholder="Ingresa las alergias a medicamentos (opcional)"/>
-          
+          <label for="medicationAllergies">Allergies a medicaments</label>
+          <input type="text" id="medicationAllergies" formControlName="medicationAllergies" [class.input-error]="isFieldInvalid('medicationAllergies')" placeholder="Introdueix les allergies a medicaments (opcional)"/>
+
           @if (hasError('medicationAllergies', 'minlength')) {
-            <span class="error-message">Las alergias a medicamentos deben tener al menos 3 caracteres</span>
+            <span class="error-message">Les allergies a medicaments han de tenir almenys 3 caracters</span>
           }
         </div>
 
@@ -179,20 +179,20 @@
           <div class="form-group consent-group">
             <label class="checkbox-label">
               <input type="checkbox" formControlName="medicalTreatmentConsent" />
-              <span>Acepto el consentimiento de tratamiento medico</span>
+              <span>Accepto el consentiment de tractament medic</span>
             </label>
             @if (hasError('medicalTreatmentConsent', 'required')) {
-              <span class="error-message">Debes aceptar este consentimiento</span>
+              <span class="error-message">Has d'acceptar aquest consentiment</span>
             }
           </div>
 
           <div class="form-group consent-group">
             <label class="checkbox-label">
               <input type="checkbox" formControlName="anesthesiaConsent" />
-              <span>Acepto el consentimiento de anestesia</span>
+              <span>Accepto el consentiment d'anestesia</span>
             </label>
             @if (hasError('anesthesiaConsent', 'required')) {
-              <span class="error-message">Debes aceptar este consentimiento</span>
+              <span class="error-message">Has d'acceptar aquest consentiment</span>
             }
           </div>
         </div>
@@ -200,7 +200,7 @@
         <div class="form-group full-width consent-group">
           <label class="checkbox-label">
             <input type="checkbox" formControlName="hasInfectiousDiseases" />
-            <span>El paciente tiene enfermedades infecciosas</span>
+            <span>El pacient te malalties infeccioses</span>
           </label>
         </div>
 
@@ -211,29 +211,29 @@
               id="infectiousDiseases"
               formControlName="infectiousDiseases"
               [class.input-error]="isFieldInvalid('infectiousDiseases') || hasFormError('infectiousDiseasesRequired')"
-              placeholder="Especifica las enfermedades infecciosas"
+              placeholder="Especifica les malalties infeccioses"
               rows="3"
             ></textarea>
             @if (hasFormError('infectiousDiseasesRequired')) {
-              <span class="error-message">Debes especificar las enfermedades infecciosas</span>
+              <span class="error-message">Has d'especificar les malalties infeccioses</span>
             }
             @if (hasError('infectiousDiseases', 'minlength')) {
-              <span class="error-message">Las enfermedades infecciosas deben tener al menos 3 caracteres</span>
+              <span class="error-message">Les malalties infeccioses han de tenir almenys 3 caracters</span>
             }
           </div>
         }
       </div>
 
-      <button 
-        type="submit" 
+      <button
+        type="submit"
         class="btn-create"
         [disabled]="isLoading()"
       >
         @if (isLoading()) {
           <span class="spinner"></span>
-          <span>Creando paciente...</span>
+          <span>Creant pacient...</span>
         } @else {
-          <span>Crear Paciente</span>
+          <span>Crea pacient</span>
         }
       </button>
     </form>

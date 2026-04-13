@@ -46,10 +46,10 @@ export class ProfileComponent {
         next: (updatedUser) => {
           this.authService.updateCurrentUser(updatedUser);
           this.showUpdateModal.set(false);
-          this.notificationService.success('Datos actualizados correctamente');
+          this.notificationService.success('Dades actualitzades correctament');
         },
         error: () => {
-          this.notificationService.error('Error al actualizar');
+          this.notificationService.error('Error en actualitzar');
         }
       });
   }
@@ -68,17 +68,17 @@ export class ProfileComponent {
     const user = this.authService.currentUser();
 
     if (!user || !user.id) {
-      this.notificationService.error('No se pudo encontrar la información del usuario.');
+      this.notificationService.error('No s\'ha pogut trobar la informacio de l\'usuari.');
       return;
     }
 
     if (this.passwordData.new !== this.passwordData.confirm) {
-      this.notificationService.error('Las contraseñas nuevas no coinciden');
+      this.notificationService.error('Les contrasenyes noves no coincideixen');
       return;
     }
 
     if (!this.passwordData.current || !this.passwordData.new) {
-      this.notificationService.error('Por favor, rellena todos los campos');
+      this.notificationService.error('Si us plau, omple tots els camps');
       return;
     }
 
@@ -87,12 +87,12 @@ export class ProfileComponent {
       newPassword: this.passwordData.new
     }).subscribe({
       next: (res) => {
-        this.notificationService.success(res.message || 'Contraseña cambiada con éxito');
+        this.notificationService.success(res.message || 'Contrasenya canviada correctament');
         this.showPasswordModal.set(false);
         this.passwordData = { current: '', new: '', confirm: '' };
       },
       error: (err) => {
-        this.notificationService.error(err.error?.error || 'La contraseña actual es incorrecta');
+        this.notificationService.error(err.error?.error || 'La contrasenya actual es incorrecta');
       }
     });
   }
@@ -122,7 +122,7 @@ export class ProfileComponent {
         },
         error: (err) => {
           console.error('Error al borrar cuenta:', err);
-          this.notificationService.error('Error al intentar eliminar la cuenta.');
+          this.notificationService.error('Error en intentar eliminar el compte.');
           this.showModal.set(false);
         }
       });

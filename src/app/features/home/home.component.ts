@@ -30,6 +30,6 @@ export class HomeComponent {
       // Remover el prefijo "ROLE_" y convertir a minúsculas
       return roles[0].replace('ROLE_', '').toLowerCase();
     }
-    return 'usuario';
+    return 'usuari';
   }
 }

@@ -35,9 +35,9 @@ export class AppointmentConflictValidatorService {
 
     if (conflictingDentist) {
       return {
-        title: 'Dentista ocupado en esa hora',
-        message: `El dentista seleccionado ya tiene una cita a las ${formatTime(conflictingDentist.visitDate)}.`,
-        recommendations: ['Selecciona otra hora para la cita.', 'Elige otro dentista disponible.'],
+        title: 'Odontoleg ocupat en aquesta hora',
+        message: `L'odontoleg seleccionat ja te una cita a les ${formatTime(conflictingDentist.visitDate)}.`,
+        recommendations: ['Selecciona una altra hora per a la cita.', 'Tria un altre odontoleg disponible.'],
       };
     }
 
@@ -51,9 +51,9 @@ export class AppointmentConflictValidatorService {
 
     if (conflictingPatient) {
       return {
-        title: 'Paciente con cita en esa hora',
-        message: `El paciente seleccionado ya tiene una cita a las ${formatTime(conflictingPatient.visitDate)}.`,
-        recommendations: ['Selecciona otro horario para el paciente.'],
+        title: 'Pacient amb cita en aquesta hora',
+        message: `El pacient seleccionat ja te una cita a les ${formatTime(conflictingPatient.visitDate)}.`,
+        recommendations: ['Selecciona un altre horari per al pacient.'],
       };
     }
 
