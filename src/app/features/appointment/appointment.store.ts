@@ -4,6 +4,7 @@ import {
   AppointmentService,
   CreateAppointmentRequest,
 } from '@services/appointment.service';
+import { DentistResponse, DentistService } from '@services/dentist.service';
 import { NotificationService } from '@services/notification.service';
 import { PatientService } from '@services/patient.service';
 import {
@@ -29,6 +30,7 @@ export interface CalendarDay {
 @Injectable()
 export class AppointmentStore {
   private readonly appointmentService = inject(AppointmentService);
+  private readonly dentistService = inject(DentistService);
   private readonly patientService = inject(PatientService);
   private readonly notificationService = inject(NotificationService);
   private readonly conflictValidator = inject(AppointmentConflictValidatorService);
@@ -70,6 +72,7 @@ export class AppointmentStore {
     this.currentDate.set(today);
     this.selectedDate.set(today);
     this.loadAppointments();
+    this.loadDentists();
     this.loadPatients();
   }
 
@@ -114,26 +117,12 @@ export class AppointmentStore {
   }
 
   getDentistDisplayName(appointment: AppointmentResponse): string {
-    const dentist = appointment.dentist as unknown as {
-      name?: string;
-      fullName?: string;
+    return this.formatDentistDisplayName(appointment.dentist as unknown as {
       firstName?: string;
       lastName?: string;
-    };
-
-    if (dentist?.name?.trim()) {
-      return dentist.name;
-    }
-
-    if (dentist?.fullName?.trim()) {
-      return dentist.fullName;
-    }
-
-    const firstName = dentist?.firstName?.trim() ?? '';
-    const lastName = dentist?.lastName?.trim() ?? '';
-    const composedName = `${firstName} ${lastName}`.trim();
-
-    return composedName || 'Dentista no disponible';
+      name?: string;
+      fullName?: string;
+    });
   }
 
   getBoxDisplayName(appointment: AppointmentResponse): string {
@@ -243,6 +232,9 @@ export class AppointmentStore {
       next: (data) => {
         this.allAppointments.set(data);
         this.refreshReferenceOptions(data);
+        if (this.dentistOptions().length === 0) {
+          this.dentistOptions.set(this.buildDentistOptionsFromAppointments(data));
+        }
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -269,22 +261,35 @@ export class AppointmentStore {
     });
   }
 
+  private loadDentists(): void {
+    this.dentistService.getDentists().subscribe({
+      next: (dentists) => {
+        this.dentistOptions.set(
+          this.uniqueOptions(
+            dentists.map((dentist) => ({
+              id: dentist.id,
+              label: this.formatDentistDisplayName(dentist),
+              availableDays: dentist.availableDays || null,
+            })),
+          ),
+        );
+      },
+      error: (error) => {
+        console.error('Error loading dentists:', error);
+
+        if (this.dentistOptions().length === 0) {
+          this.dentistOptions.set(this.buildDentistOptionsFromAppointments(this.allAppointments()));
+        }
+      },
+    });
+  }
+
   private refreshReferenceOptions(appointments: AppointmentResponse[]): void {
     const patientOptions = appointments.map((appointment) => ({
       id: appointment.patient.id,
       label: `${appointment.patient.firstName} ${appointment.patient.lastName}`.trim(),
     }));
     this.patientOptions.update((existing) => this.mergeOptions(existing, patientOptions));
-
-    this.dentistOptions.set(
-      this.uniqueOptions(
-        appointments.map((appointment) => ({
-          id: appointment.dentist.id,
-          label: this.getDentistDisplayName(appointment),
-          availableDays: (appointment.dentist as unknown as { availableDays?: string }).availableDays || null,
-        })),
-      ),
-    );
 
     this.boxOptions.set(
       this.uniqueOptions(
@@ -303,6 +308,16 @@ export class AppointmentStore {
           durationMinutes: appointment.treatment.durationMinutes ?? 30,
         })),
       ),
+    );
+  }
+
+  private buildDentistOptionsFromAppointments(appointments: AppointmentResponse[]): DentistOption[] {
+    return this.uniqueOptions(
+      appointments.map((appointment) => ({
+        id: appointment.dentist.id,
+        label: this.formatDentistDisplayName(appointment.dentist),
+        availableDays: (appointment.dentist as unknown as { availableDays?: string }).availableDays || null,
+      })),
     );
   }
 
@@ -336,6 +351,27 @@ export class AppointmentStore {
     }
 
     return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label, 'es'));
+  }
+
+  private formatDentistDisplayName(dentist: {
+    firstName?: string;
+    lastName?: string;
+    name?: string;
+    fullName?: string;
+  }): string {
+    if (dentist.name?.trim()) {
+      return dentist.name;
+    }
+
+    if (dentist.fullName?.trim()) {
+      return dentist.fullName;
+    }
+
+    const firstName = dentist.firstName?.trim() ?? '';
+    const lastName = dentist.lastName?.trim() ?? '';
+    const composedName = `${firstName} ${lastName}`.trim();
+
+    return composedName || 'Dentista no disponible';
   }
 
   private normalizeVisitDate(value: string): string {
