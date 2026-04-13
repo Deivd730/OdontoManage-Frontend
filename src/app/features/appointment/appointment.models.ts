@@ -10,7 +10,6 @@ export interface TreatmentOption extends BaseOption {
 export interface AppointmentFormValue {
   patient: number;
   dentist: number;
-  box?: number;
   treatment: number;
   visitDate: string;
   consultationReason?: string;

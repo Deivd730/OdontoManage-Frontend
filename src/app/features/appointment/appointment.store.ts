@@ -161,7 +161,7 @@ export class AppointmentStore {
       return;
     }
 
-    this.appointmentService.createAppointment(this.toRequest(formValue, false)).subscribe({
+    this.appointmentService.createAppointment(this.toRequest(formValue)).subscribe({
       next: (createdAppointment) => {
         this.allAppointments.update((appointments) => [...appointments, createdAppointment]);
         this.refreshReferenceOptions(this.allAppointments());
@@ -181,7 +181,6 @@ export class AppointmentStore {
   updateAppointment(
     appointmentId: number,
     formValue: AppointmentFormValue,
-    originalBoxId: number | null,
     onSuccess?: (outcome: UpdateAppointmentOutcome) => void,
   ): void {
     if (!this.prepareSave(formValue, appointmentId)) {
@@ -189,7 +188,7 @@ export class AppointmentStore {
     }
 
     this.appointmentService
-      .updateAppointment(appointmentId, this.toRequest(formValue, true))
+      .updateAppointment(appointmentId, this.toRequest(formValue))
       .subscribe({
         next: (updatedAppointment) => {
           this.allAppointments.update((appointments) =>
@@ -202,15 +201,12 @@ export class AppointmentStore {
             `Cita actualizada: ${this.formatTime(updatedAppointment.visitDate)} - ${updatedAppointment.treatment.name}.`,
           );
 
-          const manualBoxChanged = Boolean(formValue.box && originalBoxId && formValue.box !== originalBoxId);
-          const boxReassigned = Boolean(manualBoxChanged && formValue.box && updatedAppointment.box.id !== formValue.box);
-
           this.isSaving.set(false);
           onSuccess?.({
-            manualBoxChanged,
-            selectedBoxId: formValue.box ?? null,
-            assignedBoxLabel: updatedAppointment.box.name?.trim() || `Box ${updatedAppointment.box.id}`,
-            boxReassigned,
+            manualBoxChanged: false,
+            selectedBoxId: null,
+            assignedBoxLabel: null,
+            boxReassigned: false,
           });
         },
         error: (error) => {
@@ -308,7 +304,7 @@ export class AppointmentStore {
     );
   }
 
-  private toRequest(formValue: AppointmentFormValue, includeManualBox: boolean): CreateAppointmentRequest {
+  private toRequest(formValue: AppointmentFormValue): CreateAppointmentRequest {
     const normalizedVisitDate = this.normalizeVisitDate(formValue.visitDate);
 
     return {
@@ -318,7 +314,6 @@ export class AppointmentStore {
       visitDate: normalizedVisitDate,
       consultationReason: formValue.consultationReason?.trim() || undefined,
       parentAppointment: null,
-      ...(includeManualBox && formValue.box ? { box: formValue.box } : {}),
     };
   }
 
