@@ -9,6 +9,7 @@ import { PatientService, PatientResponse } from '@services/patient.service';
 })
 export class PatientListComponent implements OnInit {
   private patientService = inject(PatientService);
+  private readonly defaultProfileImage = 'assets/default-profile.svg';
 
   selectedPatientId = input<number | null>(null);
   selectPatient = output<PatientResponse>();
@@ -34,6 +35,7 @@ export class PatientListComponent implements OnInit {
     this.patientService.getPatients().subscribe({
       next: (data) => {
         this.allPatients.set(data);
+        this.ensureSelectedPatient(data);
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false)
@@ -67,5 +69,21 @@ export class PatientListComponent implements OnInit {
     const regex = new RegExp(`^data:(?:${escaped.join('|')});base64,[A-Za-z0-9+/]+=*$`);
 
     return regex.test(value.trim()) ? value.trim() : null;
+  }
+
+  getPatientAvatarSrc(patient: PatientResponse): string {
+    return this.getPatientImageSrc(patient) ?? this.defaultProfileImage;
+  }
+
+  private ensureSelectedPatient(patients: PatientResponse[]): void {
+    if (!patients.length) {
+      return;
+    }
+
+    const selectedId = this.selectedPatientId();
+    const hasValidSelection = selectedId !== null && patients.some(patient => patient.id === selectedId);
+    if (!hasValidSelection) {
+      this.selectPatient.emit(patients[0]);
+    }
   }
 }

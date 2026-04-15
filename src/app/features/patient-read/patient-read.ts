@@ -21,6 +21,7 @@ import {
 export class PatientRead implements OnInit {
   private readonly allowedImageMimeTypes = [...PROFILE_IMAGE_ALLOWED_MIME_TYPES];
   private readonly maxProfileImageSizeBytes = PROFILE_IMAGE_MAX_SIZE_BYTES;
+  private readonly defaultProfileImage = 'assets/default-profile.svg';
 
   patients = signal<PatientResponse[]>([]);
   selectedPatient = signal<PatientResponse | null>(null);
@@ -83,6 +84,7 @@ export class PatientRead implements OnInit {
         }));
 
         this.patients.set(normalizedPatients);
+        this.ensureSelectedPatient(normalizedPatients);
         this.hydrateMissingProfileImages(normalizedPatients);
         this.isLoading.set(false);
       },
@@ -250,8 +252,9 @@ export class PatientRead implements OnInit {
 
     this.patientService.deletePatient(selected.id).subscribe({
       next: () => {
-        this.patients.set(this.patients().filter(patient => patient.id !== selected.id));
-        this.selectedPatient.set(null);
+        const remainingPatients = this.patients().filter(patient => patient.id !== selected.id);
+        this.patients.set(remainingPatients);
+        this.ensureSelectedPatient(remainingPatients);
         this.isEditing.set(false);
         this.deleteConfirm.set(false);
         this.isLoading.set(false);
@@ -303,6 +306,10 @@ export class PatientRead implements OnInit {
     }
 
     return profileImage;
+  }
+
+  getPatientAvatarSrc(patient: PatientResponse): string {
+    return this.getPatientImageSrc(patient) ?? this.defaultProfileImage;
   }
 
   private getPatientProfileImageValue(patient: PatientResponse): string {
@@ -385,6 +392,20 @@ export class PatientRead implements OnInit {
         }
       }
     });
+  }
+
+  private ensureSelectedPatient(patients: PatientResponse[]): void {
+    if (!patients.length) {
+      this.selectedPatient.set(null);
+      return;
+    }
+
+    const currentSelectedId = this.selectedPatient()?.id;
+    const currentSelectedPatient = currentSelectedId
+      ? patients.find(patient => patient.id === currentSelectedId)
+      : null;
+
+    this.selectPatient(currentSelectedPatient ?? patients[0]);
   }
 
 }
