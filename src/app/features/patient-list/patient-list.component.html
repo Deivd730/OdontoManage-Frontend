@@ -13,11 +13,7 @@
                     <button class="patient-card" [class.active]="selectedPatientId() === patient.id"
                         (click)="selectPatient.emit(patient)">
                         <div class="avatar">
-                            @if (getPatientImageSrc(patient); as src) {
-                                <img [src]="src" [alt]="patient.firstName + ' ' + patient.lastName" />
-                            } @else {
-                                {{ patient.firstName[0] }}{{ patient.lastName[0] }}
-                            }
+                            <img [src]="getPatientAvatarSrc(patient)" [alt]="patient.firstName + ' ' + patient.lastName" />
                         </div>
 
                         <div class="info">
