@@ -32,6 +32,36 @@
   margin-bottom: 40px;
 }
 
+.tabs-navigation {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #e9edf4;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: #666;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+
+.tab-button:hover {
+  color: #333;
+  background: #f9f9f9;
+}
+
+.tab-button.active {
+  color: #1d4f91;
+  border-bottom-color: #1d4f91;
+}
+
 .toolbar-section {
   display: flex;
   align-items: center;
@@ -85,6 +115,24 @@
 .tools button.active {
   background: #f4f4f4;
   border-color: #333;
+}
+
+.toggle-absence-btn {
+  border-left-color: #000000 !important;
+  background: #fff3cd;
+  border-color: #ffc107 !important;
+  transition: all 0.2s ease;
+}
+
+.toggle-absence-btn:hover {
+  background: #ffe69c;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+}
+
+.toggle-absence-btn.active {
+  background: #000000;
+  color: white;
+  border-color: #000000 !important;
 }
 
 .odontogram-visual {

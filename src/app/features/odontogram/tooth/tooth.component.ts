@@ -30,8 +30,8 @@ export class ToothComponent {
     return found ? found.pathology.color || '#ff0000' : '#ffffff';
   }
 
-  hasPathologyId5(): boolean {
+  hasPathologyId4(): boolean {
     const pathologies = this.appliedPathologies();
-    return pathologies.some(p => p.pathology.id === 5);
+    return pathologies.some(p => p.pathology.id === 4);
   }
 }

@@ -11,33 +11,50 @@
     </header>
 
     <div class="editor-toolbar">      
-     
-      <div class="toolbar-section">
-        <label for="treatment-filter" class="filter-label">Tratamiento:</label>
-        <select 
-          id="treatment-filter"
-          class="pathology-filter"
-          (change)="onTreatmentFilterChange($event)">
-          <option value="">Todos</option>
-          <option value="pending">Pendiente</option>
-          <option value="done">Hecho</option>
-          <option value="caries">Caries</option>
-          <option value="radio">Radio</option>
-          <option value="fisuras">Fisuras</option>
-          <option value="ausencias">Ausencias</option>
-        </select>
+      <!-- Tabs Navigation -->
+      <div class="tabs-navigation">
+        <button 
+          class="tab-button"
+          [class.active]="activeTab() === 'pathologies'"
+          (click)="onTabChange('pathologies')">
+          Patologías
+        </button>
+        <button 
+          class="tab-button"
+          [class.active]="activeTab() === 'treatments'"
+          (click)="onTabChange('treatments')">
+          Tratamientos
+        </button>
       </div>
 
-      <div class="tools">
-        @for (p of pathologies; track p.id) {
-          <button
-            [class.active]="selectedPathology()?.id === p.id"
-            (click)="selectedPathology.set(p)"
-            [style.border-left-color]="p.color">
-            {{ p.name }}
-          </button>
-        }
-      </div>
+      <!-- Patologías Tab -->
+      @if (activeTab() === 'pathologies') {
+        <div class="tools">
+          @for (p of pathologies(); track p.id) {
+            <button
+              [class.active]="selectedPathology()?.id === p.id"
+              (click)="selectPathology(p)"
+              [style.border-left-color]="p.color"
+              [title]="p.id === 4 ? 'Modo toggle: haz click en dientes para marcar/desmarcar Ausencia Natural' : ''">
+              {{ p.name || p.description }}
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Tratamientos Tab -->
+      @if (activeTab() === 'treatments') {
+        <div class="toolbar-section">
+          <label for="treatment-filter" class="filter-label">Tratamiento:</label>
+          <select 
+            id="treatment-filter"
+            class="pathology-filter">
+            <option value="">Todos</option>
+            <option value="pending">Pendiente</option>
+            <option value="done">Hecho</option>
+          </select>
+        </div>
+      }
     </div>
 
     <div class="odontogram-visual">

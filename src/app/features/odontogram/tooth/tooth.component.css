@@ -40,4 +40,12 @@ svg polygon:hover, svg rect:hover {
   background-color: #f0f0f0;
   border: 2px solid #333;
   border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pathology-symbol:hover {
+  background-color: #e8e8e8;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
