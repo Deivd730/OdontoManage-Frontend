@@ -2,8 +2,8 @@
 <div class="tooth-container">
   <span class="tooth-label">{{ toothNumber() }}</span>
   
-  @if (hasPathologyId5()) {
-    <div class="pathology-symbol">X</div>
+  @if (hasPathologyId4()) {
+    <div class="pathology-symbol" (click)="onFaceClick.emit(0)">X</div>
   } @else {
     <svg width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
       <!-- Cara 1: Arriba -->

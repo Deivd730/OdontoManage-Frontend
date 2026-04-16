@@ -1,6 +1,7 @@
 export interface Pathology {
     id: number;
-    name: string;
+    name?: string;
+    description?: string;
     color?: string;
 }
 
@@ -14,7 +15,6 @@ export interface ToothPathology {
     tooth: Tooth;
     pathology: Pathology;
     toothFace: number;
-    status: string;
 }
 
 export interface Odontogram {

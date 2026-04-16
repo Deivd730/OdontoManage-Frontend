@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ToothComponent } from '@features/odontogram/tooth/tooth.component';
 import { Odontogram, Pathology, ToothPathology } from '@models/odontogram';
 import { OdontogramService } from '@services/odontogram.service';
+import { PathologyService } from '@services/pathology.service';
 import { finalize } from 'rxjs';
 import { NotificationService } from '@services/notification.service';
 import { PatientService } from '@services/patient.service';
@@ -18,6 +19,7 @@ import { PatientService } from '@services/patient.service';
 export class OdontogramEditorComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private odontogramService = inject(OdontogramService);
+  private pathologyService = inject(PathologyService);
   private notificationService = inject(NotificationService);
   private patientService = inject(PatientService);
 
@@ -26,34 +28,16 @@ export class OdontogramEditorComponent implements OnInit {
   private readonly CHILD_UPPER_TEETH = [55, 54, 53, 52, 51, 61, 62, 63, 64, 65];
   private readonly CHILD_LOWER_TEETH = [85, 84, 83, 82, 81, 71, 72, 73, 74, 75];
   private readonly WHOLE_TOOTH_FACE = 0;
-  private readonly WHOLE_TOOTH_PATHOLOGY_IDS = new Set([3, 4, 5, 6]);
 
-  // Herramientas de edicion
-  pathologies: Pathology[] = [
-    { id: 1, name: 'Caries', color: '#FF4136' },
-    { id: 7, name: 'Caries', color: '#6f36ffff' },
-    { id: 2, name: 'Obturacion', color: '#d96900ff' },
-    { id: 2, name: 'Obturacion', color: '#0074D9' },
-    { id: 3, name: 'Corona', color: '#ff5e00ff' },
-    { id: 3, name: 'Corona', color: '#4400ffff' },
-    { id: 4, name: 'Ausente', color: '#0c0000ff' },
-    { id: 5, name: 'Endodoncia', color: '#420dc9ff' },
-    { id: 5, name: 'Endodoncia', color: '#c90d0dff' },
-    { id: 6, name: 'Exodoncia', color: '#111111ff' },
-    { id: 6, name: 'Exodonciaort', color: '#3813f1ff' },
-    { id: 6, name: 'Exodonciaort', color: '#761313ff' },
-    { id: 6, name: 'cariesX', color: '#0c902fff' },
-    { id: 6, name: 'fisuras', color: '#c2d814ff' },
-    { id: 6, name: 'puente', color: '#0c0e01ff' },
-    { id: 6, name: 'Exodoncia', color: '#111111ff' }
-  ];
+  // Herramientas de edicion - cargadas desde backend
+  pathologies = signal<Pathology[]>([]);
 
   selectedPathology = signal<Pathology | null>(null);
   odontogram = signal<Odontogram | null>(null);
   isLoading = signal(false);
   odontogramType = signal<'adult' | 'child'>('adult');
-  filteredPathologyId = signal<number | null>(null);
-  filteredTreatment = signal<string | null>(null);
+  activeTab = signal<'pathologies' | 'treatments'>('pathologies');
+  isToggleAbsenceMode = signal(false);
 
   upperRightTeeth = computed(() => this.odontogramType() === 'child'
     ? this.CHILD_UPPER_TEETH.slice(0, 5)
@@ -68,21 +52,40 @@ export class OdontogramEditorComponent implements OnInit {
     ? this.CHILD_LOWER_TEETH.slice(5)
     : this.ADULT_LOWER_TEETH.slice(8));
 
-  // Patologías únicas para el combo box
-  uniquePathologies = computed(() => {
-    const seen = new Set<number>();
-    return this.pathologies.filter(p => {
-      if (seen.has(p.id)) return false;
-      seen.add(p.id);
-      return true;
-    });
-  });
+
 
   ngOnInit(): void {
+    // Cargar patologías desde el backend
+    this.loadPathologies();
+    
     this.route.params.subscribe(params => {
       const id = Number(params['id']);
       if (Number.isFinite(id) && id > 0) {
         this.loadOdontogram(id);
+      }
+    });
+  }
+
+  private loadPathologies(): void {
+    this.pathologyService.getPathologies().subscribe({
+      next: (data) => {
+        // Mapear description a name si es necesario
+        let mappedPathologies = data.map(p => ({
+          ...p,
+          name: p.name || p.description
+        }));
+
+        // Reordenar pathologies: intercambiar Ausencia Natural (4) con Sellado de fosas (5)
+        mappedPathologies = mappedPathologies.sort((a, b) => {
+          const orderMap: { [key: number]: number } = { 1: 0, 2: 1, 3: 2, 5: 3, 4: 4 };
+          return (orderMap[a.id] ?? 99) - (orderMap[b.id] ?? 99);
+        });
+
+        this.pathologies.set(mappedPathologies);
+      },
+      error: (err) => {
+        console.error('Error cargando patologías:', err);
+        this.notificationService.error('Error al cargar las patologías');
       }
     });
   }
@@ -165,17 +168,19 @@ export class OdontogramEditorComponent implements OnInit {
         ...item,
         pathology: {
           ...item.pathology,
-          color: this.pathologies.find(p => p.id === item.pathology.id)?.color ?? item.pathology.color
+          color: this.pathologies().find(p => p.id === item.pathology.id)?.color ?? item.pathology.color
         }
       }))
     };
   }
 
-  private isWholeToothPathology(pathology: Pathology): boolean {
-    return this.WHOLE_TOOTH_PATHOLOGY_IDS.has(pathology.id);
-  }
-
   handleFaceClick(toothNumber: number, face: number): void {
+    // Si está en modo toggle de Ausencia Natural
+    if (this.isToggleAbsenceMode()) {
+      this.toggleAbsenceNatural(toothNumber);
+      return;
+    }
+
     const activeTool = this.selectedPathology();
 
     if (!activeTool) {
@@ -186,39 +191,9 @@ export class OdontogramEditorComponent implements OnInit {
     this.odontogram.update(prev => {
       if (!prev) return null;
 
-      const targetFace = this.isWholeToothPathology(activeTool) ? this.WHOLE_TOOTH_FACE : face;
-      const isGlobalTool = this.isWholeToothPathology(activeTool);
       const pathologies = [...prev.toothPathologies];
-
-      if (isGlobalTool) {
-        const existingGlobalSameToolIdx = pathologies.findIndex(
-          p =>
-            p.tooth.toothNumber === toothNumber &&
-            p.toothFace === this.WHOLE_TOOTH_FACE &&
-            p.pathology.id === activeTool.id
-        );
-
-        if (existingGlobalSameToolIdx > -1) {
-          pathologies.splice(existingGlobalSameToolIdx, 1);
-          return { ...prev, toothPathologies: pathologies };
-        }
-
-        const withoutOtherGlobalStates = pathologies.filter(
-          p => !(p.tooth.toothNumber === toothNumber && p.toothFace === this.WHOLE_TOOTH_FACE)
-        );
-
-        withoutOtherGlobalStates.push({
-          tooth: { id: 0, toothNumber },
-          pathology: activeTool,
-          toothFace: this.WHOLE_TOOTH_FACE,
-          status: 'Activo'
-        });
-
-        return { ...prev, toothPathologies: withoutOtherGlobalStates };
-      }
-
       const existingIdx = pathologies.findIndex(
-        p => p.tooth.toothNumber === toothNumber && p.toothFace === targetFace
+        p => p.tooth.toothNumber === toothNumber && p.toothFace === face
       );
 
       if (existingIdx > -1) {
@@ -231,8 +206,7 @@ export class OdontogramEditorComponent implements OnInit {
         pathologies.push({
           tooth: { id: 0, toothNumber },
           pathology: activeTool,
-          toothFace: targetFace,
-          status: 'Activo'
+          toothFace: face
         });
       }
 
@@ -254,8 +228,7 @@ export class OdontogramEditorComponent implements OnInit {
       toothPathologies: currentData.toothPathologies.map(tp => ({
         tooth: { toothNumber: tp.tooth.toothNumber },
         pathology: { id: tp.pathology.id },
-        toothFace: tp.toothFace,
-        status: tp.status
+        toothFace: tp.toothFace
       }))
     };
 
@@ -276,13 +249,41 @@ export class OdontogramEditorComponent implements OnInit {
       });
   }
 
-  onPathologyFilterChange(event: any): void {
-    const value = event.target.value;
-    this.filteredPathologyId.set(value ? Number(value) : null);
+  onTabChange(tab: 'pathologies' | 'treatments'): void {
+    this.activeTab.set(tab);
   }
 
-  onTreatmentFilterChange(event: any): void {
-    const value = event.target.value;
-    this.filteredTreatment.set(value || null);
+  toggleAbsenceNatural(toothNumber: number): void {
+    const absencePathology = this.pathologies().find(p => p.id === 4);
+    if (!absencePathology) return;
+
+    this.odontogram.update(prev => {
+      if (!prev) return null;
+
+      const pathologies = [...prev.toothPathologies];
+      const existingIdx = pathologies.findIndex(
+        p => p.tooth.toothNumber === toothNumber && p.toothFace === this.WHOLE_TOOTH_FACE && p.pathology.id === 4
+      );
+
+      if (existingIdx > -1) {
+        // Si ya existe, lo quitamos
+        pathologies.splice(existingIdx, 1);
+      } else {
+        // Si no existe, lo agregamos
+        pathologies.push({
+          tooth: { id: 0, toothNumber },
+          pathology: absencePathology,
+          toothFace: this.WHOLE_TOOTH_FACE
+        });
+      }
+
+      return { ...prev, toothPathologies: pathologies };
+    });
+  }
+
+  selectPathology(pathology: Pathology): void {
+    this.selectedPathology.set(pathology);
+    // Activar modo toggle solo para Ausencia Natural
+    this.isToggleAbsenceMode.set(pathology.id === 4);
   }
 }
