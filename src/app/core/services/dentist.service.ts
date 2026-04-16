@@ -8,7 +8,10 @@ export interface DentistResponse {
   firstName?: string;
   lastName?: string;
   name?: string;
-  specialty?: string;
+  treatment?: {
+    id: number;
+    name: string;
+  } | null;
   availableDays?: string | null;
 }
 

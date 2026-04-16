@@ -17,7 +17,10 @@ export interface Dentist {
   id: number;
   name: string;
   license: string;
-  specialty?: string;
+  treatment?: {
+    id: number;
+    name: string;
+  } | null;
 }
 
 export interface Box {
