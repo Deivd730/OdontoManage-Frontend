@@ -2,9 +2,10 @@ import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ToothComponent } from '@features/odontogram/tooth/tooth.component';
-import { Odontogram, Pathology, ToothPathology } from '@models/odontogram';
+import { Odontogram, Pathology, ToothPathology, Treatment, ToothTreatment, BridgeTreatment } from '@models/odontogram';
 import { OdontogramService } from '@services/odontogram.service';
 import { PathologyService } from '@services/pathology.service';
+import { TreatmentService } from '@services/treatment.service';
 import { finalize } from 'rxjs';
 import { NotificationService } from '@services/notification.service';
 import { PatientService } from '@services/patient.service';
@@ -20,6 +21,7 @@ export class OdontogramEditorComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private odontogramService = inject(OdontogramService);
   private pathologyService = inject(PathologyService);
+  private treatmentService = inject(TreatmentService);
   private notificationService = inject(NotificationService);
   private patientService = inject(PatientService);
 
@@ -31,13 +33,19 @@ export class OdontogramEditorComponent implements OnInit {
 
   // Herramientas de edicion - cargadas desde backend
   pathologies = signal<Pathology[]>([]);
+  treatments = signal<Treatment[]>([]);
 
   selectedPathology = signal<Pathology | null>(null);
+  selectedTreatment = signal<Treatment | null>(null);
+  selectedTreatmentStatus = signal<'pending' | 'done'>('pending');
   odontogram = signal<Odontogram | null>(null);
   isLoading = signal(false);
   odontogramType = signal<'adult' | 'child'>('adult');
   activeTab = signal<'pathologies' | 'treatments'>('pathologies');
   isToggleAbsenceMode = signal(false);
+  isBridgeMode = signal(false);
+  bridgeFirstPilar = signal<number | null>(null);
+  isDeleteMode = signal(false);
 
   upperRightTeeth = computed(() => this.odontogramType() === 'child'
     ? this.CHILD_UPPER_TEETH.slice(0, 5)
@@ -55,13 +63,14 @@ export class OdontogramEditorComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // Cargar patologías desde el backend
     this.loadPathologies();
+    this.loadTreatments();
     
     this.route.params.subscribe(params => {
       const id = Number(params['id']);
       if (Number.isFinite(id) && id > 0) {
-        this.loadOdontogram(id);
+        // Pequeño delay para asegurar que treatments está cargado
+        setTimeout(() => this.loadOdontogram(id), 100);
       }
     });
   }
@@ -90,6 +99,23 @@ export class OdontogramEditorComponent implements OnInit {
     });
   }
 
+  private loadTreatments(): void {
+    this.treatmentService.getTreatments().subscribe({
+      next: (data) => {
+        // Filtrar para excluir Obturación (con y sin acento)
+        const filtered = data.filter(t => {
+          const name = t.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          return !name.includes('obturacion');
+        });
+        this.treatments.set(filtered);
+      },
+      error: (err) => {
+        console.error('Error cargando tratamientos:', err);
+        this.notificationService.error('Error al cargar los tratamientos');
+      }
+    });
+  }
+
   loadOdontogram(patientId: number): void {
     this.isLoading.set(true);
     this.odontogramService.getOdontogramByPatient(patientId).subscribe({
@@ -110,7 +136,9 @@ export class OdontogramEditorComponent implements OnInit {
             this.odontogram.set({
               patient: { id: patientId },
               type,
-              toothPathologies: []
+              toothPathologies: [],
+              toothTreatments: [],
+              bridgeTreatments: []
             });
             this.isLoading.set(false);
           },
@@ -120,7 +148,9 @@ export class OdontogramEditorComponent implements OnInit {
             this.odontogram.set({
               patient: { id: patientId },
               type: 'adult',
-              toothPathologies: []
+              toothPathologies: [],
+              toothTreatments: [],
+              bridgeTreatments: []
             });
             this.isLoading.set(false);
           }
@@ -175,6 +205,19 @@ export class OdontogramEditorComponent implements OnInit {
   }
 
   handleFaceClick(toothNumber: number, face: number): void {
+    // Si está en modo de eliminación
+    if (this.isDeleteMode()) {
+      this.handleDeleteFaceClick(toothNumber, face);
+      return;
+    }
+
+    // Si está en tab de tratamientos, delegar a handleTreatmentFaceClick
+    if (this.activeTab() === 'treatments') {
+      this.handleTreatmentFaceClick(toothNumber, face);
+      return;
+    }
+
+    // Tab de patologías
     // Si está en modo toggle de Ausencia Natural
     if (this.isToggleAbsenceMode()) {
       this.toggleAbsenceNatural(toothNumber);
@@ -229,7 +272,19 @@ export class OdontogramEditorComponent implements OnInit {
         tooth: { toothNumber: tp.tooth.toothNumber },
         pathology: { id: tp.pathology.id },
         toothFace: tp.toothFace
-      }))
+      })),
+      toothTreatments: currentData.toothTreatments?.map(tt => ({
+        treatment: { id: tt.treatment.id },
+        toothNumber: tt.toothNumber,
+        toothFace: tt.toothFace,
+        status: tt.status
+      })) || [],
+      bridgeTreatments: currentData.bridgeTreatments?.map(bt => ({
+        treatment: { id: bt.treatment.id },
+        startTooth: bt.startTooth,
+        endTooth: bt.endTooth,
+        status: bt.status
+      })) || []
     };
 
     this.isLoading.set(true);
@@ -285,5 +340,234 @@ export class OdontogramEditorComponent implements OnInit {
     this.selectedPathology.set(pathology);
     // Activar modo toggle solo para Ausencia Natural
     this.isToggleAbsenceMode.set(pathology.id === 4);
+  }
+
+  selectTreatment(treatment: Treatment): void {
+    this.selectedTreatment.set(treatment);
+    // Desactivar modo toggle si estaba activo
+    this.isToggleAbsenceMode.set(false);
+    // Desactivar modo delete si estaba activo
+    this.isDeleteMode.set(false);
+    
+    // Activar modo puente si se selecciona Puente
+    const isPuente = treatment.name.toLowerCase().includes('puente');
+    this.isBridgeMode.set(isPuente);
+    
+    // Resetear primer pilar
+    if (isPuente) {
+      this.bridgeFirstPilar.set(null);
+      this.notificationService.success('Modo puente activado: selecciona el primer pilar');
+    }
+  }
+
+  toggleDeleteMode(): void {
+    const isDeleting = this.isDeleteMode();
+    this.isDeleteMode.set(!isDeleting);
+    
+    if (!isDeleting) {
+      this.notificationService.success('Modo eliminar activado: haz click en los dientes/caras para borrar');
+      this.isBridgeMode.set(false);
+      this.isToggleAbsenceMode.set(false);
+    } else {
+      this.notificationService.success('Modo eliminar desactivado');
+    }
+  }
+
+  handleTreatmentFaceClick(toothNumber: number, face: number): void {
+    const activeTreatment = this.selectedTreatment();
+    const treatmentStatus = this.selectedTreatmentStatus();
+    
+    if (!activeTreatment) {
+      this.notificationService.error('Primero selecciona un tratamiento');
+      return;
+    }
+
+    // Si es Puente, usar modo dos-clic
+    if (activeTreatment.name.toLowerCase().includes('puente')) {
+      this.handleBridgeSelection(toothNumber, treatmentStatus);
+      return;
+    }
+
+    // Si es Corona, siempre aplicar a face 0 (diente completo)
+    const targetFace = activeTreatment.name.toLowerCase().includes('corona') ? 0 : face;
+
+    this.odontogram.update(prev => {
+      if (!prev) return null;
+
+      // Crear un nuevo array sin mutar
+      const treatments: ToothTreatment[] = (prev.toothTreatments || []).slice();
+      const activeTreatmentId = Number(activeTreatment.id);
+      
+      // Buscar si existe
+      let existingIdx = -1;
+      for (let i = 0; i < treatments.length; i++) {
+        const t = treatments[i];
+        const tId = Number((t.treatment as any)?.id ?? -999);
+        if (t.toothNumber === toothNumber && t.toothFace === targetFace && tId === activeTreatmentId) {
+          existingIdx = i;
+          break;
+        }
+      }
+
+      if (existingIdx > -1) {
+        // Eliminar
+        treatments.splice(existingIdx, 1);
+        this.notificationService.success('Tratamiento eliminado');
+      } else {
+        // Agregar
+        const newTreatment: ToothTreatment = {
+          treatment: activeTreatment,
+          toothNumber,
+          toothFace: targetFace,
+          status: treatmentStatus
+        };
+        treatments.push(newTreatment);
+        this.notificationService.success('Tratamiento agregado');
+      }
+
+      return { ...prev, toothTreatments: treatments };
+    });
+  }
+
+  getTreatmentsForTooth(toothNumber: number): ToothTreatment[] {
+    return this.odontogram()?.toothTreatments?.filter(t => t.toothNumber === toothNumber) || [];
+  }
+
+  handleDeleteFaceClick(toothNumber: number, face: number): void {
+    this.odontogram.update(prev => {
+      if (!prev) return null;
+
+      let deleted = false;
+
+      // En tab de patologías: eliminar patología
+      if (this.activeTab() === 'pathologies') {
+        const pathologies = [...prev.toothPathologies];
+        const idx = pathologies.findIndex(p => p.tooth.toothNumber === toothNumber && p.toothFace === face);
+        if (idx > -1) {
+          pathologies.splice(idx, 1);
+          deleted = true;
+          this.notificationService.success('Patología eliminada');
+          return { ...prev, toothPathologies: pathologies };
+        }
+      } else {
+        // En tab de tratamientos: eliminar tratamiento
+        const treatments = [...(prev.toothTreatments || [])];
+        const idx = treatments.findIndex(t => t.toothNumber === toothNumber && t.toothFace === face);
+        if (idx > -1) {
+          treatments.splice(idx, 1);
+          deleted = true;
+          this.notificationService.success('Tratamiento eliminado');
+          return { ...prev, toothTreatments: treatments };
+        }
+      }
+
+      if (!deleted) {
+        this.notificationService.error('No hay nada que eliminar en esa posición');
+      }
+
+      return prev;
+    });
+  }
+
+  // Obtener puentes que incluyen un diente específico
+  getBridgesForTooth(toothNumber: number): BridgeTreatment[] {
+    return this.odontogram()?.bridgeTreatments?.filter(bridge => {
+      const min = Math.min(bridge.startTooth, bridge.endTooth);
+      const max = Math.max(bridge.startTooth, bridge.endTooth);
+      return toothNumber >= min && toothNumber <= max;
+    }) || [];
+  }
+
+  // Método para conseguir todos los dientes entre dos números (para puentes)
+  private getTeethBetween(toothA: number, toothB: number): number[] {
+    const start = Math.min(toothA, toothB);
+    const end = Math.max(toothA, toothB);
+    const teeth: number[] = [];
+    
+    for (let i = start; i <= end; i++) {
+      teeth.push(i);
+    }
+    
+    return teeth;
+  }
+
+  // Método para saber si dos dientes están en el mismo cuadrante
+  private areSameQuadrant(tooth1: number, tooth2: number): boolean {
+    const getQuadrant = (tooth: number) => Math.floor(tooth / 10);
+    return getQuadrant(tooth1) === getQuadrant(tooth2);
+  }
+
+  // Manejo de selección de puentes en dos clics
+  private handleBridgeSelection(toothNumber: number, status: 'pending' | 'done'): void {
+    const firstPilar = this.bridgeFirstPilar();
+    const activeTreatment = this.selectedTreatment();
+
+    if (!activeTreatment) return;
+
+    if (!firstPilar) {
+      // Primer clic: guardar primer pilar
+      this.bridgeFirstPilar.set(toothNumber);
+      this.notificationService.info(`Primer pilar: ${toothNumber}. Selecciona el segundo pilar.`);
+      return;
+    }
+
+    if (firstPilar === toothNumber) {
+      // Si el usuario hace clic en el mismo diente, cancelar
+      this.notificationService.info('Debes seleccionar un diente diferente para el segundo pilar');
+      return;
+    }
+
+    // Validar que están en el mismo cuadrante
+    if (!this.areSameQuadrant(firstPilar, toothNumber)) {
+      this.notificationService.error('Los pilares deben estar en el mismo cuadrante');
+      return;
+    }
+
+    // Segundo clic: crear el puente
+    this.completeBridgeSelection(firstPilar, toothNumber, status);
+    this.bridgeFirstPilar.set(null);
+  }
+
+  private completeBridgeSelection(
+    startTooth: number,
+    endTooth: number,
+    status: 'pending' | 'done'
+  ): void {
+    const activeTreatment = this.selectedTreatment();
+    if (!activeTreatment) return;
+
+    this.odontogram.update(prev => {
+      if (!prev) return null;
+
+      const bridges: BridgeTreatment[] = [...(prev.bridgeTreatments || [])];
+      
+      // Verificar si ya existe un puente equivalente
+      const minTooth = Math.min(startTooth, endTooth);
+      const maxTooth = Math.max(startTooth, endTooth);
+      
+      const existingIdx = bridges.findIndex(
+        b => b.treatment.id === activeTreatment.id && 
+             ((b.startTooth === minTooth && b.endTooth === maxTooth) ||
+              (b.startTooth === maxTooth && b.endTooth === minTooth))
+      );
+
+      if (existingIdx > -1) {
+        // Si existe, lo borramos (toggle)
+        bridges.splice(existingIdx, 1);
+        this.notificationService.info('Puente removido');
+      } else {
+        // Si no existe, lo creamos
+        const newBridge: BridgeTreatment = {
+          treatment: activeTreatment,
+          startTooth: minTooth,
+          endTooth: maxTooth,
+          status
+        };
+        bridges.push(newBridge);
+        this.notificationService.success(`Puente creado de ${minTooth} a ${maxTooth}`);
+      }
+
+      return { ...prev, bridgeTreatments: bridges };
+    });
   }
 }

@@ -2,7 +2,7 @@
   @if (odontogram()) {
     <header class="editor-header">
       <h2>
-        Edicion Dental
+        Odontograma
         <span class="odontogram-type-tag">{{ odontogramType() === 'child' ? 'Infantil' : 'Adulto' }}</span>
       </h2>
       <button class="save-button" (click)="save()" [disabled]="isLoading()">
@@ -44,17 +44,53 @@
 
       <!-- Tratamientos Tab -->
       @if (activeTab() === 'treatments') {
-        <div class="toolbar-section">
-          <label for="treatment-filter" class="filter-label">Tratamiento:</label>
-          <select 
-            id="treatment-filter"
-            class="pathology-filter">
-            <option value="">Todos</option>
-            <option value="pending">Pendiente</option>
-            <option value="done">Hecho</option>
-          </select>
+        <div class="tools treatments-tools">
+          <!-- Fila 1: Estado Por hacer (Rojo) -->
+          <div class="treatment-row">
+            <span class="row-label pending-label">Por hacer (Rojo):</span>
+            @for (t of treatments(); track t.id) {
+              <button
+                [class.active]="selectedTreatment()?.id === t.id && selectedTreatmentStatus() === 'pending'"
+                (click)="selectTreatment(t); selectedTreatmentStatus.set('pending')"
+                class="treatment-btn"
+                [style.border-left-color]="selectedTreatmentStatus() === 'pending' ? '#FF0000' : '#666'"
+                [title]="t.description || t.name">
+                {{ t.name }}
+              </button>
+            }
+          </div>
+
+          <!-- Fila 2: Estado Completado (Azul) -->
+          <div class="treatment-row">
+            <span class="row-label done-label">Completado (Azul):</span>
+            @for (t of treatments(); track t.id) {
+              <button
+                [class.active]="selectedTreatment()?.id === t.id && selectedTreatmentStatus() === 'done'"
+                (click)="selectTreatment(t); selectedTreatmentStatus.set('done')"
+                class="treatment-btn"
+                [style.border-left-color]="selectedTreatmentStatus() === 'done' ? '#0000FF' : '#666'"
+                [title]="t.description || t.name">
+                {{ t.name }}
+              </button>
+            }
+          </div>
         </div>
       }
+
+      <!-- Botón de eliminar (siempre visible) -->
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #e9edf4;">
+        <button
+          [class.active]="isDeleteMode()"
+          (click)="toggleDeleteMode()"
+          class="delete-btn"
+          [title]="isDeleteMode() ? 'Cancelar eliminación' : 'Activar modo eliminación'">
+          @if (activeTab() === 'pathologies') {
+            🗑️ {{ isDeleteMode() ? 'Cancelar' : 'Eliminar Patología' }}
+          } @else {
+            🗑️ {{ isDeleteMode() ? 'Cancelar' : 'Eliminar Tratamiento' }}
+          }
+        </button>
+      </div>
     </div>
 
     <div class="odontogram-visual">
@@ -68,6 +104,9 @@
             <app-tooth
               [toothNumber]="n"
               [appliedPathologies]="getPatosForTooth(n)"
+              [appliedTreatments]="getTreatmentsForTooth(n)"
+              [appliedBridges]="getBridgesForTooth(n)"
+              [activeTab]="activeTab()"
               (onFaceClick)="handleFaceClick(n, $event)" />
           }
         </div>
@@ -80,6 +119,9 @@
             <app-tooth
               [toothNumber]="n"
               [appliedPathologies]="getPatosForTooth(n)"
+              [appliedTreatments]="getTreatmentsForTooth(n)"
+              [appliedBridges]="getBridgesForTooth(n)"
+              [activeTab]="activeTab()"
               (onFaceClick)="handleFaceClick(n, $event)" />
           }
         </div>
@@ -92,6 +134,9 @@
             <app-tooth
               [toothNumber]="n"
               [appliedPathologies]="getPatosForTooth(n)"
+              [appliedTreatments]="getTreatmentsForTooth(n)"
+              [appliedBridges]="getBridgesForTooth(n)"
+              [activeTab]="activeTab()"
               (onFaceClick)="handleFaceClick(n, $event)" />
           }
         </div>
@@ -104,6 +149,9 @@
             <app-tooth
               [toothNumber]="n"
               [appliedPathologies]="getPatosForTooth(n)"
+              [appliedTreatments]="getTreatmentsForTooth(n)"
+              [appliedBridges]="getBridgesForTooth(n)"
+              [activeTab]="activeTab()"
               (onFaceClick)="handleFaceClick(n, $event)" />
           }
         </div>
