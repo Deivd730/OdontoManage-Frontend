@@ -2,35 +2,147 @@
 <div class="tooth-container">
   <span class="tooth-label">{{ toothNumber() }}</span>
   
-  @if (hasPathologyId4()) {
-    <div class="pathology-symbol" (click)="onFaceClick.emit(0)">X</div>
+  @if (activeTab() === 'treatments') {
+    <!-- Tab Tratamientos - Mostrar diente normal + capas de tratamientos encima -->
+    <div class="tooth-overlay-wrapper">
+      <!-- SVG base del diente normal (siempre visible) -->
+      <svg width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg" class="tooth-base">
+        <polygon points="0,0 45,0 35,10 10,10" 
+                 fill="#ffffff" 
+                 stroke="#333" stroke-width="1"
+                 (click)="onFaceClick.emit(1)" />
+        <polygon points="45,0 45,45 35,35 35,10" 
+                 fill="#ffffff" 
+                 stroke="#333" stroke-width="1"
+                 (click)="onFaceClick.emit(4)" />
+        <polygon points="0,45 45,45 35,35 10,35" 
+                 fill="#ffffff" 
+                 stroke="#333" stroke-width="1"
+                 (click)="onFaceClick.emit(2)" />
+        <polygon points="0,0 0,45 10,35 10,10" 
+                 fill="#ffffff" 
+                 stroke="#333" stroke-width="1"
+                 (click)="onFaceClick.emit(3)" />
+        <rect x="10" y="10" width="25" height="25" 
+              fill="#ffffff" 
+              stroke="#333" stroke-width="1"
+              (click)="onFaceClick.emit(5)" />
+      </svg>
+
+      <!-- Capas de tratamientos superpuestas -->
+      @let treatments = appliedTreatments();
+      @let bridges = getBridgesIncludingTooth();
+      
+      @for (treatment of treatments; track treatment.treatment.id) {
+        @let color = treatment.status === 'pending' ? '#FF0000' : '#0000FF';
+        @let isWholeTooth = treatment.toothFace === 0;
+        
+        @if (treatment.treatment.name.toLowerCase().includes('corona') && isWholeTooth) {
+          <!-- Corona: Diente completo coloreado (capa semitransparente) -->
+          <div class="treatment-crown-overlay" 
+               [style.background-color]="color"
+               (click)="onFaceClick.emit(0)"
+               [title]="'Corona - ' + treatment.status">
+          </div>
+        } @else if (treatment.treatment.name.toLowerCase().includes('endodoncia')) {
+          <!-- Endodoncia: E -->
+          <svg width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg" class="treatment-overlay-svg">
+            <text x="22.5" y="26" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="bold" [attr.fill]="color"
+                  (click)="onFaceClick.emit(treatment.toothFace)">E</text>
+          </svg>
+        } @else if (treatment.treatment.name.toLowerCase().includes('exodoncia')) {
+          <!-- Exodoncia: X -->
+          <svg width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg" class="treatment-overlay-svg">
+            <text x="22.5" y="26" text-anchor="middle" dominant-baseline="middle" font-size="28" font-weight="bold" [attr.fill]="color"
+                  (click)="onFaceClick.emit(treatment.toothFace)">X</text>
+          </svg>
+        }
+      }
+
+      <!-- Puentes superpuestos (encima del diente normal) -->
+      @for (bridge of bridges; track bridge.treatment.id) {
+        @let color = bridge.status === 'pending' ? '#FF0000' : '#0000FF';
+        
+        <!-- Pilar izquierdo: círculo CSS en esquina inferior izquierda -->
+        @if (isLeftPillarTooth()) {
+          <div class="bridge-circle bridge-pilar-left"
+               [style.border-color]="color"
+               (click)="onFaceClick.emit(0)"
+               [title]="'Puente inicio - ' + bridge.status">
+          </div>
+        }
+        
+        <!-- Dientes intermedios: línea horizontal CSS -->
+        @if (isIntermediateTooth()) {
+          <div class="bridge-line"
+               [style.background-color]="color"
+               (click)="onFaceClick.emit(0)"
+               [title]="'Puente - ' + bridge.status">
+          </div>
+        }
+        
+        <!-- Pilar derecho: círculo CSS en esquina inferior derecha -->
+        @if (isRightPillarTooth()) {
+          <div class="bridge-circle bridge-pilar-right"
+               [style.border-color]="color"
+               (click)="onFaceClick.emit(0)"
+               [title]="'Puente fin - ' + bridge.status">
+          </div>
+        }
+      }
+    </div>
+  } @else if (hasPathologyId4()) {
+    <!-- Tab Patologías: Ausencia Natural - mostrar diente + X encima -->
+    <div class="tooth-overlay-wrapper">
+      <!-- SVG base del diente normal -->
+      <svg width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg" class="tooth-base">
+        <polygon points="0,0 45,0 35,10 10,10" 
+                 fill="#ffffff" 
+                 stroke="#333" stroke-width="1"
+                 (click)="onFaceClick.emit(1)" />
+        <polygon points="45,0 45,45 35,35 35,10" 
+                 fill="#ffffff" 
+                 stroke="#333" stroke-width="1"
+                 (click)="onFaceClick.emit(4)" />
+        <polygon points="0,45 45,45 35,35 10,35" 
+                 fill="#ffffff" 
+                 stroke="#333" stroke-width="1"
+                 (click)="onFaceClick.emit(2)" />
+        <polygon points="0,0 0,45 10,35 10,10" 
+                 fill="#ffffff" 
+                 stroke="#333" stroke-width="1"
+                 (click)="onFaceClick.emit(3)" />
+        <rect x="10" y="10" width="25" height="25" 
+              fill="#ffffff" 
+              stroke="#333" stroke-width="1"
+              (click)="onFaceClick.emit(5)" />
+      </svg>
+      
+      <!-- Ausencia Natural: X centrada encima -->
+      <svg width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg" class="treatment-overlay-svg">
+        <text x="22.5" y="26" text-anchor="middle" dominant-baseline="middle" font-size="28" font-weight="bold" fill="#333"
+              (click)="onFaceClick.emit(0)">X</text>
+      </svg>
+    </div>
   } @else {
+    <!-- Tab Patologías: SVG del diente normal con colores -->
     <svg width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
-      <!-- Cara 1: Arriba -->
       <polygon points="0,0 45,0 35,10 10,10" 
                [attr.fill]="getFaceColor(1)" 
                stroke="#333" stroke-width="1"
                (click)="onFaceClick.emit(1)" />
-               
-      <!-- Cara 4: Derecha -->
       <polygon points="45,0 45,45 35,35 35,10" 
                [attr.fill]="getFaceColor(4)" 
                stroke="#333" stroke-width="1"
                (click)="onFaceClick.emit(4)" />
-               
-      <!-- Cara 2: Abajo -->
       <polygon points="0,45 45,45 35,35 10,35" 
                [attr.fill]="getFaceColor(2)" 
                stroke="#333" stroke-width="1"
                (click)="onFaceClick.emit(2)" />
-               
-      <!-- Cara 3: Izquierda -->
       <polygon points="0,0 0,45 10,35 10,10" 
                [attr.fill]="getFaceColor(3)" 
                stroke="#333" stroke-width="1"
                (click)="onFaceClick.emit(3)" />
-               
-      <!-- Cara 5: Centro -->
       <rect x="10" y="10" width="25" height="25" 
             [attr.fill]="getFaceColor(5)" 
             stroke="#333" stroke-width="1"
