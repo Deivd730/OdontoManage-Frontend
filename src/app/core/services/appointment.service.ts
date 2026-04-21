@@ -36,6 +36,13 @@ export interface Treatment {
   durationMinutes: number;
 }
 
+export interface AvailableTreatment {
+  id: number;
+  name: string;
+  description?: string;
+  durationMinutes?: number;
+}
+
 // Interface para Appointment
 // Interface para la respuesta del backend
 export interface AppointmentResponse {
@@ -111,6 +118,23 @@ export class AppointmentService {
    */
   getAppointmentsByBox(boxId: number): Observable<AppointmentResponse[]> {
     return this.http.get<AppointmentResponse[]>(`${this.apiUrl}/box/${boxId}`);
+  }
+
+  getAvailableDentistsByTreatment(
+    treatmentId: number,
+    visitDate: string,
+  ): Observable<Dentist[]> {
+    const params = new HttpParams().set('visitDate', visitDate);
+    return this.http.get<Dentist[]>(
+      `${this.apiUrl}/treatment/${treatmentId}/available-dentists`,
+      { params },
+    );
+  }
+
+  getAvailableTreatmentsByDentist(dentistId: number): Observable<AvailableTreatment[]> {
+    return this.http.get<AvailableTreatment[]>(
+      `${this.apiUrl}/dentist/${dentistId}/available-treatments`,
+    );
   }
 
   /**

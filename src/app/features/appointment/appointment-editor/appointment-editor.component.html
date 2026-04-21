@@ -51,6 +51,13 @@
       </label>
       @if (patientOptions().length === 0) {
         <small class="hint">No hi ha pacients disponibles.</small>
+      } @else if (selectedPatientIsInfectious()) {
+        <small class="hint warning">
+          Pacient amb malaltia infecciosa: nomes es pot programar a l'ultim torn del dia.
+          @if (selectedPatientInfectiousLabel(); as diseases) {
+            Diagnosi registrada: {{ diseases }}.
+          }
+        </small>
       }
 
       <label>

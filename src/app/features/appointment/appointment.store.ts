@@ -9,9 +9,11 @@ import { NotificationService } from '@services/notification.service';
 import { PatientService } from '@services/patient.service';
 import {
   AppointmentEditorAlert,
+  AppointmentEditorSelection,
   AppointmentFormValue,
   BaseOption,
   DentistOption,
+  PatientOption,
   TreatmentOption,
   UpdateAppointmentOutcome,
 } from './appointment.models';
@@ -43,10 +45,14 @@ export class AppointmentStore {
   readonly isSaving = signal(false);
   readonly editorAlert = signal<AppointmentEditorAlert | null>(null);
 
-  readonly patientOptions = signal<BaseOption[]>([]);
+  readonly patientOptions = signal<PatientOption[]>([]);
   readonly dentistOptions = signal<DentistOption[]>([]);
   readonly boxOptions = signal<BaseOption[]>([]);
   readonly treatmentOptions = signal<TreatmentOption[]>([]);
+
+  private readonly catalogDentists = signal<DentistResponse[]>([]);
+  private dentistFilterRequestId = 0;
+  private treatmentFilterRequestId = 0;
 
   readonly weekDays = ['Dl', 'Dt', 'Dc', 'Dj', 'Dv', 'Ds', 'Dg'] as const;
 
@@ -144,6 +150,107 @@ export class AppointmentStore {
 
   clearEditorAlert(): void {
     this.editorAlert.set(null);
+  }
+
+  resetEditorReferenceOptions(): void {
+    const dentists = this.catalogDentists();
+    this.dentistOptions.set(
+      dentists.length > 0
+        ? this.buildDentistOptionsFromDentists(dentists)
+        : this.buildDentistOptionsFromAppointments(this.allAppointments()),
+    );
+
+    const treatmentsFromDentists = this.buildTreatmentOptionsFromDentists(dentists);
+    if (treatmentsFromDentists.length > 0) {
+      this.treatmentOptions.set(treatmentsFromDentists);
+      return;
+    }
+
+    this.treatmentOptions.set(
+      this.uniqueOptions(
+        this.allAppointments().map((appointment) => ({
+          id: appointment.treatment.id,
+          label: appointment.treatment.name,
+          durationMinutes: appointment.treatment.durationMinutes ?? 30,
+        })),
+      ),
+    );
+  }
+
+  refreshDentistOptionsForSelection(selection: AppointmentEditorSelection): void {
+    this.dentistFilterRequestId += 1;
+    const requestId = this.dentistFilterRequestId;
+
+    if (selection.treatment <= 0 || !selection.visitDateLocal) {
+      this.resetEditorReferenceOptions();
+      return;
+    }
+
+    const visitDate = this.normalizeVisitDate(selection.visitDateLocal);
+
+    this.appointmentService
+      .getAvailableDentistsByTreatment(selection.treatment, visitDate)
+      .subscribe({
+        next: (dentists) => {
+          if (requestId !== this.dentistFilterRequestId) {
+            return;
+          }
+
+          this.dentistOptions.set(
+            this.uniqueOptions(
+              dentists.map((dentist) => ({
+                id: dentist.id,
+                label: this.formatDentistDisplayName(dentist as unknown as DentistResponse),
+                availableDays:
+                  (dentist as unknown as { availableDays?: string | null }).availableDays || null,
+              })),
+            ),
+          );
+        },
+        error: () => {
+          if (requestId !== this.dentistFilterRequestId) {
+            return;
+          }
+
+          const localFallback = this.buildDentistOptionsFromDentists(
+            this.catalogDentists().filter((dentist) =>
+              this.dentistSupportsTreatment(dentist, selection.treatment),
+            ),
+          );
+
+          this.dentistOptions.set(localFallback);
+        },
+      });
+  }
+
+  refreshTreatmentOptionsForSelection(selection: AppointmentEditorSelection): void {
+    this.treatmentFilterRequestId += 1;
+    const requestId = this.treatmentFilterRequestId;
+
+    if (selection.dentist <= 0) {
+      this.resetEditorReferenceOptions();
+      return;
+    }
+
+    this.appointmentService.getAvailableTreatmentsByDentist(selection.dentist).subscribe({
+      next: (treatments) => {
+        if (requestId !== this.treatmentFilterRequestId) {
+          return;
+        }
+
+        this.treatmentOptions.set(this.toTreatmentOptions(treatments));
+      },
+      error: () => {
+        if (requestId !== this.treatmentFilterRequestId) {
+          return;
+        }
+
+        const dentist = this.catalogDentists().find((item) => item.id === selection.dentist);
+        const fallback = this.toTreatmentOptions(this.getDentistTreatments(dentist));
+
+        this.treatmentOptions.set(fallback);
+      },
+    });
   }
 
   createAppointment(formValue: AppointmentFormValue, onSuccess?: () => void): void {
@@ -251,6 +358,8 @@ export class AppointmentStore {
         const patientOptions = patients.map((patient) => ({
           id: patient.id,
           label: `${patient.firstName} ${patient.lastName}`.trim(),
+          hasInfectiousDiseases: patient.hasInfectiousDiseases ?? false,
+          infectiousDiseases: patient.infectiousDiseases?.trim() || null,
         }));
 
         this.patientOptions.update((existing) => this.mergeOptions(existing, patientOptions));
@@ -264,15 +373,13 @@ export class AppointmentStore {
   private loadDentists(): void {
     this.dentistService.getDentists().subscribe({
       next: (dentists) => {
-        this.dentistOptions.set(
-          this.uniqueOptions(
-            dentists.map((dentist) => ({
-              id: dentist.id,
-              label: this.formatDentistDisplayName(dentist),
-              availableDays: dentist.availableDays || null,
-            })),
-          ),
-        );
+        this.catalogDentists.set(dentists);
+        this.dentistOptions.set(this.buildDentistOptionsFromDentists(dentists));
+
+        const treatmentOptions = this.buildTreatmentOptionsFromDentists(dentists);
+        if (treatmentOptions.length > 0) {
+          this.treatmentOptions.update((existing) => this.mergeOptions(existing, treatmentOptions));
+        }
       },
       error: (error) => {
         console.error('Error loading dentists:', error);
@@ -301,14 +408,73 @@ export class AppointmentStore {
     );
 
     this.treatmentOptions.set(
-      this.uniqueOptions(
-        appointments.map((appointment) => ({
+      this.uniqueOptions([
+        ...appointments.map((appointment) => ({
           id: appointment.treatment.id,
           label: appointment.treatment.name,
           durationMinutes: appointment.treatment.durationMinutes ?? 30,
         })),
+        ...this.buildTreatmentOptionsFromDentists(this.catalogDentists()),
+      ]),
+    );
+  }
+
+  private buildDentistOptionsFromDentists(dentists: readonly DentistResponse[]): DentistOption[] {
+    return this.uniqueOptions(
+      dentists.map((dentist) => ({
+        id: dentist.id,
+        label: this.formatDentistDisplayName(dentist),
+        availableDays: dentist.availableDays || null,
+      })),
+    );
+  }
+
+  private buildTreatmentOptionsFromDentists(
+    dentists: readonly DentistResponse[],
+  ): TreatmentOption[] {
+    return this.uniqueOptions(
+      dentists.flatMap((dentist) =>
+        this.getDentistTreatments(dentist).map((treatment) => ({
+          id: treatment.id,
+          label: treatment.name,
+          durationMinutes: treatment.durationMinutes ?? 30,
+        })),
       ),
     );
+  }
+
+  private getDentistTreatments(
+    dentist?: DentistResponse,
+  ): readonly { id: number; name: string; durationMinutes?: number }[] {
+    if (!dentist) {
+      return [];
+    }
+
+    if (Array.isArray(dentist.treatments) && dentist.treatments.length > 0) {
+      return dentist.treatments;
+    }
+
+    if (dentist.treatment?.id && dentist.treatment.name) {
+      return [dentist.treatment];
+    }
+
+    return [];
+  }
+
+  private toTreatmentOptions(
+    treatments: readonly { id: number; name: string; durationMinutes?: number }[],
+  ): TreatmentOption[] {
+    return this.uniqueOptions(
+      treatments.map((treatment) => ({
+        id: treatment.id,
+        label: treatment.name,
+        durationMinutes: treatment.durationMinutes ?? 30,
+      })),
+    );
+  }
+
+  private dentistSupportsTreatment(dentist: DentistResponse, treatmentId: number): boolean {
+    return this.getDentistTreatments(dentist).some((treatment) => treatment.id === treatmentId);
   }
 
   private buildDentistOptionsFromAppointments(appointments: AppointmentResponse[]): DentistOption[] {

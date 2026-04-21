@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 
+export interface DentistTreatment {
+  id: number;
+  name: string;
+  durationMinutes?: number;
+}
+
 export interface DentistResponse {
   id: number;
   firstName?: string;
@@ -12,6 +18,7 @@ export interface DentistResponse {
     id: number;
     name: string;
   } | null;
+  treatments?: DentistTreatment[];
   availableDays?: string | null;
 }
 

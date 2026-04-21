@@ -3,6 +3,11 @@ export interface BaseOption {
   label: string;
 }
 
+export interface PatientOption extends BaseOption {
+  hasInfectiousDiseases?: boolean;
+  infectiousDiseases?: string | null;
+}
+
 export interface TreatmentOption extends BaseOption {
   durationMinutes: number;
 }
@@ -23,6 +28,12 @@ export interface AppointmentEditorAlert {
   title: string;
   message: string;
   recommendations: string[];
+}
+
+export interface AppointmentEditorSelection {
+  dentist: number;
+  treatment: number;
+  visitDateLocal: string;
 }
 
 export interface UpdateAppointmentOutcome {
