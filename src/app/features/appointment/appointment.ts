@@ -24,6 +24,7 @@ export class Appointment implements OnInit {
   editorMode: 'create' | 'edit' = 'create';
   editingAppointmentId: number | null = null;
   editorInitialValue: AppointmentEditorSubmit | null = null;
+  editorAssignedBoxLabel: string | null = null;
 
   ngOnInit(): void {
     this.store.initialize();
@@ -35,6 +36,7 @@ export class Appointment implements OnInit {
     this.editorMode = 'create';
     this.editingAppointmentId = null;
     this.editorInitialValue = null;
+    this.editorAssignedBoxLabel = null;
     this.isEditorOpen = true;
   }
 
@@ -56,6 +58,7 @@ export class Appointment implements OnInit {
       visitDate: appointment.visitDate,
       consultationReason: appointment.consultationReason,
     };
+    this.editorAssignedBoxLabel = appointment.box.name?.trim() || `Box ${appointment.box.id}`;
 
     const currentSelection: AppointmentEditorSelection = {
       dentist: appointment.dentist.id,
@@ -104,6 +107,7 @@ export class Appointment implements OnInit {
 
     this.isEditorOpen = false;
     this.store.clearEditorAlert();
+    this.editorAssignedBoxLabel = null;
   }
 
   onEditorSelectionChanged(selection: AppointmentEditorSelection): void {

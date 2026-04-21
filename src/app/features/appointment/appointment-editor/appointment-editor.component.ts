@@ -38,6 +38,7 @@ export class AppointmentEditorComponent {
   readonly mode = input<'create' | 'edit'>('create');
   readonly selectedDate = input<Date>(new Date());
   readonly initialValue = input<AppointmentEditorSubmit | null>(null);
+  readonly assignedBoxLabel = input<string | null>(null);
   readonly isSaving = input(false);
   readonly alert = input<AppointmentEditorAlert | null>(null);
 
@@ -63,6 +64,19 @@ export class AppointmentEditorComponent {
     const diseases = this.selectedPatient()?.infectiousDiseases?.trim();
     return diseases || null;
   });
+
+  readonly selectedTreatmentLabel = computed(() => {
+    const treatmentId = this.form.controls.treatment.value;
+    if (!treatmentId) {
+      return null;
+    }
+
+    return this.treatmentOptions().find((treatment) => treatment.id === treatmentId)?.label ?? null;
+  });
+
+  readonly enabledDentistCount = computed(
+    () => this.dentistOptions().filter((option) => !option.disabled).length,
+  );
 
   readonly title = computed(() =>
     this.mode() === 'create' ? 'Cita nova' : 'Edita cita',
@@ -126,10 +140,14 @@ export class AppointmentEditorComponent {
       .subscribe(() => this.emitSelectionChanged());
 
     effect(() => {
-      const dentistIds = new Set(this.dentistOptions().map((option) => option.id));
+      const availableDentistIds = new Set(
+        this.dentistOptions()
+          .filter((option) => !option.disabled)
+          .map((option) => option.id),
+      );
       const selectedDentistId = this.form.controls.dentist.value;
 
-      if (selectedDentistId > 0 && !dentistIds.has(selectedDentistId)) {
+      if (selectedDentistId > 0 && !availableDentistIds.has(selectedDentistId)) {
         this.form.controls.dentist.setValue(0);
       }
     });

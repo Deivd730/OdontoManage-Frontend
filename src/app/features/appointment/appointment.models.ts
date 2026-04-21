@@ -14,6 +14,7 @@ export interface TreatmentOption extends BaseOption {
 
 export interface DentistOption extends BaseOption {
   availableDays?: string | null;
+  disabled?: boolean;
 }
 
 export interface AppointmentFormValue {

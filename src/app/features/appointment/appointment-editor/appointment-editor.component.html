@@ -65,12 +65,26 @@
         <select formControlName="dentist">
           <option [ngValue]="0">Selecciona un odontoleg</option>
           @for (option of dentistOptions(); track option.id) {
-            <option [ngValue]="option.id">{{ option.label }}</option>
+            <option [ngValue]="option.id" [disabled]="option.disabled ?? false">{{ option.label }}</option>
           }
         </select>
       </label>
-      @if (dentistOptions().length === 0) {
-        <small class="hint">No hi ha odontolegs al llistat actual de cites.</small>
+      @if (dentistOptions().length > 0 && enabledDentistCount() === 0 && form.controls.treatment.value > 0) {
+        <small class="hint warning">
+          Hi ha especialistes per aquest tractament, pero cap treballa en la data/hora seleccionada.
+          Prova amb un altre dia per habilitar-los.
+        </small>
+      } @else if (dentistOptions().length === 0 && form.controls.treatment.value > 0) {
+        <small class="hint warning">
+          No hi ha odontolegs disponibles per al tractament
+          @if (selectedTreatmentLabel(); as treatmentLabel) {
+            "{{ treatmentLabel }}"
+          }
+          en la data/hora seleccionada.
+          Prova amb un altre dia o tria un altre tractament.
+        </small>
+      } @else if (dentistOptions().length === 0) {
+        <small class="hint">No hi ha odontolegs disponibles.</small>
       } @else if (getSelectedDentistAvailableDays(); as availableDays) {
         <small class="hint">Dies disponibles: {{ translateAvailableDays(availableDays) }}</small>
       }
@@ -87,7 +101,9 @@
         </label>
         <small class="hint">Forca un box especific.</small>
       } @else {
-        <small class="hint">El box s'assigna automaticament segons disponibilitat.</small>
+        <small class="hint">
+          El box assignat es el {{ assignedBoxLabel() || 'que es determinara en desar la cita' }}.
+        </small>
       }
 
       <label>

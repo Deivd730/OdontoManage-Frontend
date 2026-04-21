@@ -196,6 +196,31 @@ export class AppointmentStore {
             return;
           }
 
+          const specialists = this.catalogDentists().filter((dentist) =>
+            this.dentistSupportsTreatment(dentist, selection.treatment),
+          );
+          const availableDentistIds = new Set(dentists.map((dentist) => dentist.id));
+
+          if (specialists.length > 0) {
+            this.dentistOptions.set(
+              this.uniqueOptions(
+                specialists.map((dentist) => {
+                  const isAvailable = availableDentistIds.has(dentist.id);
+
+                  return {
+                    id: dentist.id,
+                    label: isAvailable
+                      ? this.formatDentistDisplayName(dentist)
+                      : `${this.formatDentistDisplayName(dentist)} (no disponible aquest dia)`,
+                    availableDays: dentist.availableDays || null,
+                    disabled: !isAvailable,
+                  };
+                }),
+              ),
+            );
+            return;
+          }
+
           this.dentistOptions.set(
             this.uniqueOptions(
               dentists.map((dentist) => ({
@@ -203,6 +228,7 @@ export class AppointmentStore {
                 label: this.formatDentistDisplayName(dentist as unknown as DentistResponse),
                 availableDays:
                   (dentist as unknown as { availableDays?: string | null }).availableDays || null,
+                disabled: false,
               })),
             ),
           );
@@ -425,6 +451,7 @@ export class AppointmentStore {
         id: dentist.id,
         label: this.formatDentistDisplayName(dentist),
         availableDays: dentist.availableDays || null,
+        disabled: false,
       })),
     );
   }
@@ -483,6 +510,7 @@ export class AppointmentStore {
         id: appointment.dentist.id,
         label: this.formatDentistDisplayName(appointment.dentist),
         availableDays: (appointment.dentist as unknown as { availableDays?: string }).availableDays || null,
+        disabled: false,
       })),
     );
   }
