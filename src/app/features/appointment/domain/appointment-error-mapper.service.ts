@@ -46,6 +46,23 @@ export class AppointmentErrorMapperService {
         };
       }
 
+      if (
+        backendMessage.includes('infectious disease') &&
+        backendMessage.includes('last available slot of the day')
+      ) {
+        const allowedTime = this.extractAllowedTime(backendMessageRaw);
+        return {
+          title: 'Pacient infeccios fora de l\'ultim torn',
+          message: allowedTime
+            ? `Aquest pacient nomes es pot programar a l'ultim torn del dia (${allowedTime}).`
+            : 'Aquest pacient nomes es pot programar a l\'ultim torn del dia.',
+          recommendations: [
+            'Ajusta l\'hora de la cita al darrer torn disponible.',
+            'Si canvies el tractament, torna a revisar l\'hora final permesa.',
+          ],
+        };
+      }
+
       if (backendMessage.includes('dentist') || backendMessage.includes('odont')) {
         if (
           backendMessage.includes('assigned') ||
@@ -70,8 +87,11 @@ export class AppointmentErrorMapperService {
         if (backendMessage.includes('special') || backendMessage.includes('especial')) {
           return {
             title: 'Especialitat incompatible',
-            message: 'L\'odontoleg no es especialista en aquest tractament.',
-            recommendations: ['Selecciona un odontoleg amb l\'especialitat adequada.'],
+            message: 'L\'odontoleg seleccionat no pot realitzar aquest tractament.',
+            recommendations: [
+              'Selecciona un odontoleg amb l\'especialitat adequada.',
+              'O canvia el tractament per un compatible amb l\'odontoleg.',
+            ],
           };
         }
       }
@@ -238,6 +258,11 @@ export class AppointmentErrorMapperService {
     const match = message.match(/available days:\s*([^|]+)/i);
     const value = match?.[1]?.trim();
     return value || null;
+  }
+
+  private extractAllowedTime(message: string): string | null {
+    const match = message.match(/\((\d{2}:\d{2})\)/);
+    return match?.[1] ?? null;
   }
 
   private translateAvailableDays(days: string | null): string | null {

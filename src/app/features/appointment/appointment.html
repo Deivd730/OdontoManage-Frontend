@@ -23,6 +23,7 @@
     [boxOptions]="store.boxOptions()"
     [treatmentOptions]="store.treatmentOptions()"
     (closeRequested)="onEditorClose()"
+    (selectionChanged)="onEditorSelectionChanged($event)"
     (saveRequested)="onEditorSave($event)"></app-appointment-editor>
 }
 

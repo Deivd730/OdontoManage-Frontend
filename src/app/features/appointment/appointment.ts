@@ -3,7 +3,7 @@ import { CalendarioComponent } from './calendario/calendario.component';
 import { AgendaComponent } from './agenda/agenda.component';
 import { AppointmentEditorComponent, AppointmentEditorSubmit } from './appointment-editor/appointment-editor.component';
 import { AppointmentStore } from './appointment.store';
-import { UpdateAppointmentOutcome } from './appointment.models';
+import { AppointmentEditorSelection, UpdateAppointmentOutcome } from './appointment.models';
 
 @Component({
   selector: 'app-appointment',
@@ -31,6 +31,7 @@ export class Appointment implements OnInit {
 
   onNewAppointmentRequested(): void {
     this.store.clearEditorAlert();
+    this.store.resetEditorReferenceOptions();
     this.editorMode = 'create';
     this.editingAppointmentId = null;
     this.editorInitialValue = null;
@@ -45,6 +46,7 @@ export class Appointment implements OnInit {
     }
 
     this.store.clearEditorAlert();
+    this.store.resetEditorReferenceOptions();
     this.editorMode = 'edit';
     this.editingAppointmentId = appointmentId;
     this.editorInitialValue = {
@@ -54,6 +56,15 @@ export class Appointment implements OnInit {
       visitDate: appointment.visitDate,
       consultationReason: appointment.consultationReason,
     };
+
+    const currentSelection: AppointmentEditorSelection = {
+      dentist: appointment.dentist.id,
+      treatment: appointment.treatment.id,
+      visitDateLocal: this.toLocalDateTimeInput(appointment.visitDate),
+    };
+    this.store.refreshDentistOptionsForSelection(currentSelection);
+    this.store.refreshTreatmentOptionsForSelection(currentSelection);
+
     this.isEditorOpen = true;
   }
 
@@ -95,6 +106,11 @@ export class Appointment implements OnInit {
     this.store.clearEditorAlert();
   }
 
+  onEditorSelectionChanged(selection: AppointmentEditorSelection): void {
+    this.store.refreshDentistOptionsForSelection(selection);
+    this.store.refreshTreatmentOptionsForSelection(selection);
+  }
+
   onEditorSave(payload: AppointmentEditorSubmit): void {
     if (this.editorMode === 'create') {
       this.store.createAppointment(payload, () => {
@@ -116,5 +132,16 @@ export class Appointment implements OnInit {
 
   private handleUpdateOutcome(outcome: UpdateAppointmentOutcome): void {
     this.isEditorOpen = false;
+  }
+
+  private toLocalDateTimeInput(value: string): string {
+    const date = new Date(value);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 }

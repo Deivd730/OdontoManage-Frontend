@@ -140,6 +140,11 @@ textarea {
   font-size: 0.75rem;
 }
 
+.hint.warning {
+  color: #8d231c;
+  margin-top: -0.3rem;
+}
+
 .editor-actions {
   display: flex;
   justify-content: flex-end;
