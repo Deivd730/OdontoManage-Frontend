@@ -1,3 +1,5 @@
+@import 'flatpickr/dist/flatpickr.min.css';
+
 /* ITALIANA */
 @font-face {
   font-family: 'Italiana';
@@ -79,11 +81,6 @@ body {
   background-color: var(--bg-minimal);
   font-family: var(--font-body);
   color: var(--text-main);
-  /* ELIMINA ESTAS LÍNEAS:
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  */
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
@@ -111,4 +108,74 @@ a{
   background: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
+}
+
+.flatpickr-calendar {
+  border-radius: 14px;
+  border: 1px solid #dce5d5;
+  box-shadow: 0 14px 34px rgba(20, 38, 31, 0.18);
+  background: #fdfefd;
+  font-family: var(--font-body);
+}
+
+.flatpickr-calendar .flatpickr-months {
+  padding-top: 0.3rem;
+}
+
+.flatpickr-calendar .flatpickr-months .flatpickr-month {
+  fill: #1b7339;
+  color: #1b7339;
+}
+
+.flatpickr-calendar .flatpickr-current-month {
+  font-family: var(--font-body);
+}
+
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-calendar .flatpickr-current-month input.cur-year {
+  font-weight: 700;
+  color: #1b7339;
+}
+
+.flatpickr-calendar .flatpickr-weekday {
+  color: #5a6a84;
+  font-weight: 700;
+}
+
+.flatpickr-calendar .flatpickr-day {
+  border-radius: 8px;
+}
+
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.startRange,
+.flatpickr-calendar .flatpickr-day.endRange {
+  background-color: #1b7339;
+  border-color: #1b7339;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.flatpickr-calendar .flatpickr-day.selected:hover,
+.flatpickr-calendar .flatpickr-day.startRange:hover,
+.flatpickr-calendar .flatpickr-day.endRange:hover,
+.flatpickr-calendar .flatpickr-day.selected:focus,
+.flatpickr-calendar .flatpickr-day.startRange:focus,
+.flatpickr-calendar .flatpickr-day.endRange:focus {
+  background-color: #1f8744;
+  border-color: #1f8744;
+  color: #ffffff !important;
+}
+
+.flatpickr-calendar .flatpickr-day.today {
+  border-color: #67a44e;
+  color: #1f5e38;
+}
+
+.flatpickr-calendar .flatpickr-day:hover {
+  background: #eef7eb;
+  border-color: #dcebd6;
+}
+
+.flatpickr-calendar.open {
+  z-index: 9999;
 }

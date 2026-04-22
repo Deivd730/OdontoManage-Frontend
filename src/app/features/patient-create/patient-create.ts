@@ -1,8 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PatientService } from '../../core/services/patient.service';
+import flatpickr from 'flatpickr';
+import { Catalan } from 'flatpickr/dist/l10n/cat';
 
 @Component({
   selector: 'app-patient-create',
@@ -11,12 +13,14 @@ import { PatientService } from '../../core/services/patient.service';
   templateUrl: './patient-create.html',
   styleUrls: ['./patient-create.css']
 })
-export class PatientCreate {
+export class PatientCreate implements AfterViewInit, OnDestroy {
+  @ViewChild('birthDateShell') private readonly birthDateShell?: ElementRef<HTMLDivElement>;
+
   patientForm: FormGroup;
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
   isLoading = signal<boolean>(false);
-  readonly today = new Date().toISOString().split('T')[0];
+  private birthDatePickerInstance?: flatpickr.Instance;
 
   constructor(
     private fb: FormBuilder,
@@ -47,6 +51,49 @@ export class PatientCreate {
     });
   }
 
+  ngAfterViewInit(): void {
+    if (!this.birthDateShell) {
+      return;
+    }
+
+    this.birthDatePickerInstance = flatpickr(this.birthDateShell.nativeElement, {
+      wrap: true,
+      dateFormat: 'd/m/Y',
+      allowInput: true,
+      clickOpens: true,
+      disableMobile: true,
+      locale: Catalan,
+      onChange: (_, selectedDateString, instance) => {
+        if (!selectedDateString) {
+          return;
+        }
+
+        const parsedDate = instance.parseDate(selectedDateString, 'd/m/Y');
+        if (!parsedDate || Number.isNaN(parsedDate.getTime())) {
+          return;
+        }
+
+        this.patientForm.controls['birthDate'].setValue(this.formatDateForForm(parsedDate));
+      },
+      onClose: (_, dateStr, instance) => {
+        if (!dateStr) {
+          return;
+        }
+
+        const parsedDate = instance.parseDate(dateStr, 'd/m/Y');
+        if (!parsedDate || Number.isNaN(parsedDate.getTime())) {
+          return;
+        }
+
+        this.patientForm.controls['birthDate'].setValue(this.formatDateForForm(parsedDate));
+      },
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.birthDatePickerInstance?.destroy();
+  }
+
   onSubmit(): void {
     if (this.patientForm.invalid) {
       this.markFormGroupTouched(this.patientForm);
@@ -62,7 +109,7 @@ export class PatientCreate {
 
     const patientData = {
       ...this.patientForm.value,
-      birthDate: this.patientForm.value.birthDate,
+      birthDate: this.toApiDate(this.patientForm.value.birthDate),
       infectiousDiseases: hasInfectiousDiseases ? infectiousDiseases : (infectiousDiseases || 'None'),
       registrationDate: new Date().toISOString()
     };
@@ -141,7 +188,11 @@ export class PatientCreate {
         return null;
       }
 
-      const selectedDate = new Date(control.value);
+      const selectedDate = this.parseFormDate(control.value);
+      if (!selectedDate) {
+        return { futureDate: true };
+      }
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       selectedDate.setHours(0, 0, 0, 0);
@@ -152,5 +203,37 @@ export class PatientCreate {
 
       return null;
     };
+  }
+
+  private parseFormDate(value: string): Date | null {
+    if (!value) {
+      return null;
+    }
+
+    const parts = value.split('/').map((part) => Number(part));
+    if (parts.length !== 3 || parts.some((part) => Number.isNaN(part))) {
+      return null;
+    }
+
+    const [day, month, year] = parts;
+    const parsedDate = new Date(year, month - 1, day);
+    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+  }
+
+  private formatDateForForm(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+
+  private toApiDate(value: string): string {
+    const parsedDate = this.parseFormDate(value);
+    if (!parsedDate) {
+      return value;
+    }
+
+    return parsedDate.toISOString().split('T')[0];
   }
 }

@@ -75,9 +75,27 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group">
+          <div class="form-group full-width">
             <label for="birthDate">Data de naixement</label>
-            <input required type="date" id="birthDate" formControlName="birthDate" [max]="today" [class.input-error]="isFieldInvalid('birthDate')"/>
+            <div #birthDateShell class="date-shell" [class.input-error]="isFieldInvalid('birthDate')" data-input-wrapper>
+              <input
+                type="text"
+                id="birthDate"
+                class="date-input"
+                data-input
+                placeholder="dd/mm/yyyy"
+                formControlName="birthDate"
+              />
+              <button type="button" class="date-toggle" data-toggle aria-label="Obre calendari">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                  <path d="M16 2v4"></path>
+                  <path d="M8 2v4"></path>
+                  <path d="M3 10h18"></path>
+                  <path d="M8 14h3"></path>
+                </svg>
+              </button>
+            </div>
 
             @if (hasError('birthDate', 'required')) {
               <span class="error-message">La data de naixement es obligatoria</span>
