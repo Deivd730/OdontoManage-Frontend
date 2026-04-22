@@ -42,7 +42,7 @@
 
       <label>
         Pacient
-        <select formControlName="patient">
+        <select class="ui-select" formControlName="patient">
           <option [ngValue]="0">Selecciona un pacient</option>
           @for (option of patientOptions(); track option.id) {
             <option [ngValue]="option.id">{{ option.label }}</option>
@@ -62,7 +62,7 @@
 
       <label>
         Dentista
-        <select formControlName="dentist">
+        <select class="ui-select" formControlName="dentist">
           <option [ngValue]="0">Selecciona un odontoleg</option>
           @for (option of dentistOptions(); track option.id) {
             <option [ngValue]="option.id" [disabled]="option.disabled ?? false">{{ option.label }}</option>
@@ -92,7 +92,7 @@
       @if (showManualBox()) {
         <label>
           Box
-          <select formControlName="box">
+          <select class="ui-select" formControlName="box">
             <option [ngValue]="0">Selecciona un box</option>
             @for (option of boxOptions(); track option.id) {
               <option [ngValue]="option.id">{{ option.label }}</option>
@@ -108,7 +108,7 @@
 
       <label>
         Tractament
-        <select formControlName="treatment">
+        <select class="ui-select" formControlName="treatment">
           <option [ngValue]="0">Selecciona un tractament</option>
           @for (option of treatmentOptions(); track option.id) {
             <option [ngValue]="option.id">{{ option.label }}</option>
@@ -119,10 +119,47 @@
         <small class="hint">No hi ha tractaments al llistat actual de cites.</small>
       }
 
-      <label>
-        Data i hora
-        <input type="datetime-local" formControlName="visitDateLocal" />
-      </label>
+      <div class="datetime-block" aria-label="Data de la cita">
+        <span class="datetime-label">Data</span>
+        <div class="datetime-grid">
+          <div #visitDateShell class="date-shell" [class.is-disabled]="isSaving()" data-input-wrapper>
+            <input
+              type="text"
+              class="date-input"
+              data-input
+              placeholder="dd/mm/yyyy"
+              aria-label="Selecciona la data" />
+            <button
+              type="button"
+              class="date-toggle"
+              data-toggle
+              aria-label="Obre calendari"
+              [disabled]="isSaving()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <path d="M16 2v4"></path>
+                <path d="M8 2v4"></path>
+                <path d="M3 10h18"></path>
+                <path d="M8 14h3"></path>
+              </svg>
+            </button>
+          </div>
+
+          <select class="time-select" formControlName="visitHour" aria-label="Selecciona l'hora">
+            @for (hour of hourOptions; track hour) {
+              <option [value]="hour">{{ hour }}</option>
+            }
+          </select>
+
+          <span class="time-separator" aria-hidden="true">:</span>
+
+          <select class="time-select" formControlName="visitMinute" aria-label="Selecciona els minuts">
+            @for (minute of minuteOptions; track minute) {
+              <option [value]="minute">{{ minute }}</option>
+            }
+          </select>
+        </div>
+      </div>
 
       <label>
         Rao de consulta

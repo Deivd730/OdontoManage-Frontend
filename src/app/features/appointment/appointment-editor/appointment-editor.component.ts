@@ -1,15 +1,21 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
+  ElementRef,
   input,
+  OnDestroy,
+  ViewChild,
   output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { distinctUntilChanged, startWith } from 'rxjs';
+import flatpickr from 'flatpickr';
+import { Catalan } from 'flatpickr/dist/l10n/cat';
 import {
   AppointmentEditorAlert,
   AppointmentEditorSelection,
@@ -34,7 +40,14 @@ export interface AppointmentEditorSubmit {
   styleUrl: './appointment-editor.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppointmentEditorComponent {
+export class AppointmentEditorComponent implements AfterViewInit, OnDestroy {
+  readonly hourOptions = Array.from({ length: 24 }, (_, hour) => String(hour).padStart(2, '0'));
+  readonly minuteOptions = Array.from({ length: 60 }, (_, minute) => String(minute).padStart(2, '0'));
+
+  @ViewChild('visitDateShell') private readonly visitDateShell?: ElementRef<HTMLDivElement>;
+
+  private visitDatePickerInstance?: flatpickr.Instance;
+
   readonly mode = input<'create' | 'edit'>('create');
   readonly selectedDate = input<Date>(new Date());
   readonly initialValue = input<AppointmentEditorSubmit | null>(null);
@@ -88,7 +101,9 @@ export class AppointmentEditorComponent {
     patient: [0, [Validators.required, Validators.min(1)]],
     dentist: [0, [Validators.required, Validators.min(1)]],
     treatment: [0, [Validators.required, Validators.min(1)]],
-    visitDateLocal: ['', [Validators.required]],
+    visitDate: [new Date(), [Validators.required]],
+    visitHour: ['09', [Validators.required]],
+    visitMinute: ['00', [Validators.required]],
     consultationReason: [''],
   });
 
@@ -110,9 +125,11 @@ export class AppointmentEditorComponent {
         patient: payload.patient,
         dentist: payload.dentist,
         treatment: payload.treatment,
-        visitDateLocal: this.toLocalDateTimeInput(payload.visitDate),
+        ...this.toDateControls(payload.visitDate),
         consultationReason: payload.consultationReason ?? '',
       });
+
+      this.syncDatePicker();
     });
 
     this.form.controls.treatment.valueChanges
@@ -131,9 +148,25 @@ export class AppointmentEditorComponent {
       )
       .subscribe(() => this.emitSelectionChanged());
 
-    this.form.controls.visitDateLocal.valueChanges
+    this.form.controls.visitDate.valueChanges
       .pipe(
-        startWith(this.form.controls.visitDateLocal.value),
+        startWith(this.form.controls.visitDate.value),
+        distinctUntilChanged(),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.emitSelectionChanged());
+
+    this.form.controls.visitHour.valueChanges
+      .pipe(
+        startWith(this.form.controls.visitHour.value),
+        distinctUntilChanged(),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.emitSelectionChanged());
+
+    this.form.controls.visitMinute.valueChanges
+      .pipe(
+        startWith(this.form.controls.visitMinute.value),
         distinctUntilChanged(),
         takeUntilDestroyed(),
       )
@@ -160,6 +193,48 @@ export class AppointmentEditorComponent {
         this.form.controls.treatment.setValue(0);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.visitDateShell) {
+      return;
+    }
+
+    this.visitDatePickerInstance = flatpickr(this.visitDateShell.nativeElement, {
+      wrap: true,
+      dateFormat: 'd/m/Y',
+      allowInput: true,
+      clickOpens: true,
+      disableMobile: true,
+      locale: Catalan,
+      defaultDate: this.form.controls.visitDate.value,
+      onChange: (_, __, instance) => {
+        const selectedDate = instance.selectedDates[0];
+        if (!selectedDate) {
+          return;
+        }
+
+        this.form.controls.visitDate.setValue(selectedDate);
+      },
+      onClose: (_, dateStr, instance) => {
+        if (!dateStr) {
+          return;
+        }
+
+        const typedDate = instance.parseDate(dateStr, 'd/m/Y');
+        if (!typedDate || Number.isNaN(typedDate.getTime())) {
+          return;
+        }
+
+        this.form.controls.visitDate.setValue(typedDate);
+      },
+    });
+
+    this.syncDatePicker();
+  }
+
+  ngOnDestroy(): void {
+    this.visitDatePickerInstance?.destroy();
   }
 
   onOverlayClick(event: MouseEvent): void {
@@ -190,7 +265,9 @@ export class AppointmentEditorComponent {
       patient: formValue.patient,
       dentist: formValue.dentist,
       treatment: formValue.treatment,
-      visitDate: this.normalizeDateTimeForApi(formValue.visitDateLocal),
+      visitDate: this.normalizeDateTimeForApi(
+        this.composeLocalDateTime(formValue.visitDate, formValue.visitHour, formValue.visitMinute),
+      ),
       consultationReason: formValue.consultationReason.trim() || undefined,
     });
   }
@@ -201,15 +278,36 @@ export class AppointmentEditorComponent {
     return defaultDate.toISOString();
   }
 
-  private toLocalDateTimeInput(value: string): string {
+  private toDateControls(value: string): { visitDate: Date; visitHour: string; visitMinute: string } {
     const date = new Date(value);
+
+    return {
+      visitDate: date,
+      visitHour: String(date.getHours()).padStart(2, '0'),
+      visitMinute: String(date.getMinutes()).padStart(2, '0'),
+    };
+  }
+
+  private composeLocalDateTime(date: Date, hour: string, minute: string): string {
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+      return '';
+    }
+
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
 
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+    return `${year}-${month}-${day}T${hour}:${minute}`;
+  }
+
+  private syncDatePicker(): void {
+    const selectedDate = this.form.controls.visitDate.value;
+
+    if (!this.visitDatePickerInstance || !(selectedDate instanceof Date) || Number.isNaN(selectedDate.getTime())) {
+      return;
+    }
+
+    this.visitDatePickerInstance.setDate(selectedDate, false, 'd/m/Y');
   }
 
   private normalizeDateTimeForApi(localValue: string): string {
@@ -222,11 +320,16 @@ export class AppointmentEditorComponent {
 
   private emitSelectionChanged(): void {
     const formValue = this.form.getRawValue();
+    const visitDateLocal = this.composeLocalDateTime(
+      formValue.visitDate,
+      formValue.visitHour,
+      formValue.visitMinute,
+    );
 
     this.selectionChanged.emit({
       dentist: formValue.dentist,
       treatment: formValue.treatment,
-      visitDateLocal: formValue.visitDateLocal,
+      visitDateLocal,
     });
   }
 

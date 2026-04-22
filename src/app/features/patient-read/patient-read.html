@@ -100,6 +100,7 @@
 						</div>
 						<div class="detail-card">
 							<h3>Facturacio</h3>
+							<p><strong>Data de naixement:</strong> {{ formatBirthDateDisplay(selectedPatient()?.birthDate) }}</p>
 							<p><strong>Seguretat social:</strong> {{ selectedPatient()?.socialSecurityNumber || 'No registrat' }}</p>
 							<p><strong>Dades:</strong> {{ selectedPatient()?.billingData || 'No registrat' }}</p>
 							<p><strong>Registre:</strong> {{ selectedPatient()?.registrationDate | date: 'mediumDate' }}</p>
@@ -127,6 +128,33 @@
 								<input type="text" formControlName="nationalId" [class.input-error]="isFieldInvalid('nationalId')" />
 								@if (hasError('nationalId', 'required')) {
 									<span class="error">El DNI es obligatori</span>
+								}
+							</label>
+							<label>
+								Data de naixement
+								<div #birthDateShell class="date-shell" [class.input-error]="isFieldInvalid('birthDate')" data-input-wrapper>
+									<input
+										type="text"
+										class="date-input"
+										data-input
+										placeholder="dd/mm/yyyy"
+										formControlName="birthDate"
+									/>
+									<button type="button" class="date-toggle" data-toggle aria-label="Obre calendari">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+											<rect x="3" y="4" width="18" height="18" rx="2"></rect>
+											<path d="M16 2v4"></path>
+											<path d="M8 2v4"></path>
+											<path d="M3 10h18"></path>
+											<path d="M8 14h3"></path>
+										</svg>
+									</button>
+								</div>
+								@if (hasError('birthDate', 'required')) {
+									<span class="error">La data de naixement es obligatoria</span>
+								}
+								@if (hasError('birthDate', 'futureDate')) {
+									<span class="error">La data de naixement no pot ser futura</span>
 								}
 							</label>
 							<label>
