@@ -121,7 +121,10 @@ export class OdontogramEditorComponent implements OnInit {
     this.odontogramService.getOdontogramByPatient(patientId).subscribe({
       next: (res) => {
         if (res && res.length > 0) {
-          const odontogram = this.enrichWithColors(res[0]);
+          // Limpiar estructuras inválidas que pueden venir del servidor
+          const rawOdontogram = res[0];
+          const cleanedOdontogram = this.cleanOdontogramStructure(rawOdontogram);
+          const odontogram = this.enrichWithColors(cleanedOdontogram);
           this.odontogram.set(odontogram);
           this.odontogramType.set(odontogram.type === 'child' ? 'child' : 'adult');
           this.isLoading.set(false);
@@ -160,6 +163,49 @@ export class OdontogramEditorComponent implements OnInit {
     });
   }
 
+  /**
+   * Limpia estructuras corruptas que pueden llegar del servidor
+   */
+  private cleanOdontogramStructure(odontogram: Odontogram): Odontogram {
+    // Convertir toothTreatments a array si es necesario
+    let toothTreatmentsArray = odontogram.toothTreatments || [];
+    if (!Array.isArray(toothTreatmentsArray)) {
+      toothTreatmentsArray = Object.values(toothTreatmentsArray);
+    }
+
+    // Convertir bridgeTreatments a array si es necesario
+    let bridgeTreatmentsArray = odontogram.bridgeTreatments || [];
+    if (!Array.isArray(bridgeTreatmentsArray)) {
+      bridgeTreatmentsArray = Object.values(bridgeTreatmentsArray);
+    }
+
+    // Limpiar toothTreatments
+    const cleanedToothTreatments = toothTreatmentsArray
+      .filter(tt => {
+        // Si treatment es un array vacío o null, lo excluimos
+        if (!tt.treatment || Array.isArray(tt.treatment)) {
+          return false;
+        }
+        return true;
+      });
+
+    // Limpiar bridgeTreatments
+    const cleanedBridgeTreatments = bridgeTreatmentsArray
+      .filter(bt => {
+        // Si treatment es un array vacío o null, lo excluimos
+        if (!bt.treatment || Array.isArray(bt.treatment)) {
+          return false;
+        }
+        return true;
+      });
+
+    return {
+      ...odontogram,
+      toothTreatments: cleanedToothTreatments,
+      bridgeTreatments: cleanedBridgeTreatments
+    };
+  }
+
   private getTypeFromBirthDate(birthDate?: string): 'adult' | 'child' {
     if (!birthDate) {
       return 'adult';
@@ -181,14 +227,6 @@ export class OdontogramEditorComponent implements OnInit {
     return age < 12 ? 'child' : 'adult';
   }
 
-  private normalizeToothPathologies(value: unknown): ToothPathology[] {
-    if (Array.isArray(value)) return value as ToothPathology[];
-    if (value && typeof value === 'object') {
-      return Object.values(value as Record<string, ToothPathology>);
-    }
-    return [];
-  }
-
   private enrichWithColors(odontogram: Odontogram): Odontogram {
     const toothPathologies = this.normalizeToothPathologies((odontogram as any).toothPathologies);
 
@@ -202,6 +240,14 @@ export class OdontogramEditorComponent implements OnInit {
         }
       }))
     };
+  }
+
+  private normalizeToothPathologies(value: unknown): ToothPathology[] {
+    if (Array.isArray(value)) return value as ToothPathology[];
+    if (value && typeof value === 'object') {
+      return Object.values(value as Record<string, ToothPathology>);
+    }
+    return [];
   }
 
   handleFaceClick(toothNumber: number, face: number): void {
@@ -265,26 +311,75 @@ export class OdontogramEditorComponent implements OnInit {
     const currentData = this.odontogram();
     if (!currentData) return;
 
-    const dataToSend = {
-      ...currentData,
+    // Normalizar toothTreatments y bridgeTreatments a arrays
+    let toothTreatmentsArray = currentData.toothTreatments || [];
+    let bridgeTreatmentsArray = currentData.bridgeTreatments || [];
+
+    // Si son objetos indexados (no arrays reales), convertir a array
+    if (!Array.isArray(toothTreatmentsArray)) {
+      toothTreatmentsArray = Object.values(toothTreatmentsArray);
+    }
+
+    if (!Array.isArray(bridgeTreatmentsArray)) {
+      bridgeTreatmentsArray = Object.values(bridgeTreatmentsArray);
+    }
+
+    // Transformar tooth treatments
+    const processedToothTreatments = toothTreatmentsArray
+      .map(tt => {
+        if (!tt.treatment || Array.isArray(tt.treatment)) {
+          return null;
+        }
+        
+        const treatmentId = (tt.treatment as any)?.id;
+        if (!treatmentId) {
+          return null;
+        }
+        
+        return {
+          treatment: { id: treatmentId },
+          toothNumber: tt.toothNumber,
+          toothFace: tt.toothFace,
+          status: tt.status
+        };
+      })
+      .filter(tt => tt !== null);
+
+    // Transformar bridge treatments
+    const processedBridgeTreatments = bridgeTreatmentsArray
+      .map(bt => {
+        if (!bt.treatment || Array.isArray(bt.treatment)) {
+          return null;
+        }
+        
+        const treatmentId = (bt.treatment as any)?.id;
+        if (!treatmentId) {
+          return null;
+        }
+        
+        return {
+          treatment: { id: treatmentId },
+          startTooth: bt.startTooth,
+          endTooth: bt.endTooth,
+          status: bt.status
+        };
+      })
+      .filter(bt => bt !== null);
+
+    const dataToSend: any = {
+      id: currentData.id,
+      type: currentData.type,
       patient: { id: currentData.patient?.id ?? currentData.patient },
+      appointment: currentData.appointment,
+      
       toothPathologies: currentData.toothPathologies.map(tp => ({
         tooth: { toothNumber: tp.tooth.toothNumber },
         pathology: { id: tp.pathology.id },
         toothFace: tp.toothFace
       })),
-      toothTreatments: currentData.toothTreatments?.map(tt => ({
-        treatment: { id: tt.treatment.id },
-        toothNumber: tt.toothNumber,
-        toothFace: tt.toothFace,
-        status: tt.status
-      })) || [],
-      bridgeTreatments: currentData.bridgeTreatments?.map(bt => ({
-        treatment: { id: bt.treatment.id },
-        startTooth: bt.startTooth,
-        endTooth: bt.endTooth,
-        status: bt.status
-      })) || []
+      
+      toothTreatments: processedToothTreatments,
+      bridgeTreatments: processedBridgeTreatments
     };
 
     this.isLoading.set(true);
@@ -298,10 +393,33 @@ export class OdontogramEditorComponent implements OnInit {
           this.notificationService.success('Odontograma guardado correctamente');
         },
         error: (err) => {
-          console.error('Error al guardar:', err.error);
           this.notificationService.error(err.error?.error || 'Error al guardar odontograma');
         }
       });
+  }
+
+  private validateOdontogramData(odontogram: Odontogram): string[] {
+    const errors: string[] = [];
+
+    // Validar toothTreatments
+    (odontogram.toothTreatments || []).forEach((tt, idx) => {
+      if (!tt.treatment || Array.isArray(tt.treatment)) {
+        errors.push(`ToothTreatment[${idx}]: treatment es inválido (vacío o array)`);
+      } else if (!tt.treatment.id) {
+        errors.push(`ToothTreatment[${idx}]: treatment sin ID`);
+      }
+    });
+
+    // Validar bridgeTreatments
+    (odontogram.bridgeTreatments || []).forEach((bt, idx) => {
+      if (!bt.treatment || Array.isArray(bt.treatment)) {
+        errors.push(`BridgeTreatment[${idx}]: treatment es inválido (vacío o array)`);
+      } else if (!bt.treatment.id) {
+        errors.push(`BridgeTreatment[${idx}]: treatment sin ID`);
+      }
+    });
+
+    return errors;
   }
 
   onTabChange(tab: 'pathologies' | 'treatments'): void {
@@ -394,8 +512,14 @@ export class OdontogramEditorComponent implements OnInit {
     this.odontogram.update(prev => {
       if (!prev) return null;
 
+      // Asegurar que toothTreatments es un array
+      let toothTreatmentsArray = prev.toothTreatments || [];
+      if (!Array.isArray(toothTreatmentsArray)) {
+        toothTreatmentsArray = Object.values(toothTreatmentsArray);
+      }
+
       // Crear un nuevo array sin mutar
-      const treatments: ToothTreatment[] = (prev.toothTreatments || []).slice();
+      const treatments: ToothTreatment[] = toothTreatmentsArray.slice();
       const activeTreatmentId = Number(activeTreatment.id);
       
       // Buscar si existe
@@ -430,7 +554,12 @@ export class OdontogramEditorComponent implements OnInit {
   }
 
   getTreatmentsForTooth(toothNumber: number): ToothTreatment[] {
-    return this.odontogram()?.toothTreatments?.filter(t => t.toothNumber === toothNumber) || [];
+    const all = this.odontogram()?.toothTreatments;
+    if (!all) return [];
+    
+    // Normalizar a array si es necesario
+    const treatmentsArray = (Array.isArray(all) ? all : Object.values(all)) as ToothTreatment[];
+    return treatmentsArray.filter(t => t.toothNumber === toothNumber) || [];
   }
 
   handleDeleteFaceClick(toothNumber: number, face: number): void {
@@ -451,7 +580,12 @@ export class OdontogramEditorComponent implements OnInit {
         }
       } else {
         // En tab de tratamientos: eliminar tratamiento
-        const treatments = [...(prev.toothTreatments || [])];
+        let toothTreatmentsArray = prev.toothTreatments || [];
+        if (!Array.isArray(toothTreatmentsArray)) {
+          toothTreatmentsArray = Object.values(toothTreatmentsArray);
+        }
+        
+        const treatments = [...toothTreatmentsArray];
         const idx = treatments.findIndex(t => t.toothNumber === toothNumber && t.toothFace === face);
         if (idx > -1) {
           treatments.splice(idx, 1);
@@ -471,7 +605,13 @@ export class OdontogramEditorComponent implements OnInit {
 
   // Obtener puentes que incluyen un diente específico
   getBridgesForTooth(toothNumber: number): BridgeTreatment[] {
-    return this.odontogram()?.bridgeTreatments?.filter(bridge => {
+    const all = this.odontogram()?.bridgeTreatments;
+    if (!all) return [];
+
+    // Normalizar a array si es necesario
+    const bridgesArray = (Array.isArray(all) ? all : Object.values(all)) as BridgeTreatment[];
+    
+    return bridgesArray.filter(bridge => {
       const min = Math.min(bridge.startTooth, bridge.endTooth);
       const max = Math.max(bridge.startTooth, bridge.endTooth);
       return toothNumber >= min && toothNumber <= max;
@@ -539,7 +679,13 @@ export class OdontogramEditorComponent implements OnInit {
     this.odontogram.update(prev => {
       if (!prev) return null;
 
-      const bridges: BridgeTreatment[] = [...(prev.bridgeTreatments || [])];
+      // Asegurar que bridgeTreatments es un array
+      let bridgeTreatmentsArray = prev.bridgeTreatments || [];
+      if (!Array.isArray(bridgeTreatmentsArray)) {
+        bridgeTreatmentsArray = Object.values(bridgeTreatmentsArray);
+      }
+
+      const bridges: BridgeTreatment[] = [...bridgeTreatmentsArray];
       
       // Verificar si ya existe un puente equivalente
       const minTooth = Math.min(startTooth, endTooth);

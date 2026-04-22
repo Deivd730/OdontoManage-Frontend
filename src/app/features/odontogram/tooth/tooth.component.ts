@@ -44,13 +44,19 @@ export class ToothComponent {
     const symbols: { symbol: string; color: string }[] = [];
 
     treatments.forEach(t => {
-      const color = t.status === 'pending' ? '#FF0000' : '#0000FF'; // Rojo: pending, Azul: done
+      if (!t.treatment || !t.treatment.name) {
+        console.warn('Treatment sin name encontrado:', t);
+        return;
+      }
 
-      if (t.treatment.name.toLowerCase().includes('exodoncia')) {
+      const color = t.status === 'pending' ? '#FF0000' : '#0000FF'; // Rojo: pending, Azul: done
+      const nameLower = t.treatment.name.toLowerCase();
+
+      if (nameLower.includes('exodoncia')) {
         symbols.push({ symbol: '✕', color });
-      } else if (t.treatment.name.toLowerCase().includes('endodoncia')) {
+      } else if (nameLower.includes('endodoncia')) {
         symbols.push({ symbol: 'E', color });
-      } else if (t.treatment.name.toLowerCase().includes('puente')) {
+      } else if (nameLower.includes('puente')) {
         symbols.push({ symbol: '═', color });
       }
     });
@@ -71,10 +77,14 @@ export class ToothComponent {
     const bridges = this.appliedBridges();
     const tooth = this.toothNumber();
     
-    return bridges.some(b => 
-      b.treatment.name.toLowerCase().includes('puente') &&
-      (tooth === Math.min(b.startTooth, b.endTooth) || tooth === Math.max(b.startTooth, b.endTooth))
-    );
+    return bridges.some(b => {
+      if (!b.treatment || !b.treatment.name) {
+        console.warn('Bridge sin treatment o treatment.name:', b);
+        return false;
+      }
+      return b.treatment.name.toLowerCase().includes('puente') &&
+             (tooth === Math.min(b.startTooth, b.endTooth) || tooth === Math.max(b.startTooth, b.endTooth));
+    });
   }
 
   // Determinar si este diente es el pilar IZQUIERDO (primero) del puente
@@ -82,10 +92,13 @@ export class ToothComponent {
     const bridges = this.appliedBridges();
     const tooth = this.toothNumber();
     
-    return bridges.some(b => 
-      b.treatment.name.toLowerCase().includes('puente') &&
-      tooth === Math.min(b.startTooth, b.endTooth)
-    );
+    return bridges.some(b => {
+      if (!b.treatment || !b.treatment.name) {
+        return false;
+      }
+      return b.treatment.name.toLowerCase().includes('puente') &&
+             tooth === Math.min(b.startTooth, b.endTooth);
+    });
   }
 
   // Determinar si este diente es el pilar DERECHO (último) del puente
@@ -93,10 +106,13 @@ export class ToothComponent {
     const bridges = this.appliedBridges();
     const tooth = this.toothNumber();
     
-    return bridges.some(b => 
-      b.treatment.name.toLowerCase().includes('puente') &&
-      tooth === Math.max(b.startTooth, b.endTooth)
-    );
+    return bridges.some(b => {
+      if (!b.treatment || !b.treatment.name) {
+        return false;
+      }
+      return b.treatment.name.toLowerCase().includes('puente') &&
+             tooth === Math.max(b.startTooth, b.endTooth);
+    });
   }
 
   // Determinar si este diente es un diente intermedio del puente
@@ -105,6 +121,9 @@ export class ToothComponent {
     const tooth = this.toothNumber();
     
     return bridges.some(b => {
+      if (!b.treatment || !b.treatment.name) {
+        return false;
+      }
       const min = Math.min(b.startTooth, b.endTooth);
       const max = Math.max(b.startTooth, b.endTooth);
       return b.treatment.name.toLowerCase().includes('puente') &&
@@ -114,6 +133,11 @@ export class ToothComponent {
 
   // Obtener puentes que incluyen este diente
   getBridgesIncludingTooth(): BridgeTreatment[] {
-    return this.appliedBridges().filter(b => b.treatment.name.toLowerCase().includes('puente'));
+    return this.appliedBridges().filter(b => {
+      if (!b.treatment || !b.treatment.name) {
+        return false;
+      }
+      return b.treatment.name.toLowerCase().includes('puente');
+    });
   }
 }
