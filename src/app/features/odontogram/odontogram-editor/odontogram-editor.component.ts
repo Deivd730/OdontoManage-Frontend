@@ -273,7 +273,6 @@ export class OdontogramEditorComponent implements OnInit {
     const activeTool = this.selectedPathology();
 
     if (!activeTool) {
-      this.notificationService.error('Primero selecciona una patologia (Caries, Obturacion, etc.)');
       return;
     }
 
@@ -281,17 +280,22 @@ export class OdontogramEditorComponent implements OnInit {
       if (!prev) return null;
 
       const pathologies = [...prev.toothPathologies];
+      
+      // Buscar si ya existe CUALQUIER patología en el mismo diente y cara
       const existingIdx = pathologies.findIndex(
         p => p.tooth.toothNumber === toothNumber && p.toothFace === face
       );
 
       if (existingIdx > -1) {
+        // Si la patología existente es la MISMA, eliminarla (toggle)
         if (pathologies[existingIdx].pathology.id === activeTool.id) {
           pathologies.splice(existingIdx, 1);
         } else {
+          // Si es diferente, reemplazarla
           pathologies[existingIdx] = { ...pathologies[existingIdx], pathology: activeTool };
         }
       } else {
+        // Si no existe ninguna patología, agregarla
         pathologies.push({
           tooth: { id: 0, toothNumber },
           pathology: activeTool,
@@ -496,7 +500,6 @@ export class OdontogramEditorComponent implements OnInit {
     const treatmentStatus = this.selectedTreatmentStatus();
     
     if (!activeTreatment) {
-      this.notificationService.error('Primero selecciona un tratamiento');
       return;
     }
 
@@ -536,7 +539,6 @@ export class OdontogramEditorComponent implements OnInit {
       if (existingIdx > -1) {
         // Eliminar
         treatments.splice(existingIdx, 1);
-        this.notificationService.success('Tratamiento eliminado');
       } else {
         // Agregar
         const newTreatment: ToothTreatment = {
@@ -546,7 +548,6 @@ export class OdontogramEditorComponent implements OnInit {
           status: treatmentStatus
         };
         treatments.push(newTreatment);
-        this.notificationService.success('Tratamiento agregado');
       }
 
       return { ...prev, toothTreatments: treatments };
@@ -595,9 +596,7 @@ export class OdontogramEditorComponent implements OnInit {
         }
       }
 
-      if (!deleted) {
-        this.notificationService.error('No hay nada que eliminar en esa posición');
-      }
+
 
       return prev;
     });
