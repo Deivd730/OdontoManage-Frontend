@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { OdontoLoader } from '../../core/services/odonto-loader';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class LoginComponent {
   errorMessage = signal<string | null>(null);
   isLoading = signal<boolean>(false);
   returnUrl: string = '/';
+  private loader = new OdontoLoader();
 
   constructor(
     private fb: FormBuilder,
@@ -55,9 +57,12 @@ export class LoginComponent {
 
     this.authService.login(credentials).subscribe({
       next: () => {
+        this.loader.hide();
+        this.isLoading.set(false);
         this.router.navigate([this.returnUrl]);
       },
       error: (error) => {
+        this.loader.hide();
         this.isLoading.set(false);
 
         if (error.status === 401) {
@@ -71,6 +76,8 @@ export class LoginComponent {
         console.error('Login error:', error);
       }
     });
+
+    this.loader.show();
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
