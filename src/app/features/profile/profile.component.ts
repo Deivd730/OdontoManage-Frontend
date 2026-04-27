@@ -28,7 +28,6 @@ export class ProfileComponent {
   editData = { name: '', email: '' };
   passwordData = { current: '', new: '', confirm: '' };
 
-  // --- LÓGICA: ACTUALIZAR DATOS BÁSICOS ---
   onUpdate() {
     const user = this.authService.currentUser();
     if (user) {
@@ -49,7 +48,7 @@ export class ProfileComponent {
           this.notificationService.success('Dades actualitzades correctament');
         },
         error: () => {
-          this.notificationService.error('Error en actualitzar');
+          this.notificationService.error('No s\'han pogut actualitzar les dades');
         }
       });
   }
@@ -58,7 +57,6 @@ export class ProfileComponent {
     this.showUpdateModal.set(false);
   }
 
-  // --- LÓGICA: CAMBIAR CONTRASEÑA ---
   openPasswordModal() {
     this.passwordData = { current: '', new: '', confirm: '' };
     this.showPasswordModal.set(true);
@@ -68,7 +66,7 @@ export class ProfileComponent {
     const user = this.authService.currentUser();
 
     if (!user || !user.id) {
-      this.notificationService.error('No s\'ha pogut trobar la informacio de l\'usuari.');
+      this.notificationService.error('No s\'ha pogut trobar la informació de l\'usuari.');
       return;
     }
 
@@ -78,7 +76,7 @@ export class ProfileComponent {
     }
 
     if (!this.passwordData.current || !this.passwordData.new) {
-      this.notificationService.error('Si us plau, omple tots els camps');
+      this.notificationService.error('Si us plau, omple tots els camps.');
       return;
     }
 
@@ -92,7 +90,7 @@ export class ProfileComponent {
         this.passwordData = { current: '', new: '', confirm: '' };
       },
       error: (err) => {
-        this.notificationService.error(err.error?.error || 'La contrasenya actual es incorrecta');
+        this.notificationService.error(err.error?.error || 'La contrasenya actual és incorrecta.');
       }
     });
   }
@@ -101,7 +99,6 @@ export class ProfileComponent {
     this.showPasswordModal.set(false);
   }
 
-  // --- LÓGICA: ELIMINAR CUENTA (DOBLE CONFIRMACIÓN) ---
   openDeleteModal() {
     this.confirmStep.set(1);
     this.showModal.set(true);
@@ -122,7 +119,7 @@ export class ProfileComponent {
         },
         error: (err) => {
           console.error('Error al borrar cuenta:', err);
-          this.notificationService.error('Error en intentar eliminar el compte.');
+          this.notificationService.error('No s\'ha pogut eliminar el compte.');
           this.showModal.set(false);
         }
       });

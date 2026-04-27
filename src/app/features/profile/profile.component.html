@@ -1,13 +1,11 @@
 @if (authService.currentUser(); as user) {
 <div class="profile-container">
     <div class="profile-card">
-        <!-- Información del Usuario -->
         <div class="profile-header">
             <h1 class="user-name">{{ currentUser()?.name }}</h1>
             <p class="user-email">{{ currentUser()?.email }}</p>
         </div>
 
-        <!-- Acciones Principales -->
         <div class="profile-body">
             <button class="btn-actualizar" (click)="onUpdate()">
                 Actualitza dades
@@ -22,16 +20,14 @@
             </button>
         </div>
 
-        <!-- Acción Secundaria (Separada por espacio) -->
         <div class="profile-footer">
             <button class="btn-logout-soft" (click)="authService.logout()">
-                Tanca la sessio
+                Tanca la sessió
             </button>
         </div>
     </div>
 </div>
 
-<!-- VENTANA MODAL DE DOBLE CONFIRMACIÓN -->
 @if (showModal()) {
 <div class="modal-overlay">
     <div class="modal-content">
@@ -39,8 +35,8 @@
         <div class="modal-icon warning">
             <i class="bi bi-exclamation-circle"></i>
         </div>
-        <h3>Estas segur?</h3>
-        <p>Estas a punt d'iniciar el proces d'eliminacio del teu compte.</p>
+        <h3>Estàs segur?</h3>
+        <p>Estàs a punt d'iniciar el procés d'eliminació del teu compte.</p>
         <div class="modal-actions">
             <button class="btn-secondary" (click)="closeModal()">Cancel·la</button>
             <button class="btn-next" (click)="goToStepTwo()">Continua</button>
@@ -49,23 +45,22 @@
         <div class="modal-icon danger">
             <i class="bi bi-trash3-fill"></i>
         </div>
-        <h3 class="text-danger">Confirmacio final!</h3>
-        <p>Aquesta accio es irreversible. S'esborraran totes les dades associades a <b>{{ user.email }}</b>.</p>
+        <h3 class="text-danger">Confirmació final</h3>
+        <p>Aquesta acció és irreversible. S'esborraran totes les dades associades a <b>{{ user.email }}</b>.</p>
         <div class="modal-actions">
             <button class="btn-secondary" (click)="closeModal()">Millor no</button>
-            <button class="btn-danger-final" (click)="confirmDeletion()">SI, ELIMINA EL COMPTE</button>
+            <button class="btn-danger-final" (click)="confirmDeletion()">Sí, elimina el compte</button>
         </div>
         }
     </div>
 </div>
 }
 
-<!-- MODAL DE ACTUALIZAR DATOS -->
 @if (showUpdateModal()) {
 <div class="modal-overlay">
     <div class="modal-content update-modal">
-        <h3>Actualitza el perfil</h3>
-        <p>Modifica la informacio del teu compte</p>
+        <h3>Actualitza el teu perfil</h3>
+        <p>Modifica la informació del teu compte.</p>
 
         <div class="form-group">
             <label>Nom complet</label>
@@ -73,7 +68,7 @@
         </div>
 
         <div class="form-group">
-            <label>Correu electronic</label>
+            <label>Correu electrònic</label>
             <input type="email" [(ngModel)]="editData.email" class="form-input">
         </div>
 
@@ -117,6 +112,6 @@
 } @else {
 <div class="loading-state">
     <div class="spinner"></div>
-    <p>Carregant informacio...</p>
+    <p>Carregant informació...</p>
 </div>
 }
