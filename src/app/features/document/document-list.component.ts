@@ -46,7 +46,7 @@ export class DocumentListComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: (err) => {
-        this.notificationService.error('Error en carregar documents');
+        this.notificationService.error('No s\'han pogut carregar els documents');
         console.error('Document load error:', err);
         this.isLoading.set(false);
       }
@@ -71,7 +71,7 @@ export class DocumentListComponent implements OnInit {
         this.notificationService.success('Document eliminat');
       },
       error: (err) => {
-        this.notificationService.error('Error en eliminar el document');
+        this.notificationService.error('No s\'ha pogut eliminar el document');
         console.error('Document delete error:', err);
       }
     });
