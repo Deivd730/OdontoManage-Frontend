@@ -65,7 +65,7 @@ export class DocumentCreate implements OnInit {
     const file = value.documentFile as File | null;
 
     if (!file) {
-      this.notificationService.error('Has de seleccionar un fitxer');
+      this.notificationService.error('Cal seleccionar un fitxer');
       return;
     }
 
@@ -80,14 +80,14 @@ export class DocumentCreate implements OnInit {
     }).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.notificationService.success('Document pujat correctament');
+        this.notificationService.success('Document desat correctament');
         this.router.navigate(['/documents'], {
           queryParams: { patientId: value.patientId }
         });
       },
       error: (error) => {
         this.isLoading.set(false);
-        this.notificationService.error(error?.error?.error || 'Error en pujar el document');
+        this.notificationService.error(error?.error?.error || 'No s\'ha pogut pujar el document');
         console.error('Document upload error:', error);
       }
     });

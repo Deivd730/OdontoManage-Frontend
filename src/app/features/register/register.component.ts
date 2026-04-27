@@ -47,7 +47,7 @@ export class RegisterComponent {
           this.router.navigate(['/login'], { queryParams: { registered: 'true' } });
         },
         error: (err) => {
-          this.errorMessage = 'Hi ha hagut un error en registrar-te. Torna-ho a provar.';
+          this.errorMessage = 'No s\'ha pogut completar el registre. Torna-ho a provar.';
           this.loading = false;
         }
       });

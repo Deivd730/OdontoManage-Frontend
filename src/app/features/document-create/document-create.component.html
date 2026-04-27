@@ -1,8 +1,8 @@
 <div class="document-container">
   <div class="document-card">
     <div class="document-header">
-      <h1>Afegeix document</h1>
-      <p>1 Selecciona un pacient 2 Puja el document</p>
+      <h1>Afegeix un document</h1>
+      <p>1. Selecciona un pacient 2. Adjunta el document</p>
     </div>
 
     <form [formGroup]="documentForm" (ngSubmit)="submit()" class="document-form">
@@ -30,7 +30,7 @@
           [class.input-error]="isFieldInvalid('name')"
         />
         @if (hasError('name', 'required')) {
-          <span class="error">El nom es obligatori</span>
+          <span class="error">El nom és obligatori</span>
         }
       </label>
 
@@ -41,12 +41,12 @@
           <option value="Radiografía">Radiografia</option>
           <option value="Informe">Informe</option>
           <option value="Consentimiento">Consentiment</option>
-          <option value="Prescripción">Prescripcio</option>
+          <option value="Prescripción">Prescripció</option>
           <option value="Fotografía">Fotografia</option>
           <option value="Otro">Altre</option>
         </select>
         @if (hasError('type', 'required')) {
-          <span class="error">El tipus es obligatori</span>
+          <span class="error">El tipus és obligatori</span>
         }
       </label>
 
@@ -54,7 +54,7 @@
         Data de captura
         <input type="date" formControlName="captureDate" [class.input-error]="isFieldInvalid('captureDate')" />
         @if (hasError('captureDate', 'required')) {
-          <span class="error">La data es obligatoria</span>
+          <span class="error">La data és obligatòria</span>
         }
       </label>
 
@@ -75,7 +75,7 @@
           @if (isLoading()) {
             Pujant...
           } @else {
-            Desa document
+            Desa el document
           }
         </button>
       </div>
