@@ -11,28 +11,24 @@
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
-      <!-- NOMBRE COMPLETO (Nuevo) -->
       <div class="form-group">
         <label>Nom complet</label>
-        <input type="text" formControlName="name" placeholder="Ex.: Joan Perez"
+        <input type="text" formControlName="name" placeholder="Ex.: Joan Pérez"
                [class.input-error]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
       </div>
 
-      <!-- EMAIL -->
       <div class="form-group">
-        <label>Correu electronic</label>
-        <input type="email" formControlName="email" placeholder="juan@test.com"
+        <label>Correu electrònic</label>
+        <input type="email" formControlName="email" placeholder="joan@exemple.com"
                [class.input-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
       </div>
 
-      <!-- PASSWORD -->
       <div class="form-group">
         <label>Contrasenya</label>
-        <input type="password" formControlName="password" placeholder="Minim 6 caracters"
+        <input type="password" formControlName="password" placeholder="Mínim 6 caràcters"
                [class.input-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
       </div>
 
-      <!-- CONFIRMAR PASSWORD -->
       <div class="form-group">
         <label>Confirma la contrasenya</label>
         <input type="password" formControlName="confirmPassword" placeholder="Torna a escriure la contrasenya"
@@ -46,15 +42,15 @@
         @if (loading) {
           <span class="dot-loader"></span>
         } @else {
-          Crea el compte
+          Crea el teu compte
         }
       </button>
     </form>
 
     <div class="login-footer">
       <div class="register-section">
-        Ja en formes part?
-        <a routerLink="/login" class="main-link">Inicia sessio aqui</a>
+        Ja tens un compte?
+        <a routerLink="/login" class="main-link">Inicia sessió aquí</a>
       </div>
     </div>
   </div>
