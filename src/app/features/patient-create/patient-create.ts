@@ -132,7 +132,7 @@ export class PatientCreate implements AfterViewInit, OnDestroy {
 
         // Manejar diferentes tipos de errores
         if (error.status === 400) {
-          this.errorMessage.set('Dades del pacient invalides. Si us plau, revisa la informacio.');
+          this.errorMessage.set('Dades del pacient invalides. Si us plau, revisa la informació.');
         } else if (error.status === 409) {
           this.errorMessage.set('El pacient ja existeix al sistema.');
         } else if (error.status === 0) {

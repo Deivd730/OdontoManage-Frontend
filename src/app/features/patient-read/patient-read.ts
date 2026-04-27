@@ -212,7 +212,7 @@ export class PatientRead implements OnInit, OnDestroy {
       error: (error) => {
         this.isLoading.set(false);
         if (error.status === 400) {
-          this.errorMessage.set('Dades del pacient invalides. Revisa la informacio.');
+          this.errorMessage.set('Dades del pacient invalides. Revisa la informació.');
         } else if (error.status === 409) {
           this.errorMessage.set('El pacient ja existeix al sistema.');
         } else if (error.status === 0) {

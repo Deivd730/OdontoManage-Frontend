@@ -22,11 +22,11 @@ import { PatientResponse } from '../../../core/services/patient.service';
           </div>
           <div class="detail-actions">
             @if (!isEditing) {
-              <button class="btn ghost" (click)="startEdit.emit()">Editar</button>
-              <button class="btn danger" (click)="deletePatient.emit()" [disabled]="isLoading">Eliminar</button>
+              <button class="btn ghost" (click)="startEdit.emit()">Edita</button>
+              <button class="btn danger" (click)="deletePatient.emit()" [disabled]="isLoading">Elimina</button>
             } @else {
-              <button class="btn ghost" (click)="cancelEdit.emit()">Cancelar</button>
-              <button class="btn primary" (click)="saveEdit.emit()" [disabled]="isLoading">Guardar</button>
+              <button class="btn ghost" (click)="cancelEdit.emit()">Cancel·la</button>
+              <button class="btn primary" (click)="saveEdit.emit()" [disabled]="isLoading">Desa</button>
             }
           </div>
         </div>
@@ -35,7 +35,7 @@ import { PatientResponse } from '../../../core/services/patient.service';
           <div class="detail-grid">
             <div class="detail-card">
               <h3>Contacto</h3>
-              <p><strong>Telefono:</strong> {{ selectedPatient.phone || 'No registrado' }}</p>
+              <p><strong>TTelèfon:</strong> {{ selectedPatient.phone || 'No registrado' }}</p>
               <p><strong>Email:</strong> {{ selectedPatient.email || 'No registrado' }}</p>
               <p><strong>Direccion:</strong> {{ selectedPatient.address || 'No registrada' }}</p>
             </div>

@@ -64,7 +64,7 @@
 			@if (!selectedPatient()) {
 				<div class="detail-empty">
 					<h2>Selecciona un pacient</h2>
-					<p>Tria un pacient de la llista per veure'n la informacio completa.</p>
+					<p>Tria un pacient de la llista per veure'n la informació completa.</p>
 				</div>
 			} @else {
 					<div class="detail-header">
@@ -87,21 +87,21 @@
 					<div class="detail-grid">
 						<div class="detail-card">
 							<h3>Contacte</h3>
-							<p><strong>Telefon:</strong> {{ selectedPatient()?.phone || 'No registrat' }}</p>
-							<p><strong>Correu electronic:</strong> {{ selectedPatient()?.email || 'No registrat' }}</p>
-							<p><strong>Adreca:</strong> {{ selectedPatient()?.address || 'No registrada' }}</p>
+							<p><strong>Telèfon:</strong> {{ selectedPatient()?.phone || 'No registrat' }}</p>
+							<p><strong>Correu electrònic:</strong> {{ selectedPatient()?.email || 'No registrat' }}</p>
+							<p><strong>Adreça:</strong> {{ selectedPatient()?.address || 'No registrada' }}</p>
 						</div>
 						<div class="detail-card">
 							<h3>Salut</h3>
 							<p><strong>Estat:</strong> {{ selectedPatient()?.healthStatus || 'No registrat' }}</p>
 							<p><strong>Antecedents:</strong> {{ selectedPatient()?.familyHistory || 'No registrat' }}</p>
-							<p><strong>Habits:</strong> {{ selectedPatient()?.lifestyleHabits || 'No registrat' }}</p>
+							<p><strong>Hàbits:</strong> {{ selectedPatient()?.lifestyleHabits || 'No registrat' }}</p>
 							<p><strong>Allergies:</strong> {{ selectedPatient()?.medicationAllergies || 'No registrat' }}</p>
 						</div>
 						<div class="detail-card">
-							<h3>Facturacio</h3>
+							<h3>FACTURACIÓ</h3>
 							<p><strong>Data de naixement:</strong> {{ formatBirthDateDisplay(selectedPatient()?.birthDate) }}</p>
-							<p><strong>Seguretat social:</strong> {{ selectedPatient()?.socialSecurityNumber || 'No registrat' }}</p>
+							<p><strong>Seguretat Social:</strong> {{ selectedPatient()?.socialSecurityNumber || 'No registrat' }}</p>
 							<p><strong>Dades:</strong> {{ selectedPatient()?.billingData || 'No registrat' }}</p>
 							<p><strong>Registre:</strong> {{ selectedPatient()?.registrationDate | date: 'mediumDate' }}</p>
 						</div>
@@ -162,25 +162,25 @@
 								<input type="text" formControlName="socialSecurityNumber" />
 							</label>
 							<label>
-								Telefon
+								Telèfon
 								<input type="text" formControlName="phone" />
 								@if (hasError('phone', 'pattern')) {
 									<span class="error">Minim 9 digits</span>
 								}
 							</label>
 							<label>
-								Correu electronic
+								Correu electrònic
 								<input type="email" formControlName="email" />
 								@if (hasError('email', 'email')) {
 									<span class="error">Correu electronic invalid</span>
 								}
 							</label>
 							<label class="full">
-								Adreca
+								Adreça
 								<input type="text" formControlName="address" />
 							</label>
 							<label class="full">
-								Facturacio
+								Facturació
 								<input type="text" formControlName="billingData" />
 							</label>
 							<label class="full">
@@ -192,17 +192,18 @@
 								<input type="text" formControlName="familyHistory" />
 							</label>
 							<label class="full">
-								Habits de vida
+								Hàbits de vida
 								<input type="text" formControlName="lifestyleHabits" />
 							</label>
 							<label class="full">
-								Allergies a medicaments
+								Al·lèrgies a medicaments
 								<input type="text" formControlName="medicationAllergies" />
 							</label>
 							<label class="full">
 								Imatge de perfil
-								<input type="file" (change)="onImageSelected($event)" accept="image/jpeg,image/png,image/gif,image/webp" />
-								<small>Prevalidacio del navegador: {{ getAllowedImageFormatsLabel() }}, maxim {{ getMaxProfileImageSizeInMb() }} MB.</small>
+								<input id="profile-image-input" type="file" hidden (change)="onImageSelected($event)" accept="image/jpeg,image/png,image/gif,image/webp" />
+								<label for="profile-image-input" class="btn ghost">Selecciona una imatge</label>
+								<small>Prevalidació del navegador: {{ getAllowedImageFormatsLabel() }}, màxim {{ getMaxProfileImageSizeInMb() }} MB.</small>
 								@if (getSelectedImageFileName()) {
 									<small>Fitxer llest per pujar: {{ getSelectedImageFileName() }}</small>
 								}
