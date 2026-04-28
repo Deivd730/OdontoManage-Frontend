@@ -63,7 +63,7 @@
       <label>
         Dentista
         <select class="ui-select" formControlName="dentist">
-          <option [ngValue]="0">Selecciona un odontoleg</option>
+          <option [ngValue]="0">Selecciona un odontòleg</option>
           @for (option of dentistOptions(); track option.id) {
             <option [ngValue]="option.id" [disabled]="option.disabled ?? false">{{ option.label }}</option>
           }
@@ -71,12 +71,12 @@
       </label>
       @if (dentistOptions().length > 0 && enabledDentistCount() === 0 && form.controls.treatment.value > 0) {
         <small class="hint warning">
-          Hi ha especialistes per aquest tractament, pero cap treballa en la data/hora seleccionada.
+          Hi ha especialistes per a aquest tractament, però cap treballa en la data o hora seleccionada. 
           Prova amb un altre dia per habilitar-los.
         </small>
       } @else if (dentistOptions().length === 0 && form.controls.treatment.value > 0) {
         <small class="hint warning">
-          No hi ha odontolegs disponibles per al tractament
+          No hi ha odontòlegs disponibles per al tractament
           @if (selectedTreatmentLabel(); as treatmentLabel) {
             "{{ treatmentLabel }}"
           }
@@ -84,7 +84,7 @@
           Prova amb un altre dia o tria un altre tractament.
         </small>
       } @else if (dentistOptions().length === 0) {
-        <small class="hint">No hi ha odontolegs disponibles.</small>
+        <small class="hint">No hi ha odontòlegs disponibles.</small>
       } @else if (getSelectedDentistAvailableDays(); as availableDays) {
         <small class="hint">Dies disponibles: {{ translateAvailableDays(availableDays) }}</small>
       }
@@ -99,7 +99,7 @@
             }
           </select>
         </label>
-        <small class="hint">Forca un box especific.</small>
+        <small class="hint">Força un box específic.</small>
       } @else {
         <small class="hint">
           El box assignat es el {{ assignedBoxLabel() || 'que es determinara en desar la cita' }}.
@@ -162,7 +162,7 @@
       </div>
 
       <label>
-        Rao de consulta
+        Raó de consulta
         <textarea rows="3" formControlName="consultationReason"></textarea>
       </label>
 

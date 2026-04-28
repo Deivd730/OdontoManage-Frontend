@@ -30,10 +30,10 @@
 
 @if (isDeleteConfirmOpen) {
   <div class="modal-backdrop" (click)="onDeleteModalClose()">
-    <section class="modal-card" role="dialog" aria-modal="true" aria-label="Confirma eliminacio de cita" (click)="$event.stopPropagation()">
-      <h3 class="modal-title">Confirma eliminacio</h3>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-label="Confirma eliminació de cita" (click)="$event.stopPropagation()">
+      <h3 class="modal-title">Confirma eliminació</h3>
       <p class="modal-text">
-        Estas a punt d'eliminar aquesta cita. Aquesta accio no es pot desfer.
+       Estàs a punt d'eliminar aquesta cita. Aquesta acció no es pot desfer.
       </p>
       <div class="modal-actions">
         <button class="btn ghost" type="button" (click)="onDeleteModalClose()" [disabled]="store.isSaving()">
