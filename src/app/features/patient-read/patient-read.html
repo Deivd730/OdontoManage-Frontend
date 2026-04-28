@@ -94,15 +94,15 @@
 						<div class="detail-card">
 							<h3>Salut</h3>
 							<p><strong>Estat:</strong> {{ selectedPatient()?.healthStatus || 'No registrat' }}</p>
-							<p><strong>Antecedents:</strong> {{ selectedPatient()?.familyHistory || 'No registrat' }}</p>
-							<p><strong>Hàbits:</strong> {{ selectedPatient()?.lifestyleHabits || 'No registrat' }}</p>
-							<p><strong>Allergies:</strong> {{ selectedPatient()?.medicationAllergies || 'No registrat' }}</p>
+							<p><strong>Antecedents:</strong> {{ selectedPatient()?.familyHistory || 'No registrats' }}</p>
+							<p><strong>Hàbits:</strong> {{ selectedPatient()?.lifestyleHabits || 'No registrats' }}</p>
+							<p><strong>Al·lèrgies:</strong> {{ selectedPatient()?.medicationAllergies || 'No registrat' }}</p>
 						</div>
 						<div class="detail-card">
 							<h3>FACTURACIÓ</h3>
 							<p><strong>Data de naixement:</strong> {{ formatBirthDateDisplay(selectedPatient()?.birthDate) }}</p>
-							<p><strong>Seguretat Social:</strong> {{ selectedPatient()?.socialSecurityNumber || 'No registrat' }}</p>
-							<p><strong>Dades:</strong> {{ selectedPatient()?.billingData || 'No registrat' }}</p>
+							<p><strong>Seguretat Social:</strong> {{ selectedPatient()?.socialSecurityNumber || 'No registrada' }}</p>
+							<p><strong>Dades:</strong> {{ selectedPatient()?.billingData || 'No registrades' }}</p>
 							<p><strong>Registre:</strong> {{ selectedPatient()?.registrationDate | date: 'mediumDate' }}</p>
 						</div>
 					</div>
@@ -117,7 +117,7 @@
 								}
 							</label>
 							<label>
-								Cognom
+								Cognoms
 								<input type="text" formControlName="lastName" [class.input-error]="isFieldInvalid('lastName')" />
 								@if (hasError('lastName', 'required')) {
 									<span class="error">El cognom es obligatori</span>
