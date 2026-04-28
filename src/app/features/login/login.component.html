@@ -2,7 +2,7 @@
   <div class="login-card">
     <header class="login-header">
       <h1 class="brand-name">OdontoManage</h1>
-      <p class="subtitle">Benvingut de nou</p>
+      <p class="subtitle">Benvingut/benvinguda de nou!</p>
     </header>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
@@ -13,7 +13,7 @@
       }
 
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="email">Correu electrònic</label>
         <input
           type="email"
           id="email"
@@ -38,15 +38,15 @@
         @if (isLoading()) {
           <span class="dot-loader"></span>
         } @else {
-          Inicia la sessio
+          Iniciar sessió
         }
       </button>
     </form>
 
-    <footer class="login-footer">      
+    <footer class="login-footer">
       <div class="register-section">
-        <span>No tens compte?</span>
-        <a href="/register" class="main-link">Registra't</a>
+        <span>Encara no tens compte?</span>
+        <a href="/register" class="main-link">Crea un compte</a>
       </div>
     </footer>
   </div>

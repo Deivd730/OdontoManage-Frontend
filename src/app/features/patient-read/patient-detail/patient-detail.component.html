@@ -12,11 +12,11 @@
       </div>
       <div class="detail-actions">
         @if (!isEditing) {
-          <button class="btn ghost" (click)="startEdit.emit()">Editar</button>
-          <button class="btn danger" (click)="deletePatient.emit()" [disabled]="isLoading">Eliminar</button>
+          <button class="btn ghost" (click)="startEdit.emit()">Edita</button>
+          <button class="btn danger" (click)="deletePatient.emit()" [disabled]="isLoading">Elimina</button>
         } @else {
-          <button class="btn ghost" (click)="cancelEdit.emit()">Cancelar</button>
-          <button class="btn primary" (click)="saveEdit.emit()" [disabled]="isLoading">Guardar</button>
+          <button class="btn ghost" (click)="cancelEdit.emit()">Cancel·la</button>
+          <button class="btn primary" (click)="saveEdit.emit()" [disabled]="isLoading">Desa</button>
         }
       </div>
     </div>

@@ -3,31 +3,29 @@
     <header class="editor-header">
       <h2>
         Odontograma
-        <span class="odontogram-type-tag">{{ odontogramType() === 'child' ? 'Infantil' : 'Adulto' }}</span>
+        <span class="odontogram-type-tag">{{ odontogramType() === 'child' ? 'Infantil' : 'Adult' }}</span>
       </h2>
       <button class="save-button" (click)="save()" [disabled]="isLoading()">
-        {{ isLoading() ? 'Guardando...' : 'Guardar odontograma' }}
+        {{ isLoading() ? 'Desant...' : 'Desa l\'odontograma' }}
       </button>
     </header>
 
-    <div class="editor-toolbar">      
-      <!-- Tabs Navigation -->
+    <div class="editor-toolbar">
       <div class="tabs-navigation">
-        <button 
+        <button
           class="tab-button"
           [class.active]="activeTab() === 'pathologies'"
           (click)="onTabChange('pathologies')">
-          Patologías
+          Patologies
         </button>
-        <button 
+        <button
           class="tab-button"
           [class.active]="activeTab() === 'treatments'"
           (click)="onTabChange('treatments')">
-          Tratamientos
+          Tractaments
         </button>
       </div>
 
-      <!-- Patologías Tab -->
       @if (activeTab() === 'pathologies') {
         <div class="tools">
           @for (p of pathologies(); track p.id) {
@@ -35,19 +33,17 @@
               [class.active]="selectedPathology()?.id === p.id"
               (click)="selectPathology(p)"
               [style.border-left-color]="p.color"
-              [title]="p.id === 4 ? 'Modo toggle: haz click en dientes para marcar/desmarcar Ausencia Natural' : ''">
+              [title]="p.id === 4 ? 'Mode alternant: fes clic a les dents per marcar o desmarcar l\'absència natural' : ''">
               {{ p.name || p.description }}
             </button>
           }
         </div>
       }
 
-      <!-- Tratamientos Tab -->
       @if (activeTab() === 'treatments') {
         <div class="tools treatments-tools">
-          <!-- Fila 1: Estado Por hacer (Rojo) -->
           <div class="treatment-row">
-            <span class="row-label pending-label">Por hacer (Rojo):</span>
+            <span class="row-label pending-label">Pendent (vermell):</span>
             @for (t of treatments(); track t.id) {
               <button
                 [class.active]="selectedTreatment()?.id === t.id && selectedTreatmentStatus() === 'pending'"
@@ -60,9 +56,8 @@
             }
           </div>
 
-          <!-- Fila 2: Estado Completado (Azul) -->
           <div class="treatment-row">
-            <span class="row-label done-label">Completado (Azul):</span>
+            <span class="row-label done-label">Completat (blau):</span>
             @for (t of treatments(); track t.id) {
               <button
                 [class.active]="selectedTreatment()?.id === t.id && selectedTreatmentStatus() === 'done'"
@@ -77,17 +72,16 @@
         </div>
       }
 
-      <!-- Botón de eliminar (siempre visible) -->
       <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #e9edf4;">
         <button
           [class.active]="isDeleteMode()"
           (click)="toggleDeleteMode()"
           class="delete-btn"
-          [title]="isDeleteMode() ? 'Cancelar eliminación' : 'Activar modo eliminación'">
+          [title]="isDeleteMode() ? 'Cancel·la l\'eliminació' : 'Activa el mode d\'eliminació'">
           @if (activeTab() === 'pathologies') {
-            🗑️ {{ isDeleteMode() ? 'Cancelar' : 'Eliminar Patología' }}
+            🗑️ {{ isDeleteMode() ? 'Cancel·la' : 'Eliminar patologia' }}
           } @else {
-            🗑️ {{ isDeleteMode() ? 'Cancelar' : 'Eliminar Tratamiento' }}
+            🗑️ {{ isDeleteMode() ? 'Cancel·la' : 'Eliminar tractament' }}
           }
         </button>
       </div>
@@ -98,7 +92,7 @@
       <div class="cross-line horizontal"></div>
 
       <section class="quadrant top-right">
-        <h3>Cuadrante superior derecho</h3>
+        <h3>Quadrant superior dret</h3>
         <div class="teeth-row">
           @for (n of upperRightTeeth(); track n) {
             <app-tooth
@@ -113,7 +107,7 @@
       </section>
 
       <section class="quadrant top-left">
-        <h3>Cuadrante superior izquierdo</h3>
+        <h3>Quadrant superior esquerre</h3>
         <div class="teeth-row">
           @for (n of upperLeftTeeth(); track n) {
             <app-tooth
@@ -128,7 +122,7 @@
       </section>
 
       <section class="quadrant bottom-right">
-        <h3>Cuadrante inferior derecho</h3>
+        <h3>Quadrant inferior dret</h3>
         <div class="teeth-row">
           @for (n of lowerRightTeeth(); track n) {
             <app-tooth
@@ -143,7 +137,7 @@
       </section>
 
       <section class="quadrant bottom-left">
-        <h3>Cuadrante inferior izquierdo</h3>
+        <h3>Quadrant inferior esquerre</h3>
         <div class="teeth-row">
           @for (n of lowerLeftTeeth(); track n) {
             <app-tooth
@@ -159,7 +153,7 @@
     </div>
   } @else {
     <div class="no-patient">
-      <p>Cargando datos del paciente...</p>
+      <p>Carregant les dades del pacient...</p>
     </div>
   }
 </div>
