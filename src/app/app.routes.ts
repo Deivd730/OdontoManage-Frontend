@@ -34,7 +34,6 @@ export const routes: Routes = [
           }
         ]
       },
-      { path: 'documents/create', loadComponent: () => import('@features/document-create/document-create.component').then(m => m.DocumentCreate) },
     ]
   },
   { path: '**', redirectTo: 'login' }
