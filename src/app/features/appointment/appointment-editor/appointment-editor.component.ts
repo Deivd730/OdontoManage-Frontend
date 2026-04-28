@@ -92,7 +92,7 @@ export class AppointmentEditorComponent implements AfterViewInit, OnDestroy {
   );
 
   readonly title = computed(() =>
-    this.mode() === 'create' ? 'Cita nova' : 'Edita cita',
+    this.mode() === 'create' ? 'Nova cita' : 'Edita cita',
   );
 
   readonly showManualBox = computed(() => false);
