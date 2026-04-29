@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DocumentService, PatientDocument } from '@services/document.service';
 import { NotificationService } from '@services/notification.service';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-document-list',
@@ -41,7 +42,6 @@ export class DocumentListComponent implements OnInit {
     this.isLoading.set(true);
     this.documentService.getByPatient(patientId).subscribe({
       next: (docs) => {
-        // Ordenar documentos de más reciente a más antiguo
         const sortedDocs = docs.sort((a, b) => {
           return new Date(b.captureDate).getTime() - new Date(a.captureDate).getTime();
         });
@@ -86,18 +86,19 @@ export class DocumentListComponent implements OnInit {
     }
 
     this.isLoading.set(true);
-    this.documentService.delete(doc.id).subscribe({
+    this.documentService
+      .delete(doc.id)
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
       next: () => {
         this.documents.set(this.documents().filter((document) => document.id !== doc.id));
         this.notificationService.success('Document eliminat');
-        this.isLoading.set(false);
         this.cancelDelete();
       },
       error: (err) => {
         this.notificationService.error('No s\'ha pogut eliminar el document');
         console.error('Document delete error:', err);
-        this.isLoading.set(false);
-      }
+      },
     });
   }
 
