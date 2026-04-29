@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientResponse, PatientService } from '../../core/services/patient.service';
@@ -26,6 +26,7 @@ export class DocumentCreate implements OnInit {
   private notificationService = inject(NotificationService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private document = inject(DOCUMENT);
 
   constructor() {
     this.documentForm = this.fb.group({
@@ -38,12 +39,17 @@ export class DocumentCreate implements OnInit {
   }
 
   ngOnInit(): void {
+    this.document.body.classList.add('document-create-page');
     this.loadPatients();
 
     const patientId = Number(this.route.snapshot.queryParamMap.get('patientId'));
     if (Number.isFinite(patientId) && patientId > 0) {
       this.documentForm.patchValue({ patientId: patientId });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.document.body.classList.remove('document-create-page');
   }
 
   onFileSelected(event: Event): void {

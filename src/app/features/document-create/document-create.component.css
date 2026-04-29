@@ -1,17 +1,48 @@
+.document-create-page {
+    overflow: hidden;
+}
+
+:host {
+    display: block;
+    height: 100vh;
+    overflow: hidden;
+}
+
 .document-container {
     min-height: 100vh;
-    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: var(--bg-minimal);
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+    overflow: hidden;
 }
 
 .document-card {
-    max-width: 760px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 800px;
     background: #ffffff;
     border: 1px solid #eef2f0;
     border-radius: 12px;
-    padding: 2rem;
+    padding: 40px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    animation: fadeIn 0.5s ease-in;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .document-header h1 {
@@ -114,12 +145,17 @@
 }
 
 @media (max-width: 640px) {
+    :host {
+        height: 100dvh;
+    }
+
     .document-container {
         padding: 1rem;
     }
 
     .document-card {
         padding: 1.25rem;
+        max-height: calc(100dvh - 2rem);
     }
 
     .actions {

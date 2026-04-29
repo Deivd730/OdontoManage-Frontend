@@ -18,7 +18,6 @@ export class DocumentComponent implements OnInit {
   selectedPatientId = signal<number | null>(null);
 
   ngOnInit(): void {
-    // Leer el patientId de la URL al cargar (viene de document-create o de un refresh)
     const paramId = this.route.snapshot.queryParamMap.get('patientId');
     if (paramId) {
       this.selectedPatientId.set(Number(paramId));
@@ -27,7 +26,6 @@ export class DocumentComponent implements OnInit {
 
   onPatientSelected(patient: PatientResponse): void {
     this.selectedPatientId.set(patient.id);
-    // Actualizar la URL con el paciente seleccionado
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { patientId: patient.id },
