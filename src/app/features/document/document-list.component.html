@@ -68,3 +68,30 @@
     }
   }
 </div>
+
+@if (deleteConfirmOpen()) {
+  <div class="modal-backdrop" (click)="cancelDelete()">
+    <section
+      class="modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Confirma eliminació de document"
+      (click)="$event.stopPropagation()"
+    >
+      <h3 class="modal-title">Confirma eliminació</h3>
+      <p class="modal-text">
+        Estàs a punt d'eliminar el document
+        <strong>{{ documentPendingDelete()?.name || documentPendingDelete()?.type }}</strong>.
+        Aquesta acció no es pot desfer.
+      </p>
+      <div class="modal-actions">
+        <button class="btn ghost" type="button" (click)="cancelDelete()" [disabled]="isLoading()">
+          Cancel·la
+        </button>
+        <button class="btn danger" type="button" (click)="confirmDelete()" [disabled]="isLoading()">
+          Elimina definitivament
+        </button>
+      </div>
+    </section>
+  </div>
+}

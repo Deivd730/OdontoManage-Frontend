@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, input, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DocumentService, PatientDocument } from '@services/document.service';
 import { NotificationService } from '@services/notification.service';
@@ -9,13 +9,16 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './document-list.component.html',
-  styleUrl: './document-list.component.css'
+  styleUrl: './document-list.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentListComponent implements OnInit {
   patientId = input<number | null>(null);
 
   documents = signal<PatientDocument[]>([]);
   isLoading = signal(false);
+  deleteConfirmOpen = signal(false);
+  documentPendingDelete = signal<PatientDocument | null>(null);
 
   private documentService = inject(DocumentService);
   private notificationService = inject(NotificationService);
@@ -61,18 +64,39 @@ export class DocumentListComponent implements OnInit {
   }
 
   deleteDocument(doc: PatientDocument): void {
-    if (!confirm(`Vols eliminar el document "${doc.type}"?`)) {
+    this.documentPendingDelete.set(doc);
+    this.deleteConfirmOpen.set(true);
+  }
+
+  cancelDelete(): void {
+    if (this.isLoading()) {
       return;
     }
 
+    this.deleteConfirmOpen.set(false);
+    this.documentPendingDelete.set(null);
+  }
+
+  confirmDelete(): void {
+    const doc = this.documentPendingDelete();
+
+    if (!doc) {
+      this.cancelDelete();
+      return;
+    }
+
+    this.isLoading.set(true);
     this.documentService.delete(doc.id).subscribe({
       next: () => {
-        this.documents.set(this.documents().filter(d => d.id !== doc.id));
+        this.documents.set(this.documents().filter((document) => document.id !== doc.id));
         this.notificationService.success('Document eliminat');
+        this.isLoading.set(false);
+        this.cancelDelete();
       },
       error: (err) => {
         this.notificationService.error('No s\'ha pogut eliminar el document');
         console.error('Document delete error:', err);
+        this.isLoading.set(false);
       }
     });
   }
