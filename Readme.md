@@ -1,120 +1,120 @@
 # OdontoManage Frontend
 
-**Aplicación Angular moderna para gestión dental integral** - Citas, pacientes, documentos y odontogramas.
+**Modern Angular application for comprehensive dental management** - Appointments, patients, documents and odontograms.
 
 ## 🚀 Quick Start
 
-### 1. Instalación
+### 1. Installation
 ```bash
 git clone https://github.com/Deivd730/OdontoManage-Frontend.git
 cd OdontoManage-Frontend
 npm install
 ```
 
-### 2. Configuración
-Edita el archivo de configuración según tu entorno:
+### 2. Configuration
+Edit the configuration file according to your environment:
 ```typescript
 // src/environments/environment.development.ts
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8000/api',  // URL de tu backend Symfony
+  apiUrl: 'http://localhost:8000/api',  // Your Symfony backend URL
   tokenKey: 'auth_token',
   refreshTokenKey: 'refresh_token'
 };
 ```
 
-### 3. Ejecutar
+### 3. Run
 ```bash
 ng serve
 ```
-Abre tu navegador en: **http://localhost:4200**
+Open your browser at: **http://localhost:4200**
 
 ---
 
-## 📦 Stack Tecnológico
+## 📦 Tech Stack
 
-| Tecnología | Versión | Propósito |
+| Technology | Version | Purpose |
 |-----------|---------|----------|
-| Angular | 21.2.9 | Framework principal |
-| TypeScript | 5.9.2 | Lenguaje tipado |
-| RxJS | 7.8.0 | Programación reactiva |
-| Angular Material | 21.2.0 | Componentes UI |
-| @auth0/angular-jwt | 5.2.0 | Autenticación JWT |
+| Angular | 21.2.9 | Main framework |
+| TypeScript | 5.9.2 | Typed language |
+| RxJS | 7.8.0 | Reactive programming |
+| Angular Material | 21.2.0 | UI components |
+| @auth0/angular-jwt | 5.2.0 | JWT authentication |
 | Flatpickr | 4.6.13 | Date picker |
 
 ---
 
-## 🎯 Funcionalidades Principales
+## 🎯 Main Features
 
-### 👥 Gestión de Pacientes
-- **Listado completo** con búsqueda y filtrado
-- **Crear/Editar** pacientes con validación
-- **Perfil detallado** del paciente y su historial
-- **Documentos** asociados (radiografías, etc.)
+### 👥 Patient Management
+- **Full listing** with search and filtering
+- **Create/Edit** patients with validation
+- **Detailed profile** and patient history
+- **Associated documents** (X-rays, etc.)
 
-### 📋 Citas Médicas
-- **Agendar citas** con dentista
-- **Calendario integrado** de disponibilidad
-- **Historial** de citas pasadas
-- **Notificaciones** de recordatorios
+### 📋 Medical Appointments
+- **Schedule appointments** with dentist
+- **Integrated calendar** of availability
+- **History** of past appointments
+- **Reminder notifications**
 
-### 🦷 Odontograma Digital
-- **Visualización 2D** de piezas dentales
-- **Registro de tratamientos y patologías**
-- **Historial visual** de cambios
+### 🦷 Digital Odontogram
+- **2D visualization** of dental pieces
+- **Record of treatments and pathologies**
+- **Visual history** of changes
 
-### 🔐 Autenticación Segura
-- **Login/Registro** con JWT
-- **Protección de rutas** basada en roles
-- **Auto-renovación** de tokens
-- **Cierre de sesión** seguro
+### 🔐 Secure Authentication
+- **Login/Registration** with JWT
+- **Route protection** based on roles
+- **Auto-renewal** of tokens
+- **Secure logout**
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 src/
 ├── app/
 │   ├── core/
 │   │   ├── guards/
-│   │   │   ├── auth.guard.ts         # Protege rutas autenticadas
-│   │   │   └── guest.guard.ts        # Protege rutas públicas
+│   │   │   ├── auth.guard.ts         # Protects authenticated routes
+│   │   │   └── guest.guard.ts        # Protects public routes
 │   │   ├── interceptors/
-│   │   │   ├── jwt.interceptor.ts    # Inyecta token JWT automáticamente
-│   │   │   └── mock.interceptor.ts   # Mock para desarrollo
+│   │   │   ├── jwt.interceptor.ts    # Injects JWT token automatically
+│   │   │   └── mock.interceptor.ts   # Mock for development
 │   │   └── services/
-│   │       ├── auth.service.ts       # Gestión de autenticación
-│   │       ├── patient.service.ts    # CRUD de pacientes
-│   │       ├── appointment.service.ts # Gestión de citas
-│   │       ├── odontogram.service.ts # Datos odontograma
-│   │       ├── document.service.ts   # Gestión de documentos
-│   │       └── notification.service.ts # Sistema de notificaciones
+│   │       ├── auth.service.ts       # Authentication management
+│   │       ├── patient.service.ts    # Patient CRUD
+│   │       ├── appointment.service.ts # Appointment management
+│   │       ├── odontogram.service.ts # Odontogram data
+│   │       ├── document.service.ts   # Document management
+│   │       └── notification.service.ts # Notification system
 │   │
 │   ├── features/
-│   │   ├── login/                    # Página de autenticación
-│   │   ├── register/                 # Página de registro
-│   │   ├── home/                     # Dashboard principal
-│   │   ├── mainlayout/               # Layout con navbar
-│   │   ├── navbar/                   # Barra de navegación
-│   │   ├── patient-list/             # Listado de pacientes
-│   │   ├── patient-read/             # Perfil del paciente
-│   │   ├── patient-create/           # Crear paciente
-│   │   ├── appointment/              # Gestión de citas
-│   │   ├── odontogram/               # Visualizador odontograma
-│   │   ├── document/                 # Gestión de documentos
-│   │   └── profile/                  # Perfil del usuario
+│   │   ├── login/                    # Authentication page
+│   │   ├── register/                 # Registration page
+│   │   ├── home/                     # Main dashboard
+│   │   ├── mainlayout/               # Layout with navbar
+│   │   ├── navbar/                   # Navigation bar
+│   │   ├── patient-list/             # Patient listing
+│   │   ├── patient-read/             # Patient profile
+│   │   ├── patient-create/           # Create patient
+│   │   ├── appointment/              # Appointment management
+│   │   ├── odontogram/               # Odontogram viewer
+│   │   ├── document/                 # Document management
+│   │   └── profile/                  # User profile
 │   │
 │   ├── models/
-│   │   └── odontogram.ts             # Modelos de datos
+│   │   └── odontogram.ts             # Data models
 │   │
-│   ├── app.routes.ts                 # Configuración de rutas
-│   ├── app.config.ts                 # Configuración global
-│   └── app.ts                        # Componente raíz
+│   ├── app.routes.ts                 # Routes configuration
+│   ├── app.config.ts                 # Global configuration
+│   └── app.ts                        # Root component
 │
 ├── environments/
-│   ├── environment.ts                # Producción
-│   └── environment.development.ts    # Desarrollo
+│   ├── environment.ts                # Production
+│   └── environment.development.ts    # Development
 │
 ├── index.html
 ├── main.ts
@@ -124,53 +124,53 @@ src/
 
 ---
 
-## 🛣️ Rutas de la Aplicación
+## 🛣️ Application Routes
 
-### Públicas (sin autenticación requerida)
-- `/login` - Formulario de login
-- `/register` - Formulario de registro
+### Public (no authentication required)
+- `/login` - Login form
+- `/register` - Registration form
 
-### Protegidas (requieren autenticación)
-- `/home` - Dashboard principal
-- `/patients` - Listado de pacientes
-- `/patients/create` - Crear nuevo paciente
-- `/patients/:id` - Perfil del paciente
-- `/appointments` - Gestión de citas
-- `/odontogram` - Odontograma digital
-- `/documents` - Gestor de documentos
-- `/profile` - Perfil del usuario logueado
+### Protected (authentication required)
+- `/home` - Main dashboard
+- `/patients` - Patient listing
+- `/patients/create` - Create new patient
+- `/patients/:id` - Patient profile
+- `/appointments` - Appointment management
+- `/odontogram` - Digital odontogram
+- `/documents` - Document manager
+- `/profile` - Logged-in user profile
 
 ---
 
-## 💻 Comandos Disponibles
+## 💻 Available Commands
 
 ```bash
-# Desarrollo
-ng serve               # Inicia servidor de desarrollo (puerto 4200)
-ng build --watch       # Build en modo watch
-ng test                # Ejecuta tests con Vitest
+# Development
+ng serve               # Starts development server (port 4200)
+ng build --watch       # Build in watch mode
+ng test                # Runs tests with Vitest
 
-# Producción
-ng build --prod        # Build para producción (dist/)
+# Production
+ng build --prod        # Build for production (dist/)
 ```
 
 ---
 
-## 🔧 Configuración Avanzada
+## 🔧 Advanced Configuration
 
-### Variables de Entorno
+### Environment Variables
 ```typescript
 // src/environments/environment.development.ts
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8000/api',      // URL del backend
-  tokenKey: 'auth_token',                   // Clave localStorage para token
-  refreshTokenKey: 'refresh_token'          // Clave para refresh token
+  apiUrl: 'http://localhost:8000/api',      // Backend URL
+  tokenKey: 'auth_token',                   // localStorage key for token
+  refreshTokenKey: 'refresh_token'          // Key for refresh token
 };
 ```
 
 ### JWT Interceptor
-Automáticamente agrega el token JWT a todas las peticiones HTTP:
+Automatically adds the JWT token to all HTTP requests:
 ```typescript
 // src/app/core/interceptors/jwt.interceptor.ts
 ```
@@ -179,52 +179,52 @@ Automáticamente agrega el token JWT a todas las peticiones HTTP:
 
 ## 🚨 Troubleshooting
 
-### Error de módulos
+### Module errors
 ```bash
 rm -rf node_modules package-lock.json
 npm install
 ```
 
-### Puerto 4200 en uso
+### Port 4200 in use
 ```bash
 npm start -- --port 4201
 ```
 
-### Limpiar caché de npm
+### Clear npm cache
 ```bash
 npm cache clean --force
 npm install
 ```
 
-### Token expirado
-Los tokens se renuevan automáticamente. Si persisten problemas:
-- Verifica que el backend esté corriendo en `http://localhost:8000`
-- Limpia localStorage y vuelve a hacer login
+### Expired token
+Tokens are automatically renewed. If problems persist:
+- Verify that the backend is running on `http://localhost:8000`
+- Clear localStorage and login again
 
 ---
 
-## 🔐 Requisitos del Sistema
+## 🔐 System Requirements
 
 - **Node.js** 20+
 - **npm** 10+
-- **Backend API** (Symfony) en `http://localhost:8000`
-- **Navegador moderno** (Chrome, Firefox, Safari, Edge)
+- **Backend API** (Symfony) on `http://localhost:8000`
+- **Modern browser** (Chrome, Firefox, Safari, Edge)
 
 ---
 
-## 📝 Notas Importantes
+## 📝 Important Notes
 
-- El frontend asume que el backend Symfony está ejecutándose en `http://localhost:8000`
-- Los tokens JWT se almacenan en `localStorage`
-- Las rutas protegidas redirigen a login si no hay autenticación
-- Los usuarios no autenticados no pueden acceder a rutas privadas
+- The frontend assumes the Symfony backend is running on `http://localhost:8000`
+- JWT tokens are stored in `localStorage`
+- Protected routes redirect to login if there's no authentication
+- Unauthenticated users cannot access private routes
 
 ---
 
-## 🤝 Contribuyendo
+## 🤝 Contributing
 
-Para contribuir al proyecto:
-1. Crea una rama con tu feature: `git checkout -b feature/nombre`
-2. Commit tus cambios: `git commit -am 'Add feature'`
-3. Push a la rama: `git push origin feature/nombre`
-4. Abre un Pull Request
+To contribute to the project:
+1. Create a branch for your feature: `git checkout -b feature/name`
+2. Commit your changes: `git commit -am 'Add feature'`
+3. Push to the branch: `git push origin feature/name`
+4. Open a Pull Request
