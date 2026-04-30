@@ -93,7 +93,8 @@ export class DocumentListComponent implements OnInit {
       next: () => {
         this.documents.set(this.documents().filter((document) => document.id !== doc.id));
         this.notificationService.success('Document eliminat');
-        this.cancelDelete();
+        this.deleteConfirmOpen.set(false);
+        this.documentPendingDelete.set(null);
       },
       error: (err) => {
         this.notificationService.error('No s\'ha pogut eliminar el document');
