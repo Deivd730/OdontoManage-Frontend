@@ -50,7 +50,17 @@
 									/>
 								</div>
 								<div class="patient-summary">
-									<div class="patient-name">{{ patient.firstName }} {{ patient.lastName }}</div>
+									<div class="patient-name-row">
+										<div class="patient-name">{{ patient.firstName }} {{ patient.lastName }}</div>
+										@if (patient.hasInfectiousDiseases) {
+											<div
+												class="patient-infectious"
+												[title]="patient.infectiousDiseases ? 'Malaltia infecciosa: ' + patient.infectiousDiseases : 'Pacient amb malaltia infecciosa'"
+											>
+												Infecció
+											</div>
+										}
+									</div>
 									<div class="patient-meta">DNI {{ patient.nationalId }}</div>
 								</div>
 							</button>

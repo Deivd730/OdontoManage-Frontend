@@ -215,9 +215,27 @@
   flex: 1;
 }
 
+.patient-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
 .patient-name {
   font-weight: 600;
   color: var(--text-main);
+}
+
+.patient-infectious {
+  font-size: 0.72rem;
+  color: #b3261e;
+  background: #fff5f5;
+  border: 1px solid #f2bcbc;
+  border-radius: 999px;
+  padding: 0.12rem 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .patient-meta {
