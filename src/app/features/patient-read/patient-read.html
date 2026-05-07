@@ -81,6 +81,14 @@
 					<div>
 						<h2>{{ selectedPatient()?.firstName }} {{ selectedPatient()?.lastName }}</h2>
 						<p>DNI {{ selectedPatient()?.nationalId }}</p>
+						@if (selectedPatient()?.hasInfectiousDiseases) {
+							<div
+								class="detail-infectious-pill"
+								[title]="selectedPatient()?.infectiousDiseases ? 'Malaltia infecciosa: ' + selectedPatient()?.infectiousDiseases : 'Pacient amb malaltia infecciosa'"
+							>
+								Infecció registrada
+							</div>
+						}
 					</div>
 						<div class="detail-actions">
 						@if (!isEditing()) {
@@ -107,6 +115,13 @@
 							<p><strong>Antecedents:</strong> {{ selectedPatient()?.familyHistory || 'No registrats' }}</p>
 							<p><strong>Hàbits:</strong> {{ selectedPatient()?.lifestyleHabits || 'No registrats' }}</p>
 							<p><strong>Al·lèrgies:</strong> {{ selectedPatient()?.medicationAllergies || 'No registrat' }}</p>
+						</div>
+						<div class="detail-card">
+							<h3>Consentiments i infeccions</h3>
+							<p><strong>Té malaltia infecciosa:</strong> {{ selectedPatient()?.hasInfectiousDiseases ? 'Sí' : 'No' }}</p>
+							<p><strong>Detall infecció:</strong> {{ selectedPatient()?.infectiousDiseases || 'No registrat' }}</p>
+							<p><strong>Consentiment tractament mèdic:</strong> {{ selectedPatient()?.medicalTreatmentConsent ? 'Acceptat' : 'No acceptat' }}</p>
+							<p><strong>Consentiment anestèsia:</strong> {{ selectedPatient()?.anesthesiaConsent ? 'Acceptat' : 'No acceptat' }}</p>
 						</div>
 						<div class="detail-card">
 							<h3>FACTURACIÓ</h3>
