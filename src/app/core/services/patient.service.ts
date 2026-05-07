@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment.development';
 
@@ -23,7 +23,7 @@ export interface Patient {
   hasInfectiousDiseases?: boolean;
   infectiousDiseases?: string;
   registrationDate?: string;
-  profile_image_name?: string;
+  profileImageName?: string;
 }
 
 export interface PatientResponse extends Patient {
@@ -42,7 +42,7 @@ export interface PatientResponse extends Patient {
   lifestyleHabits?: string;
   medicationAllergies?: string;
   registrationDate: string;
-  profile_image_name?: string;
+  profileImageName?: string;
 }
 
 @Injectable({
@@ -72,38 +72,21 @@ export class PatientService {
   }
 
   uploadPatientProfileImage(id: number, imageFile: File): Observable<PatientResponse> {
-    return from(this.fileToDataUrl(imageFile)).pipe(
-      switchMap(profileImage => this.http.patch<PatientResponse>(`${this.apiUrl}/${id}/profile-image`, {
-        profileImage
-      }))
-    );
+    const formData = new FormData();
+    formData.append('profileImageFile', imageFile, imageFile.name);
+
+    return this.http.post<PatientResponse>(`${this.apiUrl}/${id}/profile-image`, formData);
   }
 
   updatePatientWithProfileImage(id: number, patient: Patient, imageFile: File): Observable<PatientResponse> {
     return this.updatePatient(id, patient).pipe(
-      switchMap(() => this.uploadPatientProfileImage(id, imageFile))
+      switchMap(() => this.uploadPatientProfileImage(id, imageFile)),
+      switchMap(() => this.getPatient(id))
     );
   }
 
   deletePatient(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-
-  private fileToDataUrl(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        if (typeof reader.result !== 'string') {
-          reject(new Error('No se pudo procesar la imagen seleccionada.'));
-          return;
-        }
-        resolve(reader.result);
-      };
-
-      reader.onerror = () => reject(new Error('No se pudo leer el archivo de imagen.'));
-      reader.readAsDataURL(file);
-    });
   }
 
   private sortPatientsByNewest(patients: PatientResponse[]): PatientResponse[] {
@@ -125,4 +108,5 @@ export class PatientService {
     const parsed = Date.parse(dateValue);
     return Number.isNaN(parsed) ? 0 : parsed;
   }
+
 }

@@ -13,7 +13,7 @@
                     <button class="patient-card" [class.active]="selectedPatientId() === patient.id"
                         (click)="selectPatient.emit(patient)">
                         <div class="avatar">
-                            <img [src]="getPatientAvatarSrc(patient)" [alt]="patient.firstName + ' ' + patient.lastName" />
+                            <img [src]="getPatientAvatarSrc(patient)" [alt]="patient.firstName + ' ' + patient.lastName" (error)="handleImageError($event)" />
                         </div>
 
                         <div class="info">

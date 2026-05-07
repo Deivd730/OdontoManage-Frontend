@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, computed, output, input } from '@angular/core';
 import { PatientService, PatientResponse } from '@services/patient.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-patient-list',
@@ -10,6 +11,7 @@ import { PatientService, PatientResponse } from '@services/patient.service';
 export class PatientListComponent implements OnInit {
   private patientService = inject(PatientService);
   private readonly defaultProfileImage = 'assets/default-profile.svg';
+  private readonly profileImageBaseUrl = `${environment.apiUrl}/images/profiles`;
 
   selectedPatientId = input<number | null>(null);
   selectPatient = output<PatientResponse>();
@@ -47,32 +49,56 @@ export class PatientListComponent implements OnInit {
     this.searchTerm.set(target.value);
   }
 
-  // ✅ NUEVO: mismo método que usa patient-read
   getPatientImageSrc(patient: PatientResponse): string | null {
     const raw = patient as PatientResponse & {
+      profile_image_name?: string;
       profile_image?: string;
       profileImage?: string;
       profileImageName?: string;
     };
 
     const value =
-      patient.profile_image_name ??
+      patient.profileImageName ??
+      raw.profile_image_name ??
       raw.profile_image ??
       raw.profileImageName ??
       raw.profileImage ??
       '';
 
     if (!value || value.trim() === '') return null;
+    const normalizedValue = value.trim();
 
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    const escaped = allowedMimes.map(m => m.replace('/', '\\/'));
-    const regex = new RegExp(`^data:(?:${escaped.join('|')});base64,[A-Za-z0-9+/]+=*$`);
+    const escaped = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+      .map((mime) => mime.replace('/', '\\/'));
+    const base64Regex = new RegExp(`^data:(?:${escaped.join('|')});base64,[A-Za-z0-9+/]+=*$`);
+    if (base64Regex.test(normalizedValue)) {
+      return normalizedValue;
+    }
 
-    return regex.test(value.trim()) ? value.trim() : null;
+    if (/^https?:\/\//i.test(normalizedValue)) {
+      return normalizedValue;
+    }
+
+    if (normalizedValue.startsWith('/images/profiles/')) {
+      return `${environment.apiUrl}${normalizedValue}`;
+    }
+
+    if (normalizedValue.startsWith('images/profiles/')) {
+      return `${environment.apiUrl}/${normalizedValue}`;
+    }
+
+    return `${this.profileImageBaseUrl}/${encodeURIComponent(normalizedValue)}`;
   }
 
   getPatientAvatarSrc(patient: PatientResponse): string {
     return this.getPatientImageSrc(patient) ?? this.defaultProfileImage;
+  }
+
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement | null;
+    if (!img) return;
+    img.onerror = null;
+    img.src = this.defaultProfileImage;
   }
 
   private ensureSelectedPatient(patients: PatientResponse[]): void {

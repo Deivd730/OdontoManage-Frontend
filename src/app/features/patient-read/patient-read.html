@@ -47,6 +47,7 @@
 									<img
 										[src]="getPatientAvatarSrc(patient)"
 										alt="Foto de {{ patient.firstName }} {{ patient.lastName }}"
+										(error)="handleImageError($event)"
 									/>
 								</div>
 								<div class="patient-summary">
@@ -201,7 +202,7 @@
 							</label>
 							<label class="full">
 								Imatge de perfil
-								<input id="profile-image-input" type="file" hidden (change)="onImageSelected($event)" accept="image/jpeg,image/png,image/gif,image/webp" />
+								<input id="profile-image-input" type="file" hidden (change)="onImageSelected($event)" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" />
 								<label for="profile-image-input" class="btn ghost">Selecciona una imatge</label>
 								<small>Prevalidació del navegador: {{ getAllowedImageFormatsLabel() }}, màxim {{ getMaxProfileImageSizeInMb() }} MB.</small>
 								@if (getSelectedImageFileName()) {

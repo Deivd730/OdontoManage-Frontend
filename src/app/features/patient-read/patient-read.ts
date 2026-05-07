@@ -6,6 +6,7 @@ import { catchError, forkJoin, map, of } from 'rxjs';
 import flatpickr from 'flatpickr';
 import { Catalan } from 'flatpickr/dist/l10n/cat';
 import { Patient, PatientResponse, PatientService } from '../../core/services/patient.service';
+import { environment } from '../../../environments/environment.development';
 import {
   PROFILE_IMAGE_ALLOWED_MIME_TYPES,
   PROFILE_IMAGE_MAX_SIZE_BYTES,
@@ -26,6 +27,7 @@ export class PatientRead implements OnInit, OnDestroy {
   private readonly allowedImageMimeTypes = [...PROFILE_IMAGE_ALLOWED_MIME_TYPES];
   private readonly maxProfileImageSizeBytes = PROFILE_IMAGE_MAX_SIZE_BYTES;
   private readonly defaultProfileImage = 'assets/default-profile.svg';
+  private readonly profileImageBaseUrl = `${environment.apiUrl}/images/profiles`;
 
   patients = signal<PatientResponse[]>([]);
   selectedPatient = signal<PatientResponse | null>(null);
@@ -91,7 +93,7 @@ export class PatientRead implements OnInit, OnDestroy {
       next: (patients) => {
         const normalizedPatients = patients.map((patient) => ({
           ...patient,
-          profile_image_name: this.getPatientProfileImageValue(patient),
+          profileImageName: this.getPatientProfileImageValue(patient),
         }));
 
         this.patients.set(normalizedPatients);
@@ -189,7 +191,6 @@ export class PatientRead implements OnInit, OnDestroy {
     const payload: Patient = {
       ...this.editForm.value,
       birthDate: this.toApiBirthDate(this.editForm.value.birthDate),
-      profile_image_name: this.getPatientProfileImageValue(selected),
       registrationDate: selected.registrationDate,
     };
 
@@ -323,31 +324,52 @@ export class PatientRead implements OnInit, OnDestroy {
   }
 
   getPatientImageSrc(patient: PatientResponse): string | null {
-    const profileImage = this.getPatientProfileImageValue(patient);
-    if (!profileImage) {
+    const profileImageValue = this.getPatientProfileImageValue(patient);
+    if (!profileImageValue) {
       return null;
     }
 
-    if (!this.isValidBase64DataUrl(profileImage)) {
-      return null;
+    if (this.isValidBase64DataUrl(profileImageValue)) {
+      return profileImageValue;
     }
 
-    return profileImage;
+    if (/^https?:\/\//i.test(profileImageValue)) {
+      return profileImageValue;
+    }
+
+    if (profileImageValue.startsWith('/images/profiles/')) {
+      return `${environment.apiUrl}${profileImageValue}`;
+    }
+
+    if (profileImageValue.startsWith('images/profiles/')) {
+      return `${environment.apiUrl}/${profileImageValue}`;
+    }
+
+    return `${this.profileImageBaseUrl}/${encodeURIComponent(profileImageValue)}`;
   }
 
   getPatientAvatarSrc(patient: PatientResponse): string {
     return this.getPatientImageSrc(patient) ?? this.defaultProfileImage;
   }
 
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement | null;
+    if (!img) return;
+    img.onerror = null;
+    img.src = this.defaultProfileImage;
+  }
+
   private getPatientProfileImageValue(patient: PatientResponse): string {
     const rawPatient = patient as PatientResponse & {
+      profile_image_name?: string;
       profile_image?: string;
       profileImage?: string;
       profileImageName?: string;
     };
 
     const candidateValues = [
-      patient.profile_image_name,
+      patient.profileImageName,
+      rawPatient.profile_image_name,
       rawPatient.profile_image,
       rawPatient.profileImageName,
       rawPatient.profileImage,
@@ -401,7 +423,7 @@ export class PatientRead implements OnInit, OnDestroy {
 
           return {
             ...patient,
-            profile_image_name: hydratedImage,
+            profileImageName: hydratedImage,
           };
         }),
       );
@@ -412,7 +434,7 @@ export class PatientRead implements OnInit, OnDestroy {
         if (selectedImage) {
           this.selectedPatient.set({
             ...selected,
-            profile_image_name: selectedImage,
+            profileImageName: selectedImage,
           });
         }
       }
