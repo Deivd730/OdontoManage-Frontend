@@ -278,6 +278,20 @@
   color: var(--primary-dark);
 }
 
+.detail-infectious-pill {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.35rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #b3261e;
+  background: #fff5f5;
+  border: 1px solid #f2bcbc;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  width: fit-content;
+}
+
 .detail-header p {
   margin: 0;
   color: var(--text-muted);
