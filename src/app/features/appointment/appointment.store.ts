@@ -148,6 +148,22 @@ export class AppointmentStore {
     return this.allAppointments().find((appointment) => appointment.id === appointmentId);
   }
 
+  /**
+   * Returns whether a patient (by id) has infectious diseases according to loaded patientOptions.
+   */
+  isPatientInfectious(patientId: number): boolean {
+    const opt = this.patientOptions().find((p) => p.id === patientId);
+    return !!opt?.hasInfectiousDiseases;
+  }
+
+  /**
+   * Returns the infectious disease label/text for a patient, or null if none.
+   */
+  getPatientInfectiousLabel(patientId: number): string | null {
+    const opt = this.patientOptions().find((p) => p.id === patientId);
+    return opt?.infectiousDiseases ?? null;
+  }
+
   clearEditorAlert(): void {
     this.editorAlert.set(null);
   }
@@ -532,7 +548,30 @@ export class AppointmentStore {
     current: readonly T[],
     incoming: readonly T[],
   ): T[] {
-    return this.uniqueOptions([...current, ...incoming]);
+    // Merge by id preserving extra properties from current entries.
+    const map = new Map<number, T>();
+
+    // Start with current entries (preserve any extra fields)
+    for (const item of current) {
+      map.set(item.id, item);
+    }
+
+    // Merge incoming entries: override label if non-empty, preserve other fields
+    for (const inc of incoming) {
+      const existing = map.get(inc.id);
+      if (!existing) {
+        map.set(inc.id, inc);
+        continue;
+      }
+
+      // Merge while preferring non-empty incoming label
+      const label = (inc.label && inc.label.trim()) ? inc.label : (existing.label ?? inc.label);
+      // Combine existing and incoming; incoming may provide updated fields but keep existing extras
+      const merged = Object.assign({}, existing, inc, { label }) as T;
+      map.set(inc.id, merged);
+    }
+
+    return this.uniqueOptions(Array.from(map.values()));
   }
 
   private uniqueOptions<T extends BaseOption>(options: readonly T[]): T[] {

@@ -23,7 +23,7 @@
 .panel-body {
   flex: 1;
   min-height: 0;
-  padding: 14px 16px;
+  padding: 6px 16px;
   overflow: auto;
 }
 
@@ -62,7 +62,7 @@
 
 .appointment-card.expanded {
   max-height: none;
-  padding: 0.8rem 0.75rem 0.9rem;
+  padding: 0.45rem 0.75rem 0.9rem;
   background: #f2f4f8;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
@@ -188,6 +188,12 @@
   gap: 0.55rem;
 }
 
+.appointment-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 .appointment-datetime {
   font-size: 0.74rem;
   font-weight: 600;
@@ -204,6 +210,22 @@
   border-radius: 999px;
   padding: 0.16rem 0.5rem;
   white-space: nowrap;
+  font-family: var(--font-body);
+}
+
+.appointment-infectious-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #b3261e;
+  background: #fff5f5;
+  border: 1px solid #f2bcbc;
+  border-radius: 999px;
+  padding: 0.12rem 0.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: var(--font-body);
 }
 
 .appointment-dentist {

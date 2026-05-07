@@ -60,7 +60,17 @@
         <div class="appointment-details">
           <div class="appointment-header">
             <div class="appointment-datetime">{{ store.formatTime(appointment.visitDate) }}</div>
-            <div class="appointment-box">{{ store.getBoxDisplayName(appointment) }}</div>
+            <div class="appointment-badges">
+              <div class="appointment-box">{{ store.getBoxDisplayName(appointment) }}</div>
+              @if (store.isPatientInfectious(appointment.patient.id)) {
+                <div
+                  class="appointment-infectious-pill"
+                  [title]="store.getPatientInfectiousLabel(appointment.patient.id) ? 'Malaltia infecciosa: ' + store.getPatientInfectiousLabel(appointment.patient.id) : 'Pacient amb malaltia infecciosa'"
+                >
+                  Malaltia infecciosa
+                </div>
+              }
+            </div>
           </div>
 
           <div class="appointment-dentist">{{ store.getDentistDisplayName(appointment) }}</div>
