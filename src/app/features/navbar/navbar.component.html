@@ -2,11 +2,48 @@
   <div class="nav-container">
     <a routerLink="/home" class="nav-brand">OdontoManage</a>
     <ul class="nav-links">
-      <li><a routerLink="/home" routerLinkActive="active">Inici</a></li>
-      <li><a routerLink="/patients" routerLinkActive="active">Pacients</a></li>
-      <li><a routerLink="/appointments" routerLinkActive="active">Cites</a></li>
-      <li><a routerLink="/documents" routerLinkActive="active">Documents</a></li>
-      <li><a routerLink="/odontogram" routerLinkActive="active">Odontogrames</a></li>
+      <li>
+        <a routerLink="/home" routerLinkActive="active">
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M3 11.5L12 4l9 7.5V20a1 1 0 0 1 -1 1h-5v-6H9v6H4a1 1 0 0 1 -1 -1z" />
+          </svg>
+          <span>Inici</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/patients" routerLinkActive="active">
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 12a4 4 0 1 0 -4 -4a4 4 0 0 0 4 4z" />
+            <path d="M12 14c-4.418 0 -8 2.239 -8 5v1h16v-1c0 -2.761 -3.582 -5 -8 -5z" />
+          </svg>
+          <span>Pacients</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/appointments" routerLinkActive="active">
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2H5a2 2 0 0 1 -2 -2V6a2 2 0 0 1 2 -2h1V3a1 1 0 0 1 1 -1zM5 10v8h14v-8z" />
+          </svg>
+          <span>Cites</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/documents" routerLinkActive="active">
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M7 3h7l5 5v12a1 1 0 0 1 -1 1H7a2 2 0 0 1 -2 -2V5a2 2 0 0 1 2 -2z" />
+            <path d="M14 3v5h5" fill="#ffffff" opacity="0.25" />
+          </svg>
+          <span>Documents</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/odontogram" routerLinkActive="active">
+          <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2c-3.314 0 -6 2.761 -6 6.167c0 2.443 1.37 4.55 3.35 5.543L10 20a2 2 0 0 0 4 0l.65 -6.29c1.98 -.993 3.35 -3.1 3.35 -5.543C18 4.761 15.314 2 12 2z" />
+          </svg>
+          <span>Odontogrames</span>
+        </a>
+      </li>
     </ul>
     <a class="avatar-circle" routerLink="/profile" routerLinkActive="active">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon-user">

@@ -6,6 +6,7 @@ export interface ImageFileValidationOptions {
 // Mirror backend constraints for client-side prevalidation.
 export const PROFILE_IMAGE_ALLOWED_MIME_TYPES = [
   'image/jpeg',
+  'image/jpg',
   'image/png',
   'image/gif',
   'image/webp'
@@ -46,7 +47,16 @@ export function fileToDataUrl(file: File): Promise<string> {
 }
 
 export function formatAllowedImageFormats(mimeTypes: readonly string[]): string {
+  const formatLabels: Record<string, string> = {
+    'image/jpeg': 'JPG',
+    'image/jpg': 'JPG',
+    'image/png': 'PNG',
+    'image/gif': 'GIF',
+    'image/webp': 'WEBP'
+  };
+
   return mimeTypes
-    .map(mimeType => `data:${mimeType};base64,...`)
+    .map((mimeType) => formatLabels[mimeType] ?? mimeType)
+    .filter((value, index, values) => values.indexOf(value) === index)
     .join(' o ');
 }
