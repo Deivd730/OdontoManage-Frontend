@@ -40,7 +40,16 @@
   color: var(--text-muted);
   font-size: 0.95rem;
   font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   transition: all 0.3s ease;
+}
+
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .nav-links a:hover {
