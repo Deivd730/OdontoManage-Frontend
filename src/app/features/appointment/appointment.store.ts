@@ -31,6 +31,7 @@ export interface CalendarDay {
 
 @Injectable()
 export class AppointmentStore {
+  private static readonly APPOINTMENT_BUFFER_MINUTES = 5;
   private readonly appointmentService = inject(AppointmentService);
   private readonly dentistService = inject(DentistService);
   private readonly patientService = inject(PatientService);
@@ -109,6 +110,13 @@ export class AppointmentStore {
   formatTime(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleTimeString('ca-ES', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  formatAppointmentDuration(appointment: AppointmentResponse): string {
+    const treatmentDurationMinutes = appointment.treatment.durationMinutes ?? 30;
+    const totalMinutes = treatmentDurationMinutes + AppointmentStore.APPOINTMENT_BUFFER_MINUTES;
+
+    return `${treatmentDurationMinutes} min de tractament + ${AppointmentStore.APPOINTMENT_BUFFER_MINUTES} min de descans (${totalMinutes} min totals)`;
   }
 
   formatDateTime(dateString: string): string {

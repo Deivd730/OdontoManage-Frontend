@@ -88,6 +88,10 @@
               <span class="info-label">Tractament</span>
               <span class="info-value">{{ appointment.treatment.name }}</span>
             </div>
+            <div class="info-row">
+              <span class="info-label">Duració</span>
+              <span class="info-value">{{ store.formatAppointmentDuration(appointment) }}</span>
+            </div>
           </div>
         </div>
       </div>
