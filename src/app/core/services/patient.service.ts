@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment.development';
+import { buildApiUrl } from '../utils/url';
 
 export interface Patient {
   firstName: string;
@@ -51,7 +51,7 @@ export interface PatientResponse extends Patient {
 export class PatientService {
 
   private http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/api/patients`;
+  private readonly apiUrl = buildApiUrl('/api/patients');
   private patientsCache$?: Observable<PatientResponse[]>;
 
   getPatients(): Observable<PatientResponse[]> {

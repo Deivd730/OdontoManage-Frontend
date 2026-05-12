@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '@env/environment.development';
+import { buildApiUrl } from '../utils/url';
 import { Odontogram } from '@models/odontogram';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { Odontogram } from '@models/odontogram';
 })
 export class OdontogramService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/odontograms`;
+  private apiUrl = buildApiUrl('/api/odontograms');
 
   getOdontograms(): Observable<Odontogram[]> {
     return this.http.get<Odontogram[]>(this.apiUrl);

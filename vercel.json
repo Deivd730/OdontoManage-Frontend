@@ -6,6 +6,10 @@
       "dest": "https://api.davidcastillodev.com/api/$1"
     },
     {
+      "src": "^/documents/(.*)$",
+      "dest": "https://api.davidcastillodev.com/documents/$1"
+    },
+    {
       "src": "^/(.*\\.(?:js|mjs|css|map|png|jpg|jpeg|svg|ico|webp|ttf|woff2?))$",
       "dest": "/$1"
     },

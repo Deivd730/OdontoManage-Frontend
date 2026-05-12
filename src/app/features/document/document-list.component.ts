@@ -4,6 +4,7 @@ import { DocumentService, PatientDocument } from '@services/document.service';
 import { NotificationService } from '@services/notification.service';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { buildApiUrl } from '../../core/utils/url';
 
 @Component({
   selector: 'app-document-list',
@@ -106,7 +107,7 @@ export class DocumentListComponent implements OnInit {
   getDocumentUrl(fileUrl: string | null): string {
     if (!fileUrl) return '';
     if (fileUrl.startsWith('http')) return fileUrl;
-    return `http://localhost:8000/documents/${fileUrl}`;
+    return buildApiUrl(`/documents/${fileUrl}`);
   }
 
   isImage(fileUrl: string | null): boolean {

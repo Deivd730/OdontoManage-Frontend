@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { buildApiUrl } from '../utils/url';
 
 export interface PatientDocument {
   id: number;
@@ -25,7 +25,7 @@ export interface CreatePatientDocumentPayload {
 })
 export class DocumentService {
   private http = inject(HttpClient);
-  private readonly apiUrl = environment.apiUrl + '/api/documents';
+  private readonly apiUrl = buildApiUrl('/api/documents');
 
   getByPatient(patientId: number): Observable<PatientDocument[]> {
     return this.http.get<PatientDocument[]>(this.apiUrl + '/patient/' + patientId);

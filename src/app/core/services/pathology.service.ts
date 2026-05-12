@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '@env/environment.development';
+import { buildApiUrl } from '../utils/url';
 import { Pathology } from '@models/odontogram';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { Pathology } from '@models/odontogram';
 })
 export class PathologyService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/pathologies`;
+  private apiUrl = buildApiUrl('/api/pathologies');
 
   getPathologies(): Observable<Pathology[]> {
     return this.http.get<Pathology[]>(this.apiUrl);

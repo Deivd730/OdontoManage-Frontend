@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { buildApiUrl } from '../utils/url';
 
 // Interfaces para las entidades relacionadas
 export interface Patient {
@@ -74,7 +74,7 @@ export interface CreateAppointmentRequest {
 })
 export class AppointmentService {
   private http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/api/appointments`;
+  private readonly apiUrl = buildApiUrl('/api/appointments');
 
   /**
    * Obtener todas las citas

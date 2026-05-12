@@ -6,7 +6,7 @@ import { catchError, forkJoin, map, of } from 'rxjs';
 import flatpickr from 'flatpickr';
 import { Catalan } from 'flatpickr/dist/l10n/cat';
 import { Patient, PatientResponse, PatientService } from '../../core/services/patient.service';
-import { environment } from '../../../environments/environment.development';
+import { buildApiUrl } from '../../core/utils/url';
 import {
   PROFILE_IMAGE_ALLOWED_MIME_TYPES,
   PROFILE_IMAGE_MAX_SIZE_BYTES,
@@ -27,7 +27,7 @@ export class PatientRead implements OnInit, OnDestroy {
   private readonly allowedImageMimeTypes = [...PROFILE_IMAGE_ALLOWED_MIME_TYPES];
   private readonly maxProfileImageSizeBytes = PROFILE_IMAGE_MAX_SIZE_BYTES;
   private readonly defaultProfileImage = 'assets/default-profile.svg';
-  private readonly profileImageBaseUrl = `${environment.apiUrl}/images/profiles`;
+  private readonly profileImageBaseUrl = buildApiUrl('/images/profiles');
 
   patients = signal<PatientResponse[]>([]);
   selectedPatient = signal<PatientResponse | null>(null);
@@ -338,11 +338,11 @@ export class PatientRead implements OnInit, OnDestroy {
     }
 
     if (profileImageValue.startsWith('/images/profiles/')) {
-      return `${environment.apiUrl}${profileImageValue}`;
+      return buildApiUrl(profileImageValue);
     }
 
     if (profileImageValue.startsWith('images/profiles/')) {
-      return `${environment.apiUrl}/${profileImageValue}`;
+      return buildApiUrl(profileImageValue);
     }
 
     return `${this.profileImageBaseUrl}/${encodeURIComponent(profileImageValue)}`;

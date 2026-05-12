@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { buildApiUrl } from '../utils/url';
 
 export interface DentistTreatment {
   id: number;
@@ -27,7 +27,7 @@ export interface DentistResponse {
 })
 export class DentistService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/api/dentists`;
+  private readonly apiUrl = buildApiUrl('/api/dentists');
 
   getDentists(): Observable<DentistResponse[]> {
     return this.http.get<DentistResponse[]>(this.apiUrl);

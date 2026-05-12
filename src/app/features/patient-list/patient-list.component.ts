@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed, output, input } from '@angular/core';
 import { PatientService, PatientResponse } from '@services/patient.service';
-import { environment } from '../../../environments/environment.development';
+import { buildApiUrl } from '../../core/utils/url';
 
 @Component({
   selector: 'app-patient-list',
@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment.development';
 export class PatientListComponent implements OnInit {
   private patientService = inject(PatientService);
   private readonly defaultProfileImage = 'assets/default-profile.svg';
-  private readonly profileImageBaseUrl = `${environment.apiUrl}/images/profiles`;
+  private readonly profileImageBaseUrl = buildApiUrl('/images/profiles');
 
   selectedPatientId = input<number | null>(null);
   selectPatient = output<PatientResponse>();
@@ -80,11 +80,11 @@ export class PatientListComponent implements OnInit {
     }
 
     if (normalizedValue.startsWith('/images/profiles/')) {
-      return `${environment.apiUrl}${normalizedValue}`;
+      return buildApiUrl(normalizedValue);
     }
 
     if (normalizedValue.startsWith('images/profiles/')) {
-      return `${environment.apiUrl}/${normalizedValue}`;
+      return buildApiUrl(normalizedValue);
     }
 
     return `${this.profileImageBaseUrl}/${encodeURIComponent(normalizedValue)}`;
