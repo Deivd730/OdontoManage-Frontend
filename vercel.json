@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist/OdontoManage", "buildCommand": "npm run build" } }
-  ],
   "routes": [
     {
       "src": "^/api/(.*)$",
