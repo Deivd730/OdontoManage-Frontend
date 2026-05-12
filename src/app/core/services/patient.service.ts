@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment.development';
 
 export interface Patient {
@@ -52,11 +52,17 @@ export class PatientService {
 
   private http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/api/patients`;
+  private patientsCache$?: Observable<PatientResponse[]>;
 
   getPatients(): Observable<PatientResponse[]> {
-    return this.http.get<PatientResponse[]>(this.apiUrl).pipe(
-      map((patients) => this.sortPatientsByNewest(patients))
-    );
+    if (!this.patientsCache$) {
+      this.patientsCache$ = this.http.get<PatientResponse[]>(this.apiUrl).pipe(
+        map((patients) => this.sortPatientsByNewest(patients)),
+        shareReplay({ bufferSize: 1, refCount: true })
+      );
+    }
+
+    return this.patientsCache$;
   }
 
   getPatient(id: number): Observable<PatientResponse> {
@@ -64,29 +70,38 @@ export class PatientService {
   }
 
   createPatient(patient: Patient): Observable<PatientResponse> {
-    return this.http.post<PatientResponse>(this.apiUrl, patient);
+    return this.http.post<PatientResponse>(this.apiUrl, patient).pipe(
+      tap(() => this.clearPatientsCache())
+    );
   }
 
   updatePatient(id: number, patient: Patient): Observable<PatientResponse> {
-    return this.http.put<PatientResponse>(`${this.apiUrl}/${id}`, patient);
+    return this.http.put<PatientResponse>(`${this.apiUrl}/${id}`, patient).pipe(
+      tap(() => this.clearPatientsCache())
+    );
   }
 
   uploadPatientProfileImage(id: number, imageFile: File): Observable<PatientResponse> {
     const formData = new FormData();
     formData.append('profileImageFile', imageFile, imageFile.name);
 
-    return this.http.post<PatientResponse>(`${this.apiUrl}/${id}/profile-image`, formData);
+    return this.http.post<PatientResponse>(`${this.apiUrl}/${id}/profile-image`, formData).pipe(
+      tap(() => this.clearPatientsCache())
+    );
   }
 
   updatePatientWithProfileImage(id: number, patient: Patient, imageFile: File): Observable<PatientResponse> {
     return this.updatePatient(id, patient).pipe(
       switchMap(() => this.uploadPatientProfileImage(id, imageFile)),
-      switchMap(() => this.getPatient(id))
+      switchMap(() => this.getPatient(id)),
+      tap(() => this.clearPatientsCache())
     );
   }
 
   deletePatient(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => this.clearPatientsCache())
+    );
   }
 
   private sortPatientsByNewest(patients: PatientResponse[]): PatientResponse[] {
@@ -107,6 +122,10 @@ export class PatientService {
 
     const parsed = Date.parse(dateValue);
     return Number.isNaN(parsed) ? 0 : parsed;
+  }
+
+  private clearPatientsCache(): void {
+    this.patientsCache$ = undefined;
   }
 
 }

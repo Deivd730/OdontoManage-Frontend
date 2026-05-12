@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { GuestGuard } from './core/guards/guest.guard';
 import { MainlayoutComponent } from './features/mainlayout/mainlayout.component';
-import { DocumentCreate } from '@features/document-create/document-create.component';
 
 export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent), canActivate: [GuestGuard] },

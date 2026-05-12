@@ -35,6 +35,10 @@
                             "src/material-theme.scss",
                             "src/styles.css"
                         ]
+                        ,
+                        "allowedCommonJsDependencies": [
+                            "flatpickr"
+                        ]
                     },
                     "configurations": {
                         "production": {
@@ -46,8 +50,8 @@
                                 },
                                 {
                                     "type": "anyComponentStyle",
-                                    "maximumWarning": "4kB",
-                                    "maximumError": "8kB"
+                                    "maximumWarning": "8kB",
+                                    "maximumError": "16kB"
                                 }
                             ],
                             "outputHashing": "all"

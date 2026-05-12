@@ -1,11 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Default patient profile">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#dff5e6" />
-      <stop offset="100%" stop-color="#b7e4c7" />
-    </linearGradient>
-  </defs>
-  <rect width="120" height="120" rx="16" fill="url(#bg)" />
-  <circle cx="60" cy="44" r="20" fill="#2f7a43" opacity="0.92" />
-  <path d="M24 102c3-20 18-32 36-32s33 12 36 32" fill="#2f7a43" opacity="0.92" />
+  <circle cx="60" cy="46" r="18" fill="#64748b" />
+  <path d="M26 100c4-18 19-30 34-30s30 12 34 30" fill="#64748b" />
 </svg>

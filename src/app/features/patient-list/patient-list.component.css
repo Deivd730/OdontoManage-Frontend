@@ -1,15 +1,18 @@
 :host {
     display: block;
     height: 100%;
+    min-height: 0;
 }
 
 .sidebar-container {
     display: flex;
-    flex-direction: column;    
-    height: 94%;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
     background-color: #ffffff;
     padding: 1rem;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .search-header {
@@ -45,6 +48,7 @@
 .list-body {
     flex: 1;
     overflow-y: auto;
+    min-height: 0;
     padding-right: 4px;
 }
 
@@ -83,9 +87,8 @@
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    background: var(--primary-light);
-    /* background: linear-gradient(135deg, #277339, #3ea055); */
-    color: #277339;
+    background: #f3f4f6;
+    color: #64748b;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -126,8 +129,8 @@
 .avatar {
     width: 38px;
     height: 38px;
-    background: var(--primary-light);
-    color: #277339;
+    background: #f3f4f6;
+    color: #64748b;
     font-weight: bold;
     border-radius: 6px;
     display: grid;

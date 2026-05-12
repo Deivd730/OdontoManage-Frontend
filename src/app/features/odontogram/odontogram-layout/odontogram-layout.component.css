@@ -1,6 +1,6 @@
 .odontogram-layout {
     display: grid;
-    grid-template-columns: 350px 1fr;
+    grid-template-columns: 350px minmax(0, 1fr);
     /* Sidebar de 350px y el resto para el editor */
     height: calc(100vh - 80px);
     /* Ajusta según el alto de tu navbar */
@@ -8,16 +8,26 @@
     overflow: hidden;
 }
 
-.sidebar {
-    background: white;
-    border-right: 1px solid #e0e0e0;
-    height: 100%;
-    overflow: hidden;
-    /* El scroll lo tendrá el componente hijo */
+.sidebar-col,
+.content-col {
+    min-height: 0;
 }
 
-.editor-content {
-    background: #f5f7fa;
+.sidebar-col {
+    background: white;
+    border-right: 1px solid #e0e0e0;
+    overflow: hidden;
+    display: flex;
+}
+
+.sidebar-col app-patient-list {
+    display: block;
     height: 100%;
-    overflow-y: auto;
+    min-height: 0;
+    width: 100%;
+}
+
+.content-col {
+    background: #f5f7fa;
+    overflow: auto;
 }
