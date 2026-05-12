@@ -1,15 +1,18 @@
 :host {
     display: block;
     height: 100%;
+    min-height: 0;
 }
 
 .sidebar-container {
     display: flex;
     flex-direction: column;
-    height: 70%;
+    height: 100%;
+    min-height: 0;
     background-color: #ffffff;
     padding: 1rem;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .search-header {
@@ -45,6 +48,7 @@
 .list-body {
     flex: 1;
     overflow-y: auto;
+    min-height: 0;
     padding-right: 4px;
 }
 
