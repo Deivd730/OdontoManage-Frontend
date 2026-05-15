@@ -23,10 +23,17 @@
             <span class="summary-value">{{ store.formatTime(appointment.visitDate) }}</span>
           </div>
           <div class="summary-item">
-            <span class="summary-value">{{ appointment.treatment.name }}</span>
+            <span class="summary-value">{{ store.getDentistDisplayName(appointment) }}</span>
           </div>
           <div class="summary-item">
-            <span class="summary-value">{{ store.getDentistDisplayName(appointment) }}</span>
+            @if (store.isPatientInfectious(appointment.patient.id)) {
+              <div
+                class="appointment-infectious-pill"
+                [title]="store.getPatientInfectiousLabel(appointment.patient.id) ? 'Malaltia infecciosa: ' + store.getPatientInfectiousLabel(appointment.patient.id) : 'Pacient amb malaltia infecciosa'"
+              >
+                Infecció
+              </div>
+            }
           </div>
             <div class="summary-actions" role="group" aria-label="Accions de la cita">
               <button
