@@ -188,9 +188,16 @@ export class PatientRead implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
+    const hasInfectiousDiseases = selected.hasInfectiousDiseases ?? false;
+    const infectiousDiseases = selected.infectiousDiseases?.trim() || 'None';
+
     const payload: Patient = {
       ...this.editForm.value,
       birthDate: this.toApiBirthDate(this.editForm.value.birthDate),
+      medicalTreatmentConsent: selected.medicalTreatmentConsent ?? false,
+      anesthesiaConsent: selected.anesthesiaConsent ?? false,
+      hasInfectiousDiseases,
+      infectiousDiseases,
       registrationDate: selected.registrationDate,
     };
 
