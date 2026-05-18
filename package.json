@@ -33,6 +33,7 @@
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
     "@auth0/angular-jwt": "^5.2.0",
+    "@vercel/analytics": "^2.0.1",
     "flatpickr": "^4.6.13",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
