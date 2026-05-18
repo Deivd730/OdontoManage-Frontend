@@ -1,4 +1,16 @@
 <div class="login-container">
+  @if (showReadOnlyNotice) {
+    <div class="notice-overlay" role="dialog" aria-modal="true" aria-labelledby="notice-title">
+      <div class="notice-modal">
+        <h2 id="notice-title">Avís important</h2>
+        <p>Aquesta aplicació web és només de consulta. No es poden fer modificacions i l'experiència és millor en un ordinador.</p>
+        <div class="notice-actions">
+          <button type="button" class="btn-minimal" (click)="acceptReadOnlyNotice()">Entesos</button>
+        </div>
+      </div>
+    </div>
+  }
+
   <div class="login-card">
     <header class="login-header">
       <h1 class="brand-name">OdontoManage</h1>

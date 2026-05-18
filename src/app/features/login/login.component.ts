@@ -13,6 +13,7 @@ import { OdontoLoader } from '../../core/services/odonto-loader';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  showReadOnlyNotice = false;
   loginForm: FormGroup;
   errorMessage = signal<string | null>(null);
   isLoading = signal<boolean>(false);
@@ -39,6 +40,14 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+
+    try {
+      if (!localStorage.getItem('seen_readonly_notice')) {
+        this.showReadOnlyNotice = true;
+      }
+    } catch (error) {
+      console.warn('No es pot llegir localStorage per al missatge de només lectura', error);
+    }
   }
 
   onSubmit(): void {
@@ -95,5 +104,15 @@ export class LoginComponent {
   isFieldInvalid(field: string): boolean {
     const control = this.loginForm.get(field);
     return !!(control && control.invalid && control.touched);
+  }
+
+  acceptReadOnlyNotice(): void {
+    try {
+      localStorage.setItem('seen_readonly_notice', '1');
+    } catch (error) {
+      console.warn('No es pot desar el missatge de només lectura a localStorage', error);
+    }
+
+    this.showReadOnlyNotice = false;
   }
 }
